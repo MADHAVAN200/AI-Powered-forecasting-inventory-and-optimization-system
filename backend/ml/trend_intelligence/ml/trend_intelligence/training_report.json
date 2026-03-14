@@ -1,0 +1,20 @@
+{
+    "model_name": "Trend Intelligence K-Fold LightGBM",
+    "training_samples": 7368,
+    "test_samples": 1842,
+    "cross_validation_5fold": {
+        "mean_MAE": "0.1025",
+        "mean_R2": "0.6957"
+    },
+    "holdout_test_metrics": {
+        "MAE": "0.0974",
+        "R2_Score": "0.7417"
+    },
+    "feature_importances": {
+        "rolling_sales_growth_7d": 1028.0,
+        "rolling_sales_growth_30d": 1352.0,
+        "sku_popularity_rank": 367.0,
+        "cross_category_momentum": 1004.0,
+        "trend_score": 299.0
+    }
+}
