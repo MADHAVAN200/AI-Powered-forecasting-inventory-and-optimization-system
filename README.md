@@ -1,4 +1,4 @@
-# 🛒 Walmart OptiFresh - AI-Powered Inventory Intelligence
+# Walmart OptiFresh - AI-Powered Inventory Intelligence
 
 **Intelligent Freshness. Zero Waste.**
 
@@ -6,7 +6,7 @@ Walmart OptiFresh is a comprehensive, enterprise-level AI solution designed to r
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The project is structured as a **Monorepo** for seamless development and deployment of both the user interface and the machine learning backbone.
 
@@ -19,7 +19,7 @@ The project is structured as a **Monorepo** for seamless development and deploym
 
 ---
 
-## ⚡ Core Features
+## Core Features
 
 ### 1. Enterprise Control Tower
 The central "cockpit" of the application. It provides modular access to all intelligence subsystems, allowing operational staff to observe data freshness, regional health, and cross-module recommendations in one unified view.
@@ -46,7 +46,7 @@ The central "cockpit" of the application. It provides modular access to all inte
 
 ---
 
-## 🤖 AI Insights Panel
+## AI Insights Panel
 Every intelligence module is powered by a dynamic **AI Insights Panel**. This component uses NLP-style logic to explain the "Why" behind the data:
 -   **Restock Alerts**: Highlights which products need urgent replenishment based on upcoming events or trends.
 -   **Reduction Suggestions**: Identifies overstock risks where markdown or reallocation is needed.
@@ -55,7 +55,7 @@ Every intelligence module is powered by a dynamic **AI Insights Panel**. This co
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 -   Node.js (v18+)
@@ -78,12 +78,9 @@ npm start
 
 ---
 
-## 🧪 Technology Stack
+## Technology Stack
 -   **UI**: React, Vite, Tailwind CSS, Lucide React, Recharts.
 -   **Server**: Node.js, Express, CORS.
 -   **ML**: Python, Jupyter, Scikit-Learn, Prophet, lightGBM.
 -   **Database/Storage**: Supabase (PostgreSQL), JSON Flat Files.
 
----
-
-© 2025 Team BeGANs - A Walmart Sparkathon Initiative.
