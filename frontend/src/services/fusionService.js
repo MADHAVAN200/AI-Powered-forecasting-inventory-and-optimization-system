@@ -17,6 +17,13 @@ export const fusionService = {
             .order('date', { ascending: false })
             .limit(7);
         if (error) throw error;
-        return data;
+        
+        // Map database fields to frontend field names for consistency
+        return data.map(item => ({
+            ...item,
+            event_logic_score: item.event_logic_score ?? item.event_uplift_norm,
+            global_consensus_score: item.global_consensus_score ?? item.trend_score_norm,
+            weather_deviation_score: item.weather_deviation_score ?? item.weather_impact_norm
+        }));
     }
 };

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
     AreaChart, Area
@@ -8,7 +8,7 @@ import {
 import {
     Server, Shield, Activity, RefreshCw, AlertTriangle,
     CheckCircle2, Clock, Play, Pause, RotateCcw,
-    Database, Network, Lock, Info, Filter, Download, TrendingUp
+    Database, Network, Lock, Info, Filter, Download, TrendingUp, Home
 } from 'lucide-react';
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -20,6 +20,10 @@ import {
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from "@/components/ui/progress";
+import {
+    Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
+    BreadcrumbPage, BreadcrumbSeparator
+} from '@/components/ui/breadcrumb';
 
 // --- MOCK DATA ---
 
@@ -52,6 +56,10 @@ const LOGS = [
 
 const FederatedLearningPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const fromControlTower = queryParams.get('from') === 'control-tower';
+
     const [isAggregating, setIsAggregating] = useState(false);
 
     const handleAggregation = () => {
@@ -64,6 +72,42 @@ const FederatedLearningPage = () => {
 
             {/* 1. HEADER & GLOBAL STATUS */}
             <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
+                {/* Breadcrumb Section */}
+                <div className="px-6 pt-3">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    onClick={() => navigate('/')}
+                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                >
+                                    <Home className="w-3 h-3" />
+                                    Home
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="text-gray-600" />
+                            {fromControlTower && (
+                                <>
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink
+                                            onClick={() => navigate('/control-tower')}
+                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                        >
+                                            Control Tower
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="text-gray-600" />
+                                </>
+                            )}
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
+                                    Federated Learning
+                                </BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
+
                 <div className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center space-x-4">
                         <div className="p-2 bg-blue-900/20 rounded-lg">
