@@ -2,31 +2,31 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
-import Chatbot from './components/Chatbot';
+
 
 // Lazy load pages
-const LoginPage = React.lazy(() => import('@/app/page'));
-const DashboardPage = React.lazy(() => import('@/app/dashboard/page'));
+const LoginPage = React.lazy(() => import('@/app/LoginPage'));
+const DashboardPage = React.lazy(() => import('@/app/dashboard/DashboardPage'));
 
-const VendorPage = React.lazy(() => import('@/app/vendor/page'));
+const VendorPage = React.lazy(() => import('@/app/vendor/VendorPage'));
 
-const LogisticsPage = React.lazy(() => import('@/app/logistics/page'));
-const ControlTowerPage = React.lazy(() => import('@/app/control-tower/page'));
-const EventIntelligencePage = React.lazy(() => import('@/app/event-intelligence/page'));
-const TrendIntelligencePage = React.lazy(() => import('@/app/trend-intelligence/page'));
-const WeatherIntelligencePage = React.lazy(() => import('@/app/weather-intelligence/page'));
-const ForecastEnginePage = React.lazy(() => import('@/app/forecast-engine/page'));
-const ScenarioPlanningPage = React.lazy(() => import('@/app/scenario-planning/page'));
-const InventoryRiskPage = React.lazy(() => import('@/app/inventory-risk/page'));
-const StoreHealthPage = React.lazy(() => import('@/app/store-health/page'));
-const LiveCheckoutPage = React.lazy(() => import('@/app/live-checkout/page'));
-const CheckoutVisionPage = React.lazy(() => import('@/app/checkout-vision/page'));
-const CheckoutAnalyticsPage = React.lazy(() => import('@/app/checkout-analytics/page'));
-const FederatedLearningPage = React.lazy(() => import('@/app/federated-learning/page'));
-const ModelHealthPage = React.lazy(() => import('@/app/model-health/page'));
-const OperationalAlertsPage = React.lazy(() => import('@/app/alerts/page'));
-const StockRebalancingPage = React.lazy(() => import('@/app/stock-rebalancing/page'));
-const VendorPortalPage = React.lazy(() => import('@/app/vendor/page'));
+const LogisticsPage = React.lazy(() => import('@/app/logistics/LogisticsPage'));
+const ControlTowerPage = React.lazy(() => import('@/app/control-tower/ControlTowerPage'));
+const EventIntelligencePage = React.lazy(() => import('@/app/control-tower/EventIntelligence'));
+const TrendIntelligencePage = React.lazy(() => import('@/app/control-tower/TrendIntelligence'));
+const WeatherIntelligencePage = React.lazy(() => import('@/app/control-tower/WeatherIntelligence'));
+const ForecastEnginePage = React.lazy(() => import('@/app/control-tower/ForecastEngine'));
+const ScenarioPlanningPage = React.lazy(() => import('@/app/control-tower/ScenarioPlanning'));
+const InventoryRiskPage = React.lazy(() => import('@/app/control-tower/InventoryRisk'));
+const StoreHealthPage = React.lazy(() => import('@/app/control-tower/StoreHealth'));
+const LiveCheckoutPage = React.lazy(() => import('@/app/control-tower/LiveCheckout'));
+const CheckoutVisionPage = React.lazy(() => import('@/app/control-tower/CheckoutVision'));
+const CheckoutAnalyticsPage = React.lazy(() => import('@/app/control-tower/CheckoutAnalytics'));
+const FederatedLearningPage = React.lazy(() => import('@/app/control-tower/FederatedLearning'));
+const ModelHealthPage = React.lazy(() => import('@/app/control-tower/ModelHealth'));
+const OperationalAlertsPage = React.lazy(() => import('@/app/control-tower/OperationalAlerts'));
+const StockRebalancingPage = React.lazy(() => import('@/app/control-tower/StockRebalancing'));
+const VendorPortalPage = React.lazy(() => import('@/app/vendor/VendorPage'));
 
 
 
@@ -57,20 +57,20 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<ControlTowerPage />} />
                         <Route path="/control-tower" element={<ControlTowerPage />} />
-                        <Route path="/event-intelligence" element={<EventIntelligencePage />} />
-                        <Route path="/trend-intelligence" element={<TrendIntelligencePage />} />
-                        <Route path="/weather-intelligence" element={<WeatherIntelligencePage />} />
-                        <Route path="/forecast-engine" element={<ForecastEnginePage />} />
-                        <Route path="/scenario-planning" element={<ScenarioPlanningPage />} />
-                        <Route path="/inventory-risk" element={<InventoryRiskPage />} />
-                        <Route path="/store-health" element={<StoreHealthPage />} />
-                        <Route path="/live-checkout" element={<LiveCheckoutPage />} />
-                        <Route path="/checkout-vision" element={<CheckoutVisionPage />} />
-                        <Route path="/checkout-analytics" element={<CheckoutAnalyticsPage />} />
-                        <Route path="/federated-learning" element={<FederatedLearningPage />} />
-                        <Route path="/model-health" element={<ModelHealthPage />} />
-                        <Route path="/alerts" element={<OperationalAlertsPage />} />
-                        <Route path="/stock-rebalancing" element={<StockRebalancingPage />} />
+                        <Route path="/control-tower/event-intelligence" element={<EventIntelligencePage />} />
+                        <Route path="/control-tower/trend-intelligence" element={<TrendIntelligencePage />} />
+                        <Route path="/control-tower/weather-intelligence" element={<WeatherIntelligencePage />} />
+                        <Route path="/control-tower/forecast-engine" element={<ForecastEnginePage />} />
+                        <Route path="/control-tower/scenario-planning" element={<ScenarioPlanningPage />} />
+                        <Route path="/control-tower/inventory-risk" element={<InventoryRiskPage />} />
+                        <Route path="/control-tower/store-health" element={<StoreHealthPage />} />
+                        <Route path="/control-tower/live-checkout" element={<LiveCheckoutPage />} />
+                        <Route path="/control-tower/checkout-vision" element={<CheckoutVisionPage />} />
+                        <Route path="/control-tower/checkout-analytics" element={<CheckoutAnalyticsPage />} />
+                        <Route path="/control-tower/federated-learning" element={<FederatedLearningPage />} />
+                        <Route path="/control-tower/model-health" element={<ModelHealthPage />} />
+                        <Route path="/control-tower/alerts" element={<OperationalAlertsPage />} />
+                        <Route path="/control-tower/stock-rebalancing" element={<StockRebalancingPage />} />
 
                         <Route path="/login" element={<LoginPage />} />
 
@@ -93,7 +93,7 @@ export default function App() {
                         <Route path="/logistics/*" element={<LogisticsPage />} />
                     </Routes>
                 </Suspense>
-                <Chatbot />
+
             </Layout>
         </Router>
     );
