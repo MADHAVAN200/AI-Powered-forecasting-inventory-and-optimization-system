@@ -1,0 +1,29 @@
+{
+    "model_name": "Prophet Ensemble (Federated v4.2.2)",
+    "last_trained": "2026-03-20 13:31:43",
+    "status": "Global Aggregation Complete",
+    "round": 108,
+    "metrics": {
+        "global_accuracy": 0.8012,
+        "global_mape": 3.61,
+        "convergence_health": "Optimal",
+        "contribution_nodes": 3
+    },
+    "contributors": [
+        {
+            "node": "Event Intelligence",
+            "status": "Synced",
+            "contribution": 0.33
+        },
+        {
+            "node": "Trend Intelligence",
+            "status": "Synced",
+            "contribution": 0.33
+        },
+        {
+            "node": "Weather Intelligence",
+            "status": "Synced",
+            "contribution": 0.34
+        }
+    ]
+}
