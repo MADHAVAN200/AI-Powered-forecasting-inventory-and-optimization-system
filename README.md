@@ -351,6 +351,4 @@ Review and viva support material:
 
 - `WAREHOUSE_PROJECT_REVIEW_SCRIPT.docx`
 
-## Project Identity
 
-Smartstock is the current platform identity for this repository. Any older references to Walmart OptiFresh or earlier prototype names should be treated as legacy naming from previous iterations.
