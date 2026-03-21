@@ -1,0 +1,130 @@
+{
+    "025293001350": {
+        "class_id": 0,
+        "label": "Silk Almond Dark Chocolate 1.89L"
+    },
+    "060383048105": {
+        "class_id": 1,
+        "label": "Greek Grec Yogurt 908g"
+    },
+    "060383059354": {
+        "class_id": 2,
+        "label": "White Blancs Mushroom 227g"
+    },
+    "060383061333": {
+        "class_id": 3,
+        "label": "Marble Real Cheese 230g"
+    },
+    "060383069292": {
+        "class_id": 4,
+        "label": "condensed Milk 500ml"
+    },
+    "060383118068": {
+        "class_id": 5,
+        "label": "Sour Creame"
+    },
+    "060383870454": {
+        "class_id": 6,
+        "label": "Organics Partly skimmed milk 2L"
+    },
+    "061200225914": {
+        "class_id": 7,
+        "label": "Dairy Milk 100g"
+    },
+    "063100375898": {
+        "class_id": 8,
+        "label": "Schneiders Classic Cut Bacon 315g"
+    },
+    "063100375942": {
+        "class_id": 9,
+        "label": "Schneiders 50% Less Fat Bacon 315g"
+    },
+    "066013808422": {
+        "class_id": 10,
+        "label": "Gaylea Butter with canola Oil 227g"
+    },
+    "066096123054": {
+        "class_id": 11,
+        "label": "lactantia nice biscuits 454g"
+    },
+    "066800000152": {
+        "class_id": 12,
+        "label": "Neilson Milk 4L"
+    },
+    "066800000381": {
+        "class_id": 13,
+        "label": "Neilson butter milk 1L"
+    },
+    "066800000763": {
+        "class_id": 14,
+        "label": "Neilson fresh Half cream 1L"
+    },
+    "066800000954": {
+        "class_id": 15,
+        "label": "Neilson Whipping cream 1L"
+    },
+    "066800004129": {
+        "class_id": 16,
+        "label": "Neilson TruTaste Partly skimmed milk 4L"
+    },
+    "066800710501": {
+        "class_id": 17,
+        "label": "Neilson Strawberry milk 1L"
+    },
+    "066800711218": {
+        "class_id": 18,
+        "label": "Neilson Chocolate milk 1L"
+    },
+    "068100024081": {
+        "class_id": 19,
+        "label": "Cracker Barrel 400g"
+    },
+    "068100901788": {
+        "class_id": 20,
+        "label": "Cracker Barrel Pizza Mozzarella 400g"
+    },
+    "229901000000": {
+        "class_id": 21,
+        "label": "San Danielle Mortadella 0.246kg"
+    },
+    "241455000000": {
+        "class_id": 22,
+        "label": "MapleLodge Chicken Breast 0.342kg"
+    },
+    "241457900003": {
+        "class_id": 23,
+        "label": "MapleLodge Chicken Drumstick 0.991kg"
+    },
+    "285260000000": {
+        "class_id": 24,
+        "label": "Chicken Poulet Boneless"
+    },
+    "285520000000": {
+        "class_id": 25,
+        "label": "Chicken poulet Bone-in"
+    },
+    "627907104015": {
+        "class_id": 26,
+        "label": "Marc Angelo mild italian pork 500g"
+    },
+    "627907104022": {
+        "class_id": 27,
+        "label": "Marc Angelo Hot italian pork 500g"
+    },
+    "629025350046": {
+        "class_id": 28,
+        "label": "igoo nano strawberry drink"
+    },
+    "629025350060": {
+        "class_id": 29,
+        "label": "igoo nano raspberry drink"
+    },
+    "629025350121": {
+        "class_id": 30,
+        "label": "igoo nano peach drink"
+    },
+    "743434000337": {
+        "class_id": 31,
+        "label": "Lindth Crunch Croquant chocolate 100g"
+    }
+}

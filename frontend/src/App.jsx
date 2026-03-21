@@ -1,32 +1,30 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Chatbot from './components/Chatbot';
 import { Toaster } from '@/components/ui/toaster';
+import PlatformShell from '@/components/platform-shell';
 
 // Lazy load pages
-const LoginPage = React.lazy(() => import('@/app/LoginPage'));
-const DashboardPage = React.lazy(() => import('@/app/dashboard/DashboardPage'));
-const VendorPage = React.lazy(() => import('@/app/vendor/VendorPage'));
-const LogisticsPage = React.lazy(() => import('@/app/logistics/LogisticsPage'));
-
-const ControlTowerPage = React.lazy(() => import('@/app/control-tower/ControlTowerPage'));
+const LogisticsPage = React.lazy(() => import('@/app/logistics/page'));
 const EventIntelligencePage = React.lazy(() => import('@/app/control-tower/EventIntelligence'));
 const TrendIntelligencePage = React.lazy(() => import('@/app/control-tower/TrendIntelligence'));
 const WeatherIntelligencePage = React.lazy(() => import('@/app/control-tower/WeatherIntelligence'));
-const ForecastEnginePage = React.lazy(() => import('@/app/control-tower/ForecastEngine'));
-const ScenarioPlanningPage = React.lazy(() => import('@/app/control-tower/ScenarioPlanning'));
-const InventoryRiskPage = React.lazy(() => import('@/app/control-tower/InventoryRisk'));
-const StoreHealthPage = React.lazy(() => import('@/app/control-tower/StoreHealth'));
-const LiveCheckoutPage = React.lazy(() => import('@/app/control-tower/LiveCheckout'));
-const CheckoutVisionPage = React.lazy(() => import('@/app/control-tower/CheckoutVision'));
-const CheckoutAnalyticsPage = React.lazy(() => import('@/app/control-tower/CheckoutAnalytics'));
-const FederatedLearningPage = React.lazy(() => import('@/app/control-tower/FederatedLearning'));
-const ModelHealthPage = React.lazy(() => import('@/app/control-tower/ModelHealth'));
-const OperationalAlertsPage = React.lazy(() => import('@/app/control-tower/OperationalAlerts'));
-const StockRebalancingPage = React.lazy(() => import('@/app/control-tower/StockRebalancing'));
+const FederatedLearningPage = React.lazy(() => import('@/app/federated-learning/page'));
+const OperationalAlertsPage = React.lazy(() => import('@/app/alerts/page'));
+const StockRebalancingPage = React.lazy(() => import('@/app/stock-rebalancing/page'));
+const CheckoutVisionPage = React.lazy(() => import('@/app/checkout-vision/page'));
 
-const VendorPortalPage = React.lazy(() => import('@/app/vendor/VendorPage'));
+const PlaceholderPage = ({ title }) => (
+  <div className="flex min-h-[70vh] items-center justify-center px-6">
+    <div className="max-w-xl rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center shadow-2xl">
+      <p className="mb-3 text-xs uppercase tracking-[0.22em] text-slate-500">Upcoming Module</p>
+      <h1 className="text-3xl font-bold text-white">{title}</h1>
+      <p className="mt-3 text-slate-400">
+        This workspace is intentionally hidden from the main navigation until the underlying workflows are ready.
+      </p>
+    </div>
+  </div>
+);
 
 // Layout wrapper
 const Layout = ({ children }) => {
@@ -45,43 +43,42 @@ const Loading = () => (
 );
 
 export default function App() {
-    return (
+  return (
     <Router>
-        <Layout>
+      <Layout>
         <Suspense fallback={<Loading />}>
-            <Routes>
-            <Route path="/" element={<ControlTowerPage />} />
-            <Route path="/control-tower" element={<ControlTowerPage />} />
-            <Route path="/control-tower/event-intelligence" element={<EventIntelligencePage />} />
-            <Route path="/control-tower/trend-intelligence" element={<TrendIntelligencePage />} />
-            <Route path="/control-tower/weather-intelligence" element={<WeatherIntelligencePage />} />
-            <Route path="/control-tower/forecast-engine" element={<ForecastEnginePage />} />
-            <Route path="/control-tower/scenario-planning" element={<ScenarioPlanningPage />} />
-            <Route path="/control-tower/inventory-risk" element={<InventoryRiskPage />} />
-            <Route path="/control-tower/store-health" element={<StoreHealthPage />} />
-            <Route path="/control-tower/live-checkout" element={<LiveCheckoutPage />} />
-            <Route path="/control-tower/checkout-vision" element={<CheckoutVisionPage />} />
-            <Route path="/control-tower/checkout-analytics" element={<CheckoutAnalyticsPage />} />
-            <Route path="/control-tower/federated-learning" element={<FederatedLearningPage />} />
-            <Route path="/control-tower/model-health" element={<ModelHealthPage />} />
-            <Route path="/control-tower/alerts" element={<OperationalAlertsPage />} />
-            <Route path="/control-tower/stock-rebalancing" element={<StockRebalancingPage />} />
-
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-
-            <Route path="/vendor" element={<VendorPage />} />
-            <Route path="/vendor/*" element={<VendorPage />} />
+          <Routes>
+            <Route element={<PlatformShell />}>
+            <Route path="/" element={<OperationalAlertsPage />} />
+            <Route path="/control-tower" element={<OperationalAlertsPage />} />
+            <Route path="/event-intelligence" element={<EventIntelligencePage />} />
+            <Route path="/trend-intelligence" element={<TrendIntelligencePage />} />
+            <Route path="/weather-intelligence" element={<WeatherIntelligencePage />} />
+            <Route path="/forecast-engine" element={<PlaceholderPage title="Forecast Engine" />} />
+            <Route path="/scenario-planning" element={<PlaceholderPage title="Scenario Planning" />} />
+            <Route path="/inventory-risk" element={<PlaceholderPage title="Inventory Risk" />} />
+            <Route path="/store-health" element={<PlaceholderPage title="Store Health" />} />
+            <Route path="/live-checkout" element={<PlaceholderPage title="Live Checkout" />} />
+            <Route path="/checkout-vision" element={<CheckoutVisionPage />} />
+            <Route path="/checkout-analytics" element={<PlaceholderPage title="Checkout Analytics" />} />
+            <Route path="/federated-learning" element={<FederatedLearningPage />} />
+            <Route path="/model-health" element={<PlaceholderPage title="Model Health" />} />
+            <Route path="/alerts" element={<OperationalAlertsPage />} />
+            <Route path="/stock-rebalancing" element={<StockRebalancingPage />} />
+            <Route path="/login" element={<PlaceholderPage title="Login" />} />
+            <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" />} />
+            <Route path="/vendor" element={<PlaceholderPage title="Vendor" />} />
+            <Route path="/vendor/*" element={<PlaceholderPage title="Vendor" />} />
 
             <Route path="/logistics" element={<LogisticsPage />} />
             <Route path="/logistics/*" element={<LogisticsPage />} />
-            </Routes>
+            </Route>
+          </Routes>
         </Suspense>
 
         {/* Global Components */}
-        <Chatbot />
         <Toaster />
-        </Layout>
+      </Layout>
     </Router>
-    );
+  );
 }

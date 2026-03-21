@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { mlService } from '../services/mlService.js';
 import { moduleDataStore } from '../services/moduleDataStore.js';
@@ -38,6 +39,25 @@ export const mlController = {
             res.json(result);
         } catch (error) {
             res.status(500).json(error);
+        }
+    },
+    analyzeCheckoutVision: async (req, res) => {
+        const uploadedFile = req.file;
+
+        if (!uploadedFile) {
+            return res.status(400).json({ error: 'image file is required' });
+        }
+
+        try {
+            const result = await mlService.runCheckoutVision(uploadedFile.path);
+            res.json({ success: true, data: result });
+        } catch (error) {
+            res.status(500).json({
+                error: error.error || 'Checkout vision inference failed',
+                details: error.details || error.message,
+            });
+        } finally {
+            await fs.unlink(uploadedFile.path).catch(() => null);
         }
     },
     getModuleData: async (req, res) => {

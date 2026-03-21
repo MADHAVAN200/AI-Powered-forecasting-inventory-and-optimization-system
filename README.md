@@ -76,6 +76,22 @@ npm start
 -   **Frontend**: Runs on [http://localhost:5173](http://localhost:5173)
 -   **Backend**: Runs on [http://localhost:3001](http://localhost:3001)
 
+### Checkout Vision Setup
+
+The warehouse app now includes the multimodal checkout vision workflow at `/checkout-vision`.
+
+1. Copy the multimodal inference assets into `backend/ml/checkout_vision/`:
+   - `pipeline.py`
+   - `multimodal_classifier.py`
+   - `labels.json`
+   - `weights/`
+2. Create `backend/.env.local` from `backend/.env.example`.
+3. Set `CHECKOUT_VISION_PYTHON` to the Python executable that already has `ultralytics`, `easyocr`, `torch`, `torchvision`, and `transformers` installed.
+4. Start the backend and frontend.
+5. Open `http://localhost:5173/checkout-vision`.
+
+The page preloads a default `multiproduct.png` sample and automatically runs inference when it loads.
+
 ---
 
 ## Technology Stack
