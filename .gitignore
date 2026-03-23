@@ -27,12 +27,16 @@ dist-ssr/
 *.pkl
 __pycache__/
 *.ipynb_checkpoints/
+backend/uploads/
+backend/ml/checkout_vision/weights/
 
 # Environment
 .env
 .env.test
 .env.production
 .env.local
+backend/.env
+backend/.env.local
 
 # Gemini Agent History
 .gemini/

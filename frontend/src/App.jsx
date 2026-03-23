@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
-
+import { Toaster } from '@/components/ui/toaster';
 
 
 import { AuthProvider } from '@/context/AuthContext';
@@ -23,12 +22,12 @@ const ScenarioPlanningPage = React.lazy(() => import('@/app/control-tower/Scenar
 const InventoryRiskPage = React.lazy(() => import('@/app/control-tower/InventoryRisk'));
 const StoreHealthPage = React.lazy(() => import('@/app/control-tower/StoreHealth'));
 const LiveCheckoutPage = React.lazy(() => import('@/app/control-tower/LiveCheckout'));
-const CheckoutVisionPage = React.lazy(() => import('@/app/control-tower/CheckoutVision'));
+const CheckoutVisionPage = React.lazy(() => import('@/app/checkout-vision/page'));
 const CheckoutAnalyticsPage = React.lazy(() => import('@/app/control-tower/CheckoutAnalytics'));
-const FederatedLearningPage = React.lazy(() => import('@/app/control-tower/FederatedLearning'));
+const FederatedLearningPage = React.lazy(() => import('@/app/federated-learning/page'));
 const ModelHealthPage = React.lazy(() => import('@/app/control-tower/ModelHealth'));
-const OperationalAlertsPage = React.lazy(() => import('@/app/control-tower/OperationalAlerts'));
-const StockRebalancingPage = React.lazy(() => import('@/app/control-tower/StockRebalancing'));
+const OperationalAlertsPage = React.lazy(() => import('@/app/alerts/page'));
+const StockRebalancingPage = React.lazy(() => import('@/app/stock-rebalancing/page'));
 const VendorPortalPage = React.lazy(() => import('@/app/vendor/VendorPage'));
 
 
@@ -90,6 +89,7 @@ export default function App() {
                         </Routes>
                     </Suspense>
                 </Layout>
+                <Toaster />
             </Router>
         </AuthProvider>
     );

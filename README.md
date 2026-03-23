@@ -1,86 +1,354 @@
-# Walmart OptiFresh - AI-Powered Inventory Intelligence
+# Smartstock
 
-**Intelligent Freshness. Zero Waste.**
+Smartstock is an AI-assisted warehouse and retail operations platform designed to improve inventory accuracy, reduce operational waste, and give teams a unified view of logistics, demand signals, and checkout verification. The project combines a modern operations dashboard with Python-powered intelligence modules so forecasting, risk detection, and computer vision can live inside one workflow instead of scattered prototypes.
 
-Walmart OptiFresh is a comprehensive, enterprise-level AI solution designed to revolutionize fresh food inventory management. Built as a part of the **Walmart Sparkathon Initiative**, the platform unifies the supply chain—from vendors to retail staff—using advanced predictive analytics, autonomous vision systems, and federated learning to eliminate waste and maximize delivery value.
+## What Smartstock Solves
 
----
+Smartstock is built around a practical operations problem: decisions in supply chains often break down because system data and physical reality drift apart. Teams may know what the ERP says is in stock, but they still struggle with:
 
-## Architecture Overview
+- delayed or inaccurate inventory visibility
+- slow reaction to demand spikes and regional events
+- poor coordination between stores, warehouses, and vendors
+- shrinkage from missed scans or checkout mismatch
+- manual verification work that does not scale
 
-The project is structured as a **Monorepo** for seamless development and deployment of both the user interface and the machine learning backbone.
+Smartstock addresses that gap with a platform that combines predictive analytics and visual verification.
 
--   **Frontend (`/frontend`)**: A high-performance React application built with Vite and Tailwind CSS. It features a dark glassmorphism aesthetic, interactive dashboards using Recharts, and a modular component library (shadcn/ui).
--   **Backend (`/backend`)**: A robust Node.js Express server following a strict **MVC (Model-View-Controller)** pattern.
-    -   **Routes**: Maps API endpoints for data fetching and ML model triggers.
-    -   **Controllers**: Manages the request/response lifecycle.
-    -   **Services**: Handles business logic and spawns Python subprocesses for machine learning.
--   **Machine Learning (`/backend/ml`)**: A suite of Python-driven intelligence engines utilizing Jupyter Notebooks (`.ipynb`) for training and JSON for live reporting.
+## Core Capabilities
 
----
+### 1. Operational Alerts
 
-## Core Features
+The alerts workspace surfaces urgent operational issues that require human attention, including:
 
-### 1. Enterprise Control Tower
-The central "cockpit" of the application. It provides modular access to all intelligence subsystems, allowing operational staff to observe data freshness, regional health, and cross-module recommendations in one unified view.
+- imminent stockouts
+- checkout anomalies
+- logistics delays
+- forecast instability
+- model or system drift
 
-### 2. Intelligence Engines
-*   **Event Intelligence**: Tracks over 500+ realistic Indian events (festivals, holidays, local gatherings) to predict localized demand spikes.
-*   **Trend Intelligence**: Monitors category-level popularity and product momentum using rolling average momentum models.
-*   **Weather Intelligence**: Correlates 7-day weather forecasts with demand patterns, specifically flagging spoilage risks for perishables during heatwaves or logistical delays during storms.
-*   **Demand Forecast Engine**: Provides high-accuracy, SKU-level demand predictions using historical baselines and real-time signal reconciliation.
+This helps teams move from passive reporting to active triage.
 
-### 3. Operational Planning & Execution
-*   **Scenario Planning (What-If)**: A simulation environment where managers can adjust event impacts, weather severity, and trend momentum to see projected demand deltas before they happen.
-*   **Inventory Risk Dashboard**: Real-time detection of imminent stockouts and overstock warnings based on predicted demand vs. on-hand inventory.
-*   **Stock Rebalancing**: Identifies opportunities for inter-store transfers, allowing stores with low demand to supply those with high-velocity gaps, preventing both waste and lost sales.
-*   **Logistics Pipeline**: End-to-end tracking of goods in transit with automated delay alerts.
+### 2. Stock Rebalancing
 
-### 4. Autonomous Store Technology
-*   **Live Checkout Monitoring**: Real-time monitoring of self-checkout lanes with anomaly detection to improve lane throughput.
-*   **Vision-Based Verification**: AI-assisted product recognition that validates scans at the point of sale to prevent misscans and inventory shrinkage.
+Smartstock identifies opportunities to move inventory between locations when some nodes have excess stock and others face shortages. This is especially useful for perishables and fast-moving goods where delay directly increases waste or lost sales.
 
-### 5. AI System Governance
-*   **Federated Learning Panel**: Manages privacy-preserving model updates across edge stores, aggregating local weights into a global "consensus" model.
-*   **Model Health & Drift**: Continuous monitoring of model accuracy (MAPE, R² Score) and CV accuracy to detect performance degradation over time.
+### 3. Logistics Visibility
 
----
+The logistics layer tracks movement of goods between warehouses and stores, highlights delay risk, and provides a more operationally useful picture of transfer status than static shipment logs.
 
-## AI Insights Panel
-Every intelligence module is powered by a dynamic **AI Insights Panel**. This component uses NLP-style logic to explain the "Why" behind the data:
--   **Restock Alerts**: Highlights which products need urgent replenishment based on upcoming events or trends.
--   **Reduction Suggestions**: Identifies overstock risks where markdown or reallocation is needed.
--   **Cross-Region Transfers**: Suggests specific "From → To" storage movements to optimize regional availability.
--   **Performance Metrics**: Surfaces real-time training stats (Directional Accuracy, R² Score, CV MAPE).
+### 4. Federated Learning Workspace
 
----
+The federated learning panel demonstrates how model updates can be coordinated across distributed nodes without centralizing all local data. This supports privacy-aware AI improvement in a multi-store environment.
+
+### 5. Event, Trend, and Weather Intelligence
+
+Smartstock includes intelligence modules that estimate demand changes from:
+
+- local and regional events
+- category momentum and trend shifts
+- weather conditions and spoilage-related risk
+
+Together, these modules support more accurate replenishment and planning decisions.
+
+### 6. Checkout Vision
+
+Checkout Vision is the newest integrated feature in Smartstock. It uses computer vision and multimodal classification to verify products present in a checkout or shelf-style image.
+
+The pipeline works in three steps:
+
+1. detect products using YOLO
+2. extract visible packaging text using OCR
+3. classify each product using a multimodal model that combines image and text features
+
+The result is rendered directly inside the Smartstock frontend and includes:
+
+- annotated image with bounding boxes
+- detected item counts
+- crop-level evidence cards
+- OCR text
+- confidence scores
+
+This feature helps bridge the gap between visual verification and inventory operations.
+
+## Technology Stack
+
+### Frontend
+
+- React
+- Vite
+- Tailwind CSS
+- React Router
+- component-driven UI patterns
+
+### Backend
+
+- Node.js
+- Express
+- REST APIs for module access and ML orchestration
+
+### ML / Vision
+
+- Python
+- YOLO for product detection
+- EasyOCR for text extraction
+- PyTorch for multimodal inference
+- ResNet50 as image encoder
+- DistilBERT as text encoder
+
+## Repository Structure
+
+```text
+Warehouse_Optimisation/
+  backend/
+    controllers/
+    routes/
+    services/
+    ml/
+      checkout_vision/
+      event_intelligence/
+      trend_intelligence/
+      weather_intelligence/
+      federated/
+  frontend/
+    public/
+    src/
+      app/
+      components/
+      services/
+```
+
+## Architecture
+
+### Smartstock Platform Flow
+
+```mermaid
+flowchart LR
+    A[Frontend Dashboard] --> B[Express Backend API]
+    B --> C[Operational Alerts]
+    B --> D[Stock Rebalancing]
+    B --> E[Logistics Module]
+    B --> F[Event Intelligence]
+    B --> G[Trend Intelligence]
+    B --> H[Weather Intelligence]
+    B --> I[Checkout Vision]
+    I --> J[YOLO + OCR + Multimodal Model]
+```
+
+### Checkout Vision Processing Flow
+
+```mermaid
+flowchart TD
+    A[User Opens Checkout Vision] --> B[Default Sample or Uploaded Image]
+    B --> C[Frontend Sends Image to Backend]
+    C --> D[POST /api/checkout-vision/analyze]
+    D --> E[Express Backend]
+    E --> F[Temporary Upload Storage]
+    F --> G[Python Inference Script infer.py]
+    G --> H[YOLO Product Detection]
+    H --> I[Detected Product Crops]
+    I --> J[EasyOCR Text Extraction]
+    I --> K[ResNet50 Image Encoder]
+    J --> L[DistilBERT Text Encoder]
+    K --> M[Feature Fusion]
+    L --> M
+    M --> N[Multimodal Classification]
+    N --> O[Annotated Image + Item Counts + OCR + Confidence]
+    O --> P[Frontend Dashboard Rendering]
+```
+
+## Checkout Vision Architecture
+
+Checkout Vision is integrated into the platform instead of running as a separate Flask demo.
+
+### Frontend flow
+
+- user opens `/checkout-vision`
+- a default sample image is preloaded for easy demo use
+- user can also upload a custom image
+- frontend sends the image to the backend
+- frontend renders the structured result
+
+### Backend flow
+
+- backend receives the uploaded image through `multipart/form-data`
+- image is stored temporarily
+- backend launches Python inference
+- Python returns JSON to the backend
+- backend sends the JSON to the frontend
+
+### Inference flow
+
+- YOLO detects product regions
+- EasyOCR extracts packaging text
+- multimodal classifier combines image and text signals
+- final labels and confidences are returned
+
+### API endpoint
+
+`POST /api/checkout-vision/analyze`
+
+Request field:
+
+- `image`
+
+Successful response includes:
+
+- `image_name`
+- `annotated_base64`
+- `detections`
+- `item_counts`
+
+## Checkout Vision Setup
+
+To run Checkout Vision successfully, the following assets must exist locally inside:
+
+`backend/ml/checkout_vision/`
+
+Required files:
+
+- `infer.py`
+- `pipeline.py`
+- `multimodal_classifier.py`
+- `labels.json`
+- `weights/`
+
+The `weights/` folder contains the trained model artifacts and is intentionally excluded from git.
+
+## Environment Configuration
+
+Create:
+
+`backend/.env.local`
+
+You can start from:
+
+`backend/.env.example`
+
+Example values:
+
+```env
+CHECKOUT_VISION_PYTHON=<path-to-python-with-vision-dependencies>
+CHECKOUT_VISION_TIMEOUT_MS=120000
+```
+
+`CHECKOUT_VISION_PYTHON` should point to a Python environment that already has:
+
+- ultralytics
+- easyocr
+- torch
+- torchvision
+- transformers
+- numpy
+- opencv-python
+- Pillow
 
 ## Getting Started
 
 ### Prerequisites
--   Node.js (v18+)
--   Python (v3.10+) with `jupyter` and `nbconvert` installed.
 
-### Installation & Run
-From the root directory, simply run:
+- Node.js 18 or later
+- npm
+- Python 3.10 or later
+- local model weights for Checkout Vision
 
-```bash
-# Install all dependencies (Root, Frontend, Backend)
+### Install backend dependencies
+
+```powershell
+cd backend
 npm install
-npm run install:all
+```
 
-# Start both Frontend and Backend concurrently
+### Install frontend dependencies
+
+```powershell
+cd ../frontend
+npm install
+```
+
+### Start the backend
+
+```powershell
+cd ../backend
 npm start
 ```
 
--   **Frontend**: Runs on [http://localhost:5173](http://localhost:5173)
--   **Backend**: Runs on [http://localhost:3001](http://localhost:3001)
+Backend runs on:
 
----
+`http://localhost:3001`
 
-## Technology Stack
--   **UI**: React, Vite, Tailwind CSS, Lucide React, Recharts.
--   **Server**: Node.js, Express, CORS.
--   **ML**: Python, Jupyter, Scikit-Learn, Prophet, lightGBM.
--   **Database/Storage**: Supabase (PostgreSQL), JSON Flat Files.
+### Start the frontend
+
+Open a second terminal:
+
+```powershell
+cd frontend
+npm run dev
+```
+
+Frontend runs on:
+
+`http://localhost:5173`
+
+### Open Checkout Vision
+
+```text
+http://localhost:5173/checkout-vision
+```
+
+The page loads a default sample image and can automatically run analysis when opened.
+
+## Recommended Demo Flow
+
+If you are presenting Smartstock, a good walkthrough is:
+
+1. open the alerts or operations workspace to show the platform context
+2. open `Checkout Vision` from the sidebar
+3. show the default `multiproduct.png` sample
+4. explain the detection, OCR, and multimodal classification pipeline
+5. point out the annotated image, item counts, OCR evidence, and confidence values
+6. explain how the output can support shrinkage reduction and inventory verification
+
+## Why This Project Matters
+
+Smartstock is not only a dashboard project and not only a machine learning project. Its real value is in connecting operational software with AI inference in a form that looks closer to a deployable internal platform.
+
+The project demonstrates:
+
+- applied AI inside a warehouse workflow
+- separation of frontend, backend, and ML concerns
+- practical use of computer vision for retail operations
+- extensibility for future automation and decision support
+
+## Current Limitations
+
+Like any applied prototype, Smartstock has some current limits:
+
+- checkout vision depends on locally available trained weights
+- inference quality depends on image quality, product coverage, and OCR clarity
+- results are not yet persisted in a database as historical audit records
+- live video processing is not implemented yet
+- exact original training dataset statistics for the multimodal model are not fully documented in this deployment branch
+
+## Future Improvements
+
+Planned or possible next steps include:
+
+- map model outputs directly to warehouse SKU IDs
+- save inference results for audit history
+- support multiple default demo images
+- extend image support to live video streams
+- connect checkout detections to alerts and downstream actions
+- add model monitoring and packaging-drift detection
+- improve operational recommendations using the detected checkout results
+
+## Additional Documentation
+
+Detailed Checkout Vision integration notes:
+
+- `MULTIMODAL_CHECKOUT_VISION_INTEGRATION.md`
+
+Review and viva support material:
+
+- `WAREHOUSE_PROJECT_REVIEW_SCRIPT.docx`
+
 
