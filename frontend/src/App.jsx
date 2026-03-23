@@ -1,8 +1,11 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 
 
+
+import { AuthProvider } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Lazy load pages
 const LoginPage = React.lazy(() => import('@/app/LoginPage'));
@@ -51,50 +54,43 @@ const Loading = () => <div className="flex items-center justify-center min-h-scr
 
 export default function App() {
     return (
-        <Router>
-            <Layout>
-                <Suspense fallback={<Loading />}>
-                    <Routes>
-                        <Route path="/" element={<ControlTowerPage />} />
-                        <Route path="/control-tower" element={<ControlTowerPage />} />
-                        <Route path="/control-tower/event-intelligence" element={<EventIntelligencePage />} />
-                        <Route path="/control-tower/trend-intelligence" element={<TrendIntelligencePage />} />
-                        <Route path="/control-tower/weather-intelligence" element={<WeatherIntelligencePage />} />
-                        <Route path="/control-tower/forecast-engine" element={<ForecastEnginePage />} />
-                        <Route path="/control-tower/scenario-planning" element={<ScenarioPlanningPage />} />
-                        <Route path="/control-tower/inventory-risk" element={<InventoryRiskPage />} />
-                        <Route path="/control-tower/store-health" element={<StoreHealthPage />} />
-                        <Route path="/control-tower/live-checkout" element={<LiveCheckoutPage />} />
-                        <Route path="/control-tower/checkout-vision" element={<CheckoutVisionPage />} />
-                        <Route path="/control-tower/checkout-analytics" element={<CheckoutAnalyticsPage />} />
-                        <Route path="/control-tower/federated-learning" element={<FederatedLearningPage />} />
-                        <Route path="/control-tower/model-health" element={<ModelHealthPage />} />
-                        <Route path="/control-tower/alerts" element={<OperationalAlertsPage />} />
-                        <Route path="/control-tower/stock-rebalancing" element={<StockRebalancingPage />} />
+        <AuthProvider>
+            <Router>
+                <Layout>
+                    <Suspense fallback={<Loading />}>
+                        <Routes>
+                            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                            
+                            {/* Public Route */}
+                            <Route path="/login" element={<LoginPage />} />
 
-                        <Route path="/login" element={<LoginPage />} />
+                            {/* Staff & Admin Routes */}
+                            <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['staff']}><DashboardPage /></ProtectedRoute>} />
+                            <Route path="/control-tower" element={<ProtectedRoute allowedRoles={['staff']}><ControlTowerPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/event-intelligence" element={<ProtectedRoute allowedRoles={['staff']}><EventIntelligencePage /></ProtectedRoute>} />
+                            <Route path="/control-tower/trend-intelligence" element={<ProtectedRoute allowedRoles={['staff']}><TrendIntelligencePage /></ProtectedRoute>} />
+                            <Route path="/control-tower/weather-intelligence" element={<ProtectedRoute allowedRoles={['staff']}><WeatherIntelligencePage /></ProtectedRoute>} />
+                            <Route path="/control-tower/forecast-engine" element={<ProtectedRoute allowedRoles={['staff']}><ForecastEnginePage /></ProtectedRoute>} />
+                            <Route path="/control-tower/scenario-planning" element={<ProtectedRoute allowedRoles={['staff']}><ScenarioPlanningPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/inventory-risk" element={<ProtectedRoute allowedRoles={['staff']}><InventoryRiskPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/store-health" element={<ProtectedRoute allowedRoles={['staff']}><StoreHealthPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/live-checkout" element={<ProtectedRoute allowedRoles={['staff']}><LiveCheckoutPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/checkout-vision" element={<ProtectedRoute allowedRoles={['staff']}><CheckoutVisionPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/checkout-analytics" element={<ProtectedRoute allowedRoles={['staff']}><CheckoutAnalyticsPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/federated-learning" element={<ProtectedRoute allowedRoles={['staff']}><FederatedLearningPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/model-health" element={<ProtectedRoute allowedRoles={['staff']}><ModelHealthPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/alerts" element={<ProtectedRoute allowedRoles={['staff']}><OperationalAlertsPage /></ProtectedRoute>} />
+                            <Route path="/control-tower/stock-rebalancing" element={<ProtectedRoute allowedRoles={['staff']}><StockRebalancingPage /></ProtectedRoute>} />
+                            <Route path="/logistics" element={<ProtectedRoute allowedRoles={['staff']}><LogisticsPage /></ProtectedRoute>} />
+                            <Route path="/logistics/*" element={<ProtectedRoute allowedRoles={['staff']}><LogisticsPage /></ProtectedRoute>} />
 
-
-
-
-
-
-
-                        <Route path="/dashboard" element={<DashboardPage />} />
-
-
-                        <Route path="/vendor" element={<VendorPage />} />
-                        <Route path="/vendor/*" element={<VendorPage />} />
-
-
-
-
-                        <Route path="/logistics" element={<LogisticsPage />} />
-                        <Route path="/logistics/*" element={<LogisticsPage />} />
-                    </Routes>
-                </Suspense>
-
-            </Layout>
-        </Router>
+                            {/* Vendor & Admin Routes */}
+                            <Route path="/vendor" element={<ProtectedRoute allowedRoles={['vendor']}><VendorPage /></ProtectedRoute>} />
+                            <Route path="/vendor/*" element={<ProtectedRoute allowedRoles={['vendor']}><VendorPage /></ProtectedRoute>} />
+                        </Routes>
+                    </Suspense>
+                </Layout>
+            </Router>
+        </AuthProvider>
     );
 }
