@@ -21,4 +21,20 @@ export const checkoutVisionService = {
         const payload = await parseResponse(res);
         return payload.data;
     },
+
+    async getCheckoutData() {
+        const res = await fetch(`${API_BASE}/modules/checkout`);
+        const payload = await parseResponse(res);
+        return payload.data;
+    },
+
+    async saveTransaction(transaction) {
+        const res = await fetch(`${API_BASE}/modules/checkout/transactions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(transaction),
+        });
+        const payload = await parseResponse(res);
+        return payload.data;
+    }
 };
