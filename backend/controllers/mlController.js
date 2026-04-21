@@ -62,7 +62,14 @@ export const mlController = {
     },
     getModuleData: async (req, res) => {
         const { moduleKey } = req.params;
-        const payload = await moduleDataStore.getModule(moduleKey);
+        const filters = Object.entries(req.query || {}).reduce((acc, [key, value]) => {
+            if (value !== undefined && value !== null && String(value).trim() !== '') {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+
+        const payload = await moduleDataStore.getModule(moduleKey, filters);
 
         if (!payload) {
             return res.status(404).json({ error: `Unknown module: ${moduleKey}` });
@@ -79,6 +86,62 @@ export const mlController = {
             res.status(201).json({ success: true, data: saved });
         } catch (error) {
             res.status(400).json({ error: error.message || 'Failed to add item' });
+        }
+    },
+    updateModuleDataItem: async (req, res) => {
+        const { moduleKey, collectionKey, itemId } = req.params;
+        const item = req.body || {};
+
+        try {
+            const saved = await moduleDataStore.updateItem(moduleKey, collectionKey, itemId, item);
+            res.json({ success: true, data: saved });
+        } catch (error) {
+            res.status(400).json({ error: error.message || 'Failed to update item' });
+        }
+    },
+    updateVendorRequestDecision: async (req, res) => {
+        const { requestId } = req.params;
+        const { decision, note, request } = req.body || {};
+
+        if (!requestId) {
+            return res.status(400).json({ error: 'requestId is required' });
+        }
+
+        if (!decision) {
+            return res.status(400).json({ error: 'decision is required' });
+        }
+
+        const reviewedAt = new Date().toISOString();
+        const normalizedRequest = {
+            ...(request || {}),
+            id: requestId,
+            status: decision,
+            decision,
+            decisionNote: note || '',
+            reviewedAt,
+        };
+
+        try {
+            await moduleDataStore.addItem('vendorPortal', 'requests', normalizedRequest);
+            await moduleDataStore.addItem('vendorPortal', 'requestActions', {
+                id: `VP-ACT-${Date.now()}`,
+                requestId,
+                decision,
+                note: note || '',
+                actedAt: reviewedAt,
+            });
+
+            const payload = await moduleDataStore.getModule('vendorPortal');
+            res.json({
+                success: true,
+                data: {
+                    request: normalizedRequest,
+                    requests: payload?.requests || [],
+                    requestActions: payload?.requestActions || [],
+                },
+            });
+        } catch (error) {
+            res.status(400).json({ error: error.message || 'Failed to update request decision' });
         }
     },
     approveStockTransfer: async (req, res) => {

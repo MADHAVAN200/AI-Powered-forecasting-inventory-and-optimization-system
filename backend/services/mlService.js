@@ -8,7 +8,6 @@ const projectRoot = path.resolve(__dirname, '..');
 const defaultCheckoutVisionPython = path.resolve(
     projectRoot,
     '..',
-    '..',
     'Multimodal_classifier',
     '.venv',
     'Scripts',
