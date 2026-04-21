@@ -1,10 +1,10 @@
 
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     AlertTriangle, AlertOctagon, Info, CheckCircle2, Clock,
     Filter, MoreHorizontal, ArrowRight, Activity, Search,
-    ChevronDown, ChevronRight, User, Shield, Store, Zap
+    ChevronDown, ChevronRight, User, Shield, Store, Zap, Home
 } from 'lucide-react';
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription
@@ -24,7 +24,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
 
+import {
+    Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
+    BreadcrumbPage, BreadcrumbSeparator
+} from '@/components/ui/breadcrumb';
+import Sidebar from '@/components/Sidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import { backendModuleService } from '@/services/backendModuleService';
+import { useAuth } from '@/context/AuthContext';
 
 const FALLBACK_ALERTS_DATA = [
     {
@@ -86,7 +93,11 @@ const FALLBACK_ALERTS_DATA = [
 ];
 
 const OperationalAlertsPage = () => {
+    const { role } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const fromControlTower = queryParams.get('from') === 'control-tower';
     const [selectedAlert, setSelectedAlert] = useState(null);
     const [filterPriority, setFilterPriority] = useState("all");
     const [alerts, setAlerts] = useState(FALLBACK_ALERTS_DATA);
@@ -199,10 +210,44 @@ const OperationalAlertsPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20 font-sans w-full flex flex-col">
-
+        <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30 pb-20">
             {/* 1. HEADER & CONTROLS */}
             <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
+                {/* Breadcrumb Section */}
+                <div className="px-6 pt-3">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')}
+                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                >
+                                    <Home className="w-3 h-3" />
+                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="text-gray-600" />
+                            {fromControlTower && (
+                                <>
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink
+                                            onClick={() => navigate('/control-tower')}
+                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                        >
+                                            Control Tower
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="text-gray-600" />
+                                </>
+                            )}
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
+                                    Operational Alerts
+                                </BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
                 <div className="px-6 py-4 space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
@@ -288,7 +333,7 @@ const OperationalAlertsPage = () => {
                 </div>
             </header>
 
-            <div className="p-6 w-full max-w-[1800px] mx-auto space-y-6">
+            <div className="p-6 w-full space-y-6">
 
                 {/* 2. KPI SNAPSHOT */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -608,7 +653,6 @@ const OperationalAlertsPage = () => {
                     </div>
                 </SheetContent>
             </Sheet>
-
         </div>
     );
 };

@@ -235,9 +235,9 @@ const ScenarioPlanningPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20">
+        <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header */}
-            <div className="bg-[#111] border-b border-[#222] px-6 py-4 sticky top-0 z-40 backdrop-blur-md bg-[#111]/90">
+            <div className="bg-card border-b border-border px-6 py-4 sticky top-0 z-40 backdrop-blur-md bg-card/90">
                 <div className="mb-2">
                     <Breadcrumb>
                         <BreadcrumbList>
@@ -267,12 +267,12 @@ const ScenarioPlanningPage = () => {
                             <GitBranch className="w-6 h-6 text-purple-500" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-white tracking-tight">Supply Chain Scenario Planning</h1>
-                            <p className="text-gray-400 text-xs mt-1">Multi-factor ERP simulation engine (₹ Localization).</p>
+                            <h1 className="text-2xl font-bold text-foreground tracking-tight">Supply Chain Scenario Planning</h1>
+                            <p className="text-muted-foreground text-xs mt-1">Multi-factor ERP simulation engine (₹ Localization).</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" className="h-9 border-[#333] text-gray-400 hover:text-white" onClick={resetToBaseline}>
+                        <Button variant="outline" className="h-9 border-border text-muted-foreground hover:text-foreground" onClick={resetToBaseline}>
                             <RefreshCw className="w-4 h-4 mr-2" /> Reset
                         </Button>
                         <Button className="h-9 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20" onClick={handleSaveScenario}>
@@ -283,51 +283,51 @@ const ScenarioPlanningPage = () => {
             </div>
 
             {/* NEW: Horizontal Command Center */}
-            <div className="bg-[#0f0f0f] border-b border-[#222] p-6 space-y-6">
+            <div className="bg-card/50 border-b border-border p-6 space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                     <div className="flex-1 min-w-[300px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {/* Row 1: Primary Sliders */}
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-300 font-medium text-[11px] uppercase tracking-wider">Demand Shock</span>
-                                <span className="font-bold text-blue-400">{demandModifier[0]}%</span>
+                                <span className="text-muted-foreground font-medium text-[11px] uppercase tracking-wider">Demand Shock</span>
+                                <span className="font-bold text-blue-500 dark:text-blue-400">{demandModifier[0]}%</span>
                             </div>
                             <Slider value={demandModifier} onValueChange={setDemandModifier} min={-50} max={100} step={5} className="py-2" />
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-300 font-medium text-[11px] uppercase tracking-wider">Promotion Lift</span>
-                                <span className="font-bold text-purple-400">{promoLift[0]}%</span>
+                                <span className="text-muted-foreground font-medium text-[11px] uppercase tracking-wider">Promotion Lift</span>
+                                <span className="font-bold text-purple-600 dark:text-purple-400">{promoLift[0]}%</span>
                             </div>
                             <Slider value={promoLift} onValueChange={setPromoLift} min={0} max={50} step={5} className="py-2" />
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-300 font-medium text-[11px] uppercase tracking-wider">Lead Time Delay</span>
-                                <span className="font-bold text-red-400">+{leadTimeDelay[0]} Days</span>
+                                <span className="text-muted-foreground font-medium text-[11px] uppercase tracking-wider">Lead Time Delay</span>
+                                <span className="font-bold text-red-500 dark:text-red-400">+{leadTimeDelay[0]} Days</span>
                             </div>
                             <Slider value={leadTimeDelay} onValueChange={setLeadTimeDelay} min={0} max={10} step={1} className="py-2" />
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-gray-300 font-medium text-[11px] uppercase tracking-wider">Buffer Coverage</span>
-                                <span className="font-bold text-green-400">{bufferDays[0]} Days</span>
+                                <span className="text-muted-foreground font-medium text-[11px] uppercase tracking-wider">Buffer Coverage</span>
+                                <span className="font-bold text-green-600 dark:text-green-400">{bufferDays[0]} Days</span>
                             </div>
                             <Slider value={bufferDays} onValueChange={setBufferDays} min={1} max={14} step={1} className="py-2" />
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 border-l border-[#222] pl-6 h-full min-h-[60px]">
+                    <div className="flex items-center gap-4 border-l border-border pl-6 h-full min-h-[60px]">
                         <div className="space-y-2 min-w-[140px]">
-                            <label className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Weather Impact</label>
+                            <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Weather Impact</label>
                             <Select value={weatherImpact} onValueChange={setWeatherImpact}>
-                                <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-xs h-9">
+                                <SelectTrigger className="bg-card border-border text-xs h-9">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#111] border-[#333] text-white text-xs">
+                                <SelectContent className="bg-card border-border text-foreground text-xs">
                                     <SelectItem value="normal">Normal</SelectItem>
                                     <SelectItem value="mild">Mild</SelectItem>
                                     <SelectItem value="severe">Severe</SelectItem>
@@ -335,12 +335,12 @@ const ScenarioPlanningPage = () => {
                             </Select>
                         </div>
                         <div className="space-y-2 min-w-[140px]">
-                            <label className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Event Scenario</label>
+                            <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Event Scenario</label>
                             <Select value={eventScenario} onValueChange={setEventScenario}>
-                                <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-xs h-9">
+                                <SelectTrigger className="bg-card border-border text-xs h-9">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#111] border-[#333] text-white text-xs">
+                                <SelectContent className="bg-card border-border text-foreground text-xs">
                                     <SelectItem value="Standard_7d">Standard</SelectItem>
                                     <SelectItem value="Event_Spike">Event Spike</SelectItem>
                                     <SelectItem value="Weather_Shock">Weather Anomaly</SelectItem>
@@ -372,16 +372,16 @@ const ScenarioPlanningPage = () => {
                     
                     <div className="flex gap-8 px-4">
                         <div className="flex flex-col">
-                            <span className="text-[9px] text-gray-500 uppercase font-bold tracking-tight">Demand Delta</span>
-                            <span className="text-xl font-bold text-white">{stats.delta}%</span>
+                            <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Demand Delta</span>
+                            <span className="text-xl font-bold text-foreground">{stats.delta}%</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[9px] text-gray-500 uppercase font-bold tracking-tight">Stockout Prob</span>
+                            <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Stockout Prob</span>
                             <span className="text-xl font-bold text-red-500">{stats.stockoutProb}%</span>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[9px] text-gray-500 uppercase font-bold tracking-tight">Peak Demand</span>
-                            <span className="text-xl font-bold text-white">{Math.round(stats.peakDemand).toLocaleString()} <span className="text-[10px] text-gray-500 font-normal">Units</span></span>
+                            <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Peak Demand</span>
+                            <span className="text-xl font-bold text-foreground">{Math.round(stats.peakDemand).toLocaleString()} <span className="text-[10px] text-muted-foreground font-normal">Units</span></span>
                         </div>
                     </div>
 
@@ -398,27 +398,27 @@ const ScenarioPlanningPage = () => {
             <main className="p-6 space-y-6 min-w-0 bg-[#070707]">
                 
                 {/* TOP ROW: Large Comparison Chart */}
-                <Card className="bg-[#111] border-[#222] overflow-hidden">
-                    <CardHeader className="border-b border-[#222]/50 py-4 px-6">
+                <Card className="bg-card border-border overflow-hidden">
+                    <CardHeader className="border-b border-border py-4 px-6">
                         <div className="flex justify-between items-center">
                             <div>
-                                <CardTitle className="text-xl text-white font-bold tracking-tight">Demand Fulfillment & Inventory Horizon</CardTitle>
-                                <CardDescription className="text-xs text-gray-400">Comparing Base Demand Requirements vs Actual Required Stock Levels (₹ Localization)</CardDescription>
+                                <CardTitle className="text-xl text-foreground font-bold tracking-tight">Demand Fulfillment & Inventory Horizon</CardTitle>
+                                <CardDescription className="text-xs text-muted-foreground">Comparing Base Demand Requirements vs Actual Required Stock Levels (₹ Localization)</CardDescription>
                             </div>
                             <div className="flex gap-2">
-                                <Badge variant="outline" className="text-[10px] border-blue-500/30 text-blue-400">₹ Operational View</Badge>
-                                <Badge variant="secondary" className="text-[10px] bg-green-500/10 text-green-500 border-none">5-Day Forecast Active</Badge>
+                                <Badge variant="outline" className="text-[10px] border-blue-500/30 text-blue-500 dark:text-blue-400">₹ Operational View</Badge>
+                                <Badge variant="secondary" className="text-[10px] bg-green-500/10 text-green-600 dark:text-green-500 border-none">5-Day Forecast Active</Badge>
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 h-[450px]">
                         {loading || simulating ? (
-                            <div className="h-full flex flex-col items-center justify-center text-gray-500 bg-[#0d0d0d] rounded-xl border border-dashed border-[#222]">
+                            <div className="h-full flex flex-col items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border">
                                 <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
                                     <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
                                 </div>
                                 <p className="text-sm font-medium">Synthesizing multi-factor scenarios...</p>
-                                <p className="text-[11px] text-gray-600 mt-1">Calculating service levels for {selectedCity}</p>
+                                <p className="text-[11px] text-muted-foreground mt-1">Calculating service levels for {selectedCity}</p>
                             </div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
@@ -433,17 +433,17 @@ const ScenarioPlanningPage = () => {
                                             <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-                                    <XAxis dataKey="date" stroke="#444" fontSize={11} tickLine={false} axisLine={false} dy={10} />
-                                    <YAxis stroke="#444" fontSize={11} tickLine={false} axisLine={false} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} vertical={false} />
+                                    <XAxis dataKey="date" stroke="currentColor" opacity={0.5} fontSize={11} tickLine={false} axisLine={false} dy={10} />
+                                    <YAxis stroke="currentColor" opacity={0.5} fontSize={11} tickLine={false} axisLine={false} />
                                     <Tooltip 
-                                        contentStyle={{ backgroundColor: '#0f0f0f', borderColor: '#333', borderRadius: '12px', padding: '12px' }}
-                                        itemStyle={{ fontSize: '12px' }}
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '12px', padding: '12px' }}
+                                        itemStyle={{ fontSize: '12px', color: 'hsl(var(--foreground))' }}
                                     />
-                                    <Legend verticalAlign="top" height={40} iconType="circle" wrapperStyle={{ fontSize: '11px', paddingBottom: '20px' }} />
+                                    <Legend verticalAlign="top" height={40} iconType="circle" wrapperStyle={{ fontSize: '11px', paddingBottom: '20px', color: 'hsl(var(--foreground))' }} />
                                     <Area type="monotone" dataKey="actualStock" fill="url(#colorStock)" stroke="#10b981" strokeWidth={2} name="Actual Stock Projection" />
                                     <Area type="monotone" dataKey="actualRequired" fill="url(#colorRequired)" stroke="#3b82f6" strokeWidth={3} name="Actual Required" />
-                                    <Line type="monotone" dataKey="baseline" stroke="#666" strokeWidth={1} strokeDasharray="4 4" dot={false} name="Base Demand" />
+                                    <Line type="monotone" dataKey="baseline" stroke="currentColor" opacity={0.3} strokeWidth={1} strokeDasharray="4 4" dot={false} name="Base Demand" />
                                     <Line type="stepAfter" dataKey="safetyStock" stroke="#ef4444" strokeWidth={1.5} dot={true} name="Safety Stock Buffer" />
                                 </ComposedChart>
                             </ResponsiveContainer>
@@ -455,9 +455,9 @@ const ScenarioPlanningPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     
                     {/* Cost Breakdown */}
-                    <Card className="bg-[#111] border-[#222]">
-                        <CardHeader className="pb-2 border-b border-[#222]/50">
-                            <CardTitle className="text-sm font-bold text-gray-300 flex items-center gap-2">
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2 border-b border-border/50">
+                            <CardTitle className="text-sm font-bold text-muted-foreground flex items-center gap-2">
                                 <BarChart3 className="w-4 h-4 text-blue-500" />
                                 Cost Distribution (₹ Lakhs)
                             </CardTitle>
@@ -465,10 +465,10 @@ const ScenarioPlanningPage = () => {
                         <CardContent className="h-[240px] pt-4">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={costResults} layout="vertical">
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#222" horizontal={false} />
-                                    <XAxis type="number" stroke="#444" fontSize={10} axisLine={false} tickLine={false} />
-                                    <YAxis dataKey="name" type="category" stroke="#999" fontSize={11} width={80} axisLine={false} tickLine={false} />
-                                    <Tooltip cursor={{fill: '#1a1a1a'}} contentStyle={{backgroundColor: '#111', border: '1px solid #333'}} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} horizontal={false} />
+                                    <XAxis type="number" stroke="currentColor" opacity={0.5} fontSize={10} axisLine={false} tickLine={false} />
+                                    <YAxis dataKey="name" type="category" stroke="currentColor" opacity={0.7} fontSize={11} width={80} axisLine={false} tickLine={false} />
+                                    <Tooltip cursor={{fill: 'currentColor', opacity: 0.05}} contentStyle={{backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))'}} />
                                     <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} name="Cost" />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -476,9 +476,9 @@ const ScenarioPlanningPage = () => {
                     </Card>
 
                     {/* Stock Health */}
-                    <Card className="bg-[#111] border-[#222]">
-                        <CardHeader className="pb-2 border-b border-[#222]/50">
-                            <CardTitle className="text-sm font-bold text-gray-300 flex items-center gap-2">
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2 border-b border-border/50">
+                            <CardTitle className="text-sm font-bold text-muted-foreground flex items-center gap-2">
                                 <Activity className="w-4 h-4 text-green-500" />
                                 Health Status Distribution
                             </CardTitle>
@@ -506,8 +506,8 @@ const ScenarioPlanningPage = () => {
                                 {healthResults.map((item, i) => (
                                     <div key={i} className="flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
-                                        <span className="text-[11px] text-gray-400">{item.name}:</span>
-                                        <span className="text-[11px] font-bold text-white">{item.value} Days</span>
+                                        <span className="text-[11px] text-muted-foreground">{item.name}:</span>
+                                        <span className="text-[11px] font-bold text-foreground">{item.value} Days</span>
                                     </div>
                                 ))}
                             </div>
@@ -515,9 +515,9 @@ const ScenarioPlanningPage = () => {
                     </Card>
 
                     {/* Safety Stock Bars */}
-                    <Card className="bg-[#111] border-[#222]">
-                        <CardHeader className="pb-2 border-b border-[#222]/50">
-                            <CardTitle className="text-sm font-bold text-gray-300 flex items-center gap-2">
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2 border-b border-border/50">
+                            <CardTitle className="text-sm font-bold text-muted-foreground flex items-center gap-2">
                                 <ShieldCheck className="w-4 h-4 text-red-500" />
                                 Daily Safety Stock Depth
                             </CardTitle>
@@ -526,10 +526,10 @@ const ScenarioPlanningPage = () => {
                             {displayedResults.map((d, i) => (
                                 <div key={i} className="space-y-1">
                                     <div className="flex justify-between text-[10px]">
-                                        <span className="text-gray-500">{d.date}</span>
-                                        <span className="text-white font-bold">{d.safetyStock} Units</span>
+                                        <span className="text-muted-foreground">{d.date}</span>
+                                        <span className="text-foreground font-bold">{d.safetyStock} Units</span>
                                     </div>
-                                    <div className="h-1.5 bg-[#1a1a1a] rounded-full overflow-hidden">
+                                    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                                         <div 
                                             className={`h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-700`} 
                                             style={{ width: `${Math.min(100, (d.safetyStock / 250) * 100)}%` }}
@@ -542,49 +542,49 @@ const ScenarioPlanningPage = () => {
                 </div>
 
                 {/* BOTTOM ROW: Detailed Impact Table */}
-                <Card className="bg-[#111] border-[#222] shadow-xl">
-                    <CardHeader className="border-b border-[#222] py-4">
-                        <CardTitle className="text-base text-white font-bold tracking-tight">Financial Policy & Risk Assessment (₹ Localization)</CardTitle>
+                <Card className="bg-card border-border shadow-xl">
+                    <CardHeader className="border-b border-border py-4">
+                        <CardTitle className="text-base text-foreground font-bold tracking-tight">Financial Policy & Risk Assessment (₹ Localization)</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
-                            <TableHeader className="bg-[#1a1a1a]">
-                                <TableRow className="border-[#222] hover:bg-transparent">
-                                    <TableHead className="text-gray-500 text-[10px] font-bold uppercase py-4 pl-6">Metric Performance</TableHead>
-                                    <TableHead className="text-gray-500 text-[10px] font-bold uppercase py-4">Base Demand (Current)</TableHead>
-                                    <TableHead className="text-blue-500 text-[10px] font-bold uppercase py-4">Actual Required (Scenario)</TableHead>
-                                    <TableHead className="text-gray-500 text-[10px] font-bold uppercase py-4">Financial Gap</TableHead>
-                                    <TableHead className="text-gray-500 text-[10px] font-bold uppercase py-4 text-right pr-6">Operational Status</TableHead>
+                            <TableHeader className="bg-muted/50">
+                                <TableRow className="border-border hover:bg-transparent">
+                                    <TableHead className="text-muted-foreground text-[10px] font-bold uppercase py-4 pl-6">Metric Performance</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] font-bold uppercase py-4">Base Demand (Current)</TableHead>
+                                    <TableHead className="text-blue-600 dark:text-blue-500 text-[10px] font-bold uppercase py-4">Actual Required (Scenario)</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] font-bold uppercase py-4">Financial Gap</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] font-bold uppercase py-4 text-right pr-6">Operational Status</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                <TableRow className="border-[#222] hover:bg-[#1a1a1a]/40 transition-colors">
-                                    <TableCell className="text-[13px] font-bold text-gray-200 pl-6 py-5">Avg. Inventory Valuation</TableCell>
-                                    <TableCell className="text-[13px] text-gray-400">₹85.4 Lakhs</TableCell>
-                                    <TableCell className="text-[13px] text-blue-400 font-extrabold">₹{(85.4 * (1 + Number(stats.delta)/100)).toFixed(2)} Lakhs</TableCell>
-                                    <TableCell className="text-[11px] text-green-400 font-bold">+{stats.delta}%</TableCell>
+                                <TableRow className="border-border hover:bg-accent/40 transition-colors">
+                                    <TableCell className="text-[13px] font-bold text-foreground pl-6 py-5">Avg. Inventory Valuation</TableCell>
+                                    <TableCell className="text-[13px] text-muted-foreground">₹85.4 Lakhs</TableCell>
+                                    <TableCell className="text-[13px] text-blue-600 dark:text-blue-400 font-extrabold">₹{(85.4 * (1 + Number(stats.delta)/100)).toFixed(2)} Lakhs</TableCell>
+                                    <TableCell className="text-[11px] text-green-600 dark:text-green-400 font-bold">+{stats.delta}%</TableCell>
                                     <TableCell className="text-right pr-6">
-                                        <Badge className="bg-green-500/10 text-green-500 border border-green-500/20 text-[10px] uppercase font-bold px-3">Stable</Badge>
+                                        <Badge className="bg-green-500/10 text-green-600 dark:text-green-500 border border-green-500/20 text-[10px] uppercase font-bold px-3">Stable</Badge>
                                     </TableCell>
                                 </TableRow>
-                                <TableRow className="border-[#222] hover:bg-[#1a1a1a]/40 transition-colors">
-                                    <TableCell className="text-[13px] font-bold text-gray-200 pl-6 py-5">Stockout Reliability Risk</TableCell>
-                                    <TableCell className="text-[13px] text-gray-400">8.2% Nominal</TableCell>
-                                    <TableCell className="text-[13px] text-red-500 font-extrabold">{stats.stockoutProb}%</TableCell>
-                                    <TableCell className="text-[11px] text-red-400 font-bold">+{Number(stats.stockoutProb) - 8}% Variance</TableCell>
+                                <TableRow className="border-border hover:bg-accent/40 transition-colors">
+                                    <TableCell className="text-[13px] font-bold text-foreground pl-6 py-5">Stockout Reliability Risk</TableCell>
+                                    <TableCell className="text-[13px] text-muted-foreground">8.2% Nominal</TableCell>
+                                    <TableCell className="text-[13px] text-red-600 dark:text-red-500 font-extrabold">{stats.stockoutProb}%</TableCell>
+                                    <TableCell className="text-[11px] text-red-600 dark:text-red-400 font-bold">+{Number(stats.stockoutProb) - 8}% Variance</TableCell>
                                     <TableCell className="text-right pr-6">
-                                        <Badge className={`text-[10px] uppercase font-bold px-3 border ${Number(stats.stockoutProb) > 30 ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-orange-500/10 text-orange-500 border-orange-500/20'}`}>
+                                        <Badge className={`text-[10px] uppercase font-bold px-3 border ${Number(stats.stockoutProb) > 30 ? 'bg-red-500/10 text-red-600 dark:text-red-500 border-red-500/20' : 'bg-orange-500/10 text-orange-600 dark:text-orange-500 border-orange-500/20'}`}>
                                             {Number(stats.stockoutProb) > 30 ? 'CRITICAL RISK' : 'ADVISORY MONITORING'}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>
-                                <TableRow className="border-none hover:bg-[#1a1a1a]/40 transition-colors">
-                                    <TableCell className="text-[13px] font-bold text-gray-200 pl-6 py-5">ERP Re-allocation Overhead</TableCell>
-                                    <TableCell className="text-[13px] text-gray-400">₹12.1 Lakhs</TableCell>
-                                    <TableCell className="text-[13px] text-white font-extrabold">₹{(12.1 * (1.1 + Number(stats.delta)/150)).toFixed(2)} Lakhs</TableCell>
-                                    <TableCell className="text-[11px] text-gray-500">Auto-Optimized</TableCell>
+                                <TableRow className="border-none hover:bg-accent/40 transition-colors">
+                                    <TableCell className="text-[13px] font-bold text-foreground pl-6 py-5">ERP Re-allocation Overhead</TableCell>
+                                    <TableCell className="text-[13px] text-muted-foreground">₹12.1 Lakhs</TableCell>
+                                    <TableCell className="text-[13px] text-foreground font-extrabold">₹{(12.1 * (1.1 + Number(stats.delta)/150)).toFixed(2)} Lakhs</TableCell>
+                                    <TableCell className="text-[11px] text-muted-foreground">Auto-Optimized</TableCell>
                                     <TableCell className="text-right pr-6">
-                                        <Badge className="bg-blue-500/10 text-blue-500 border border-blue-500/20 text-[10px] uppercase font-bold px-3">Dynamic Reconciled</Badge>
+                                        <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-500 border border-blue-500/20 text-[10px] uppercase font-bold px-3">Dynamic Reconciled</Badge>
                                     </TableCell>
                                 </TableRow>
                             </TableBody>

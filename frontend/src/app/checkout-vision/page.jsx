@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import {
     Activity, AlertTriangle, ArrowRightLeft, Camera, Eye, Image as ImageIcon,
@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Home } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import { toast } from '@/hooks/use-toast';
 
 const DEFAULT_SAMPLE_IMAGE = '/checkout-vision/multiproduct.png';
@@ -35,9 +36,12 @@ function formatPercent(value) {
 
 export default function CheckoutVisionPage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { role } = useAuth();
+    const queryParams = new URLSearchParams(location.search);
+    const fromControlTower = queryParams.get('from') === 'control-tower';
     const [selectedFile, setSelectedFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState('');
+    const [previewUrl, setPreviewUrl] = useState(null);
     const [result, setResult] = useState(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -83,21 +87,16 @@ export default function CheckoutVisionPage() {
         }
         loadData();
 
-        // Load default sample image
-        const loadSample = async () => {
-            try {
-                const response = await fetch(DEFAULT_SAMPLE_IMAGE);
-                const blob = await response.blob();
-                const file = new File([blob], 'multiproduct.png', { type: 'image/png' });
-                if (isMounted) {
-                    setSelectedFile(file);
-                    setPreviewUrl(DEFAULT_SAMPLE_IMAGE);
-                }
-            } catch (e) { console.error('Failed to load sample', e); }
+        // Cleanup function when user leaves the module
+        return () => {
+            isMounted = false;
+            // Reset checkout state
+            setSelectedFile(null);
+            setPreviewUrl(null);
+            setResult(null);
+            setPendingBill([]);
+            setError('');
         };
-        loadSample();
-
-        return () => { isMounted = false; };
     }, []);
 
     const handleAnalyze = async (fileToAnalyze = selectedFile) => {
@@ -197,7 +196,7 @@ export default function CheckoutVisionPage() {
         if (file) {
             setPreviewUrl(URL.createObjectURL(file));
         } else {
-            setPreviewUrl(DEFAULT_SAMPLE_IMAGE);
+            setPreviewUrl(null);
         }
     };
 
@@ -209,19 +208,23 @@ export default function CheckoutVisionPage() {
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
-                                    <Home className="w-3 h-3" /> Home
+                                <BreadcrumbLink onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
+                                    <Home className="w-3 h-3" /> {role === 'vendor' ? 'Vendor Portal' : 'Home'}
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
+                            {fromControlTower && (
+                                <>
+                                    <BreadcrumbSeparator className="text-gray-600" />
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
+                                            Control Tower
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                </>
+                            )}
                             <BreadcrumbSeparator className="text-gray-600" />
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
-                                    Control Tower
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-gray-600" />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">Checkout POS</BreadcrumbPage>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">Smart Billing</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -233,7 +236,7 @@ export default function CheckoutVisionPage() {
                         </div>
                         <div>
                             <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                                AI Checkout POS <Badge className="bg-green-500/10 text-green-500 border-green-500/20 ml-2">Live</Badge>
+                                Smart Billing System <Badge className="bg-green-500/10 text-green-500 border-green-500/20 ml-2">Live</Badge>
                             </h1>
                             <div className="text-xs text-gray-400 font-mono mt-0.5 flex items-center gap-3">
                                 <span className="flex items-center"><Store className="w-3 h-3 mr-1" /> Lane 04 - Store #402</span>
@@ -318,7 +321,7 @@ export default function CheckoutVisionPage() {
                                             ) : (
                                                 <div className="flex flex-col items-center gap-3 text-gray-600 text-center">
                                                     <ImageIcon className="w-12 h-12 opacity-20" />
-                                                    <p className="text-sm">Awaiting camera feed or upload...</p>
+                                                    <p className="text-sm">Select the image or click the photos</p>
                                                 </div>
                                             )}
                                             {isAnalyzing && (

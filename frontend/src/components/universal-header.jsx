@@ -74,7 +74,7 @@ export function UniversalHeader() {
             <Store className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">Walmart OptiFresh</h1>
+            <h1 className="text-xl font-bold text-gray-900">Walmart DemandIQ</h1>
           </div>
         </div>
         <Badge className={`${roleInfo.color} text-white border-0 px-3 py-1`}>

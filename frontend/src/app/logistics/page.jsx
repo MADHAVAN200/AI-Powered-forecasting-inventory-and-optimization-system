@@ -275,12 +275,12 @@ export default function LogisticsPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-foreground flex font-sans">
       {/* Sidebar (Copied from Control Tower for consistency) */}
-      <aside className="w-16 md:w-64 bg-[#111] border-r border-[#222] flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto z-20">
+      <aside className="w-16 md:w-64 bg-[#111] border-r border-[#222] hidden md:flex md:flex-col sticky top-0 h-screen overflow-y-auto z-20">
         <div className="p-4 flex items-center space-x-2 border-b border-[#222] h-16">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Activity className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-lg text-white hidden md:block">OptiFresh</span>
+          <span className="font-bold text-lg text-white hidden md:block">DemandIQ</span>
         </div>
 
         <nav className="flex-1 py-4 space-y-2 px-2">
@@ -594,9 +594,6 @@ export default function LogisticsPage() {
         </SheetContent>
       </Sheet>
 
-      <Sheet open={createSheetOpen} onOpenChange={setCreateSheetOpen}>
-        <SheetContent className="w-[420px] sm:w-[560px] bg-[#111] border-l border-[#222] text-white overflow-y-auto">
-          <div className="space-y-6 pt-4">
             <SheetHeader className="text-left">
               <SheetTitle className="text-white text-xl">Add Transfer</SheetTitle>
               <SheetDescription className="text-gray-400">

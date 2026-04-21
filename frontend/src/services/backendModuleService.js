@@ -9,8 +9,15 @@ async function parseResponse(res) {
 }
 
 export const backendModuleService = {
-    async getModuleData(moduleKey) {
-        const res = await fetch(`${API_BASE}/modules/${moduleKey}`);
+    async getModuleData(moduleKey, filters = {}) {
+        const queryParams = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value) queryParams.append(key, value);
+        });
+        const queryString = queryParams.toString();
+        const url = `${API_BASE}/modules/${moduleKey}${queryString ? `?${queryString}` : ''}`;
+        
+        const res = await fetch(url);
         const payload = await parseResponse(res);
         return payload.data;
     },
@@ -29,6 +36,24 @@ export const backendModuleService = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(item),
+        });
+        return parseResponse(res);
+    },
+
+    async updateModuleItem(moduleKey, collectionKey, itemId, item) {
+        const res = await fetch(`${API_BASE}/modules/${moduleKey}/${collectionKey}/${itemId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(item),
+        });
+        return parseResponse(res);
+    },
+
+    async recordVendorRequestDecision(requestId, decision, request, note = '') {
+        const res = await fetch(`${API_BASE}/modules/vendorPortal/requests/${requestId}/decision`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ decision, request, note }),
         });
         return parseResponse(res);
     }

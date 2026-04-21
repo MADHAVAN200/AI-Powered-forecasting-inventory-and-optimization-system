@@ -3,7 +3,7 @@ import "./globals.css";
 import { UniversalHeader } from "@/components/universal-header";
 const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
-    title: "Walmart OptiFresh",
+    title: "Walmart DemandIQ",
     description: "AI-powered fresh food inventory management system with blockchain verification",
     icons: {
         icon: "/favicon.png",

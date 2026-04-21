@@ -1,12 +1,21 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     ArrowRightLeft, ArrowRight, Truck, TrendingDown, TrendingUp,
     AlertTriangle, CheckCircle2, XCircle, Clock, MapPin,
     Package, BarChart3, Filter, MoreHorizontal, ChevronDown,
-    ChevronRight, Store, Calendar, ShieldCheck, ShoppingCart
+    ChevronRight, Store, Calendar as CalendarIcon, ShieldCheck, ShoppingCart,
+    Brain
 } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import {
     Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter
 } from '@/components/ui/card';
@@ -26,32 +35,46 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+    Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
+    BreadcrumbPage, BreadcrumbSeparator
+} from '@/components/ui/breadcrumb';
+import { Home } from 'lucide-react';
+import Sidebar from '@/components/Sidebar';
+import { useAuth } from '@/context/AuthContext';
 import { backendModuleService } from '@/services/backendModuleService';
 import { toast } from '@/hooks/use-toast';
 
 // --- MOCK DATA ---
 
+const INDIAN_CITIES = [
+    'Delhi', 'Gurgaon', 'Noida', 'Ludhiana', 'Chandigarh',
+    'Bangalore', 'Chennai', 'Hyderabad', 'Kochi', 'Coimbatore',
+    'Mumbai', 'Pune', 'Ahmedabad', 'Surat', 'Nagpur',
+    'Kolkata', 'Bhubaneswar', 'Guwahati', 'Patna', 'Ranchi'
+];
+
 const FALLBACK_TRANSFER_RECOMMENDATIONS = [
     {
         id: "TRF-2024-882",
-        sku: "Avocados (Hass) - Premium",
-        skuId: "SKU-9928",
-        sourceStore: "Store 402 (North)",
-        destStore: "Store 115 (Downtown)",
-        marketingName: "Organic Hass Avocados",
+        sku: "Ashirvaad Shudh Atta (5kg)",
+        skuId: "SKU-IN-001",
+        sourceStore: "Store 402 (Delhi)",
+        destStore: "Store 115 (Gurgaon)",
+        marketingName: "Ashirvaad Shudh Atta",
         qty: 150,
         unit: "Units",
         demandGap: "+420 Units",
         riskReduction: "High",
         priority: "Critical",
         confidence: 96,
-        distance: "12 miles",
+        distance: "12 km",
         time: "45 mins",
         feasibility: "Feasible",
-        coldChain: true,
+        coldChain: false,
         sourceMetrics: {
             overstock: "Severe (+200%)",
-            spoilageRisk: "High (<3 days)",
+            spoilageRisk: "Medium",
             forecast: "Declining"
         },
         destMetrics: {
@@ -59,73 +82,26 @@ const FALLBACK_TRANSFER_RECOMMENDATIONS = [
             forecast: "Spiking (+50%)",
             promoActive: true
         }
-    },
-    {
-        id: "TRF-2024-885",
-        sku: "Almond Milk - Unsweetened",
-        skuId: "SKU-1029",
-        sourceStore: "Store 892 (West)",
-        destStore: "Store 402 (North)",
-        marketingName: "Silk Almond Milk",
-        qty: 40,
-        unit: "Cartons",
-        demandGap: "+65 Units",
-        riskReduction: "Medium",
-        priority: "High",
-        confidence: 88,
-        distance: "8 miles",
-        time: "30 mins",
-        feasibility: "Feasible",
-        coldChain: false,
-        sourceMetrics: {
-            overstock: "Moderate (+40%)",
-            spoilageRisk: "Low",
-            forecast: "Flat"
-        },
-        destMetrics: {
-            stockoutRisk: "Medium (24h)",
-            forecast: "Stable",
-            promoActive: false
-        }
-    },
-    {
-        id: "TRF-2024-890",
-        sku: "Whole Wheat Bread",
-        skuId: "SKU-3321",
-        sourceStore: "Store 115 (Downtown)",
-        destStore: "Store 892 (West)",
-        marketingName: "Nature's Own Wheat",
-        qty: 85,
-        unit: "Loaves",
-        demandGap: "+100 Units",
-        riskReduction: "Medium",
-        priority: "Medium",
-        confidence: 82,
-        distance: "15 miles",
-        time: "55 mins",
-        feasibility: "Risky",
-        coldChain: false,
-        sourceMetrics: {
-            overstock: "High (+80%)",
-            spoilageRisk: "Medium (5 days)",
-            forecast: "Declining"
-        },
-        destMetrics: {
-            stockoutRisk: "Low",
-            forecast: "Rising",
-            promoActive: true
-        }
     }
 ];
 
 const StockRebalancingPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { role } = useAuth();
+    const queryParams = new URLSearchParams(location.search);
+    const fromControlTower = queryParams.get('from') === 'control-tower';
     const [selectedTransfer, setSelectedTransfer] = useState(null);
     const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
     const [transferRecommendations, setTransferRecommendations] = useState(FALLBACK_TRANSFER_RECOMMENDATIONS);
     const [createSheetOpen, setCreateSheetOpen] = useState(false);
     const [isSavingRecommendation, setIsSavingRecommendation] = useState(false);
     const [createError, setCreateError] = useState('');
+    const [date, setDate] = useState(new Date());
+    const [selectedCity, setSelectedCity] = useState("Delhi");
+    const [selectedSourceStore, setSelectedSourceStore] = useState("all");
+    const [selectedCategory, setSelectedCategory] = useState("all");
+    const [isLoading, setIsLoading] = useState(false);
     const [summary, setSummary] = useState({
         excessStockUnits: 2450,
         spoilageRisk: 'High',
@@ -134,8 +110,8 @@ const StockRebalancingPage = () => {
     });
     const [newRecommendation, setNewRecommendation] = useState({
         marketingName: '',
-        sourceStore: 'Store 402 (North)',
-        destStore: 'Store 115 (Downtown)',
+        sourceStore: 'Store 402 (Delhi)',
+        destStore: 'Store 115 (Gurgaon)',
         qty: '50',
         unit: 'Units',
         demandGap: '+50 Units',
@@ -148,24 +124,49 @@ const StockRebalancingPage = () => {
         sourceOverstock: 'Moderate',
         sourceSpoilageRisk: 'Low',
         sourceForecast: 'Flat',
+        city: 'Delhi',
         destStockoutRisk: 'Medium',
         destForecast: 'Rising',
     });
 
     React.useEffect(() => {
         const loadData = async () => {
+            setIsLoading(true);
             try {
-                const data = await backendModuleService.getModuleData('stockRebalancing');
-                setTransferRecommendations(data?.recommendations || FALLBACK_TRANSFER_RECOMMENDATIONS);
-                if (data?.summary) {
-                    setSummary(data.summary);
+                const dateStr = format(date, 'yyyy-MM-dd');
+                const data = await backendModuleService.getModuleData('stockRebalancing', { 
+                    date: dateStr, 
+                    city: selectedCity,
+                    sourceStore: selectedSourceStore === 'all' ? undefined : selectedSourceStore,
+                    category: selectedCategory === 'all' ? undefined : selectedCategory
+                });
+                setTransferRecommendations(data?.recommendations || []);
+                if (data?.recommendations && data.recommendations.length > 0) {
+                    const topRec = data.recommendations[0];
+                    setSummary({
+                        excessStockUnits: data.recommendations.reduce((sum, r) => sum + r.qty, 0),
+                        spoilageRisk: topRec.sourceMetrics?.spoilageRisk || 'Medium',
+                        lowDemandConfidence: topRec.confidence ? `${Math.floor(topRec.confidence * 0.8)}%` : '42%',
+                        insight: `Rebalancing critical for ${selectedCity}: ${topRec.explanation}`
+                    });
+                } else {
+                    // Update summary if no data found for the date/region
+                    setSummary({
+                        excessStockUnits: 0,
+                        spoilageRisk: 'None',
+                        lowDemandConfidence: '0%',
+                        insight: `No active rebalancing recommendations for ${selectedCity} on ${dateStr}.`
+                    });
                 }
             } catch (err) {
                 console.error('Failed to fetch stock rebalancing module data:', err);
+                setTransferRecommendations(FALLBACK_TRANSFER_RECOMMENDATIONS);
+            } finally {
+                setIsLoading(false);
             }
         };
         loadData();
-    }, []);
+    }, [date, selectedCity]);
 
     const handleApprove = async () => {
         if (!selectedTransfer?.id) return;
@@ -192,8 +193,8 @@ const StockRebalancingPage = () => {
     const resetRecommendationForm = () => {
         setNewRecommendation({
             marketingName: '',
-            sourceStore: 'Store 402 (North)',
-            destStore: 'Store 115 (Downtown)',
+            sourceStore: 'Store 402 (Delhi)',
+            destStore: 'Store 115 (Gurgaon)',
             qty: '50',
             unit: 'Units',
             demandGap: '+50 Units',
@@ -206,6 +207,7 @@ const StockRebalancingPage = () => {
             sourceOverstock: 'Moderate',
             sourceSpoilageRisk: 'Low',
             sourceForecast: 'Flat',
+            city: selectedCity,
             destStockoutRisk: 'Medium',
             destForecast: 'Rising',
         });
@@ -229,8 +231,8 @@ const StockRebalancingPage = () => {
             id: `TRF-${Date.now()}`,
             sku: newRecommendation.marketingName.trim(),
             skuId: `SKU-${Math.floor(Math.random() * 10000)}`,
-            sourceStore: newRecommendation.sourceStore.trim() || 'Store 402 (North)',
-            destStore: newRecommendation.destStore.trim() || 'Store 115 (Downtown)',
+            sourceStore: newRecommendation.sourceStore.trim() || 'Store 402 (Delhi)',
+            destStore: newRecommendation.destStore.trim() || 'Store 115 (Gurgaon)',
             marketingName: newRecommendation.marketingName.trim(),
             qty: Number(newRecommendation.qty) || 50,
             unit: newRecommendation.unit,
@@ -251,7 +253,10 @@ const StockRebalancingPage = () => {
                 stockoutRisk: newRecommendation.destStockoutRisk,
                 forecast: newRecommendation.destForecast,
                 promoActive: false
-            }
+            },
+            city: selectedCity,
+            date: format(date, 'yyyy-MM-dd'),
+            explanation: `Manual Recommendation: Shift ${newRecommendation.qty} units of ${newRecommendation.marketingName} to address ${newRecommendation.destStockoutRisk} risk.`
         };
 
         try {
@@ -277,83 +282,131 @@ const StockRebalancingPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20 font-sans w-full flex flex-col">
-
+        <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30 pb-20">
             {/* 1. HEADER & CONTROLS */}
             <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
-                <div className="px-6 py-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
+                <div className="px-6 py-2 border-b border-[#222]/50">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[10px]">
+                                    <Home className="w-3 h-3" /> {role === 'vendor' ? 'Vendor Portal' : 'Home'}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            {fromControlTower && (
+                                <>
+                                    <BreadcrumbSeparator />
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink onClick={() => navigate('/control-tower')} className="text-gray-500 hover:text-blue-400 cursor-pointer text-[10px]">Control Tower</BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                </>
+                            )}
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="text-blue-400 text-[10px]">Stock Rebalancing</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
+
+                <div className="px-6 py-3">
+                    <div className="flex items-center justify-between gap-6">
+                        {/* Title Section */}
+                        <div className="flex items-center space-x-3 shrink-0">
                             <div className="p-2 bg-blue-900/20 rounded-lg">
-                                <ArrowRightLeft className="w-6 h-6 text-blue-500" />
+                                <ArrowRightLeft className="w-5 h-5 text-blue-500" />
                             </div>
-                            <div>
-                                <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                                    Inter-Store Stock Rebalancing
-                                </h1>
-                                <div className="text-sm text-gray-300 font-mono flex items-center gap-3 mt-1">
-                                    <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" /> Region: North East</span>
-                                    <span>•</span>
-                                    <span className="flex items-center text-blue-300"><Clock className="w-3 h-3 mr-1" /> Horizon: Next 7 Days</span>
+                            <h1 className="text-lg font-bold text-white tracking-tight">Stock Rebalancing</h1>
+                        </div>
+
+                        {/* Filters Row - Single Line */}
+                        <div className="flex flex-1 items-center gap-3 overflow-x-auto no-scrollbar">
+                            <div className="flex flex-col space-y-1">
+                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">City</label>
+                                <Select value={selectedCity} onValueChange={setSelectedCity}>
+                                    <SelectTrigger className="w-[130px] h-8 bg-[#1a1a1a] border-[#333] text-white text-[11px]">
+                                        <SelectValue placeholder="City" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                        {INDIAN_CITIES.map(city => (
+                                            <SelectItem key={city} value={city}>{city}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col space-y-1">
+                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Analysis Date</label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant={"outline"} className="w-[150px] h-8 justify-start text-left font-normal bg-[#1a1a1a] border-[#333] text-white text-[11px]">
+                                            <CalendarIcon className="mr-2 h-3 w-3 text-blue-400" />
+                                            {date ? format(date, "MMM dd, yyyy") : <span>Date</span>}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 bg-[#111] border-[#333]" align="start">
+                                        <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} initialFocus className="bg-[#111] text-white" />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+
+                            <div className="flex flex-col space-y-1">
+                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Source Store</label>
+                                <Select value={selectedSourceStore} onValueChange={setSelectedSourceStore}>
+                                    <SelectTrigger className="w-[160px] h-8 bg-[#1a1a1a] border-[#333] text-white text-[11px]">
+                                        <SelectValue placeholder="All Stores" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                        <SelectItem value="all">All Stores</SelectItem>
+                                        <SelectItem value="delhi-402">Store 402 (Delhi)</SelectItem>
+                                        <SelectItem value="gurgaon-115">Store 115 (Gurgaon)</SelectItem>
+                                        <SelectItem value="mumbai-892">Store 892 (Mumbai)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col space-y-1">
+                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Category</label>
+                                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                                    <SelectTrigger className="w-[130px] h-8 bg-[#1a1a1a] border-[#333] text-white text-[11px]">
+                                        <SelectValue placeholder="All Categories" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                        <SelectItem value="all">All Categories</SelectItem>
+                                        <SelectItem value="staples">Staples</SelectItem>
+                                        <SelectItem value="dairy">Dairy</SelectItem>
+                                        <SelectItem value="snacks">Snacks</SelectItem>
+                                        <SelectItem value="produce">Produce</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="flex flex-col space-y-1">
+                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Status</label>
+                                <div className="h-8 flex items-center bg-[#1a1a1a] rounded-md px-3 border border-[#333]">
+                                    <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'} mr-2`}></span>
+                                    <span className="text-[10px] text-gray-300 font-medium">Live</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center space-x-3">
-                            <div className="bg-[#1a1a1a] rounded-md px-3 py-1.5 flex items-center border border-[#333]">
-                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span>
-                                <span className="text-xs text-gray-300 font-medium">Inventory Data: Live</span>
-                            </div>
+                        {/* Add Button */}
+                        <div className="shrink-0 pt-4">
                             <Button
-                                className="h-9 bg-purple-600 hover:bg-purple-700 text-white"
+                                className="h-9 bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-900/20 px-4"
                                 onClick={() => {
                                     resetRecommendationForm();
                                     setCreateSheetOpen(true);
                                 }}
                             >
-                                <ShoppingCart className="w-4 h-4 mr-2" /> Add Recommendation
+                                <ShoppingCart className="w-4 h-4 mr-2" /> <span className="hidden xl:inline">Add Recommendation</span><span className="xl:hidden">Add</span>
                             </Button>
                         </div>
-                    </div>
-
-                    {/* Filters */}
-                    <div className="flex flex-wrap items-center gap-3">
-                        <Select defaultValue="store402">
-                            <SelectTrigger className="w-[180px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
-                                <SelectValue placeholder="Source Store" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="store402">Store 402 (North)</SelectItem>
-                                <SelectItem value="store115">Store 115 (Downtown)</SelectItem>
-                                <SelectItem value="store892">Store 892 (West)</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Select defaultValue="all">
-                            <SelectTrigger className="w-[140px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
-                                <SelectValue placeholder="Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Categories</SelectItem>
-                                <SelectItem value="produce">Produce</SelectItem>
-                                <SelectItem value="dairy">Dairy</SelectItem>
-                                <SelectItem value="bakery">Bakery</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Select defaultValue="demand">
-                            <SelectTrigger className="w-[160px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
-                                <SelectValue placeholder="Optimization Goal" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="demand">Demand Mismatch</SelectItem>
-                                <SelectItem value="overstock">Clear Overstock</SelectItem>
-                                <SelectItem value="spoilage">Reduce Spoilage</SelectItem>
-                            </SelectContent>
-                        </Select>
                     </div>
                 </div>
             </header>
 
-            <div className="p-6 w-full max-w-[1800px] mx-auto space-y-6">
+            <div className="p-6 w-full space-y-6">
 
                 {/* 2. SOURCE STORE RISK SUMMARY */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -478,90 +531,102 @@ const StockRebalancingPage = () => {
                                         {selectedTransfer?.id === rec.id && (
                                             <TableRow className="bg-[#141414] hover:bg-[#141414] border-b border-[#222]">
                                                 <TableCell colSpan={9} className="p-6">
-                                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                                                        {/* Simulation: Before/After */}
-                                                        <div className="col-span-2 space-y-4">
-                                                            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
-                                                                <BarChart3 className="w-4 h-4 mr-2 text-blue-500" /> Transfer Impact Simulation
-                                                            </h3>
-
-                                                            <div className="grid grid-cols-2 gap-4">
-                                                                <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
-                                                                    <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                                                                    <h4 className="text-gray-300 text-xs uppercase mb-2">Source: {rec.sourceStore}</h4>
-                                                                    <div className="flex justify-between items-end">
-                                                                        <div className="text-gray-400 line-through text-sm">Overstocked</div>
-                                                                        <ArrowRight className="w-4 h-4 text-gray-500" />
-                                                                        <div className="text-green-400 font-bold">Optimal</div>
-                                                                    </div>
-                                                                    <div className="mt-2 text-xs text-gray-400">
-                                                                        Current: <span className="text-red-400 font-medium">Excess (+{rec.sourceMetrics.overstock})</span>
-                                                                    </div>
-                                                                    <div className="mt-1 text-xs text-gray-400">
-                                                                        Post-Transfer: <span className="text-green-500 font-medium">Balanced</span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
-                                                                    <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
-                                                                    <h4 className="text-gray-300 text-xs uppercase mb-2">Destination: {rec.destStore}</h4>
-                                                                    <div className="flex justify-between items-end">
-                                                                        <div className="text-red-500 text-sm">Stockout Risk</div>
-                                                                        <ArrowRight className="w-4 h-4 text-gray-500" />
-                                                                        <div className="text-green-400 font-bold">Covered</div>
-                                                                    </div>
-                                                                    <div className="mt-2 text-xs text-gray-400">
-                                                                        Demand Forecast: <span className="text-blue-400 font-medium">{rec.destMetrics.forecast}</span>
-                                                                    </div>
-                                                                    <div className="mt-1 text-xs text-gray-400">
-                                                                        Impact: <span className="text-green-500 font-medium">Prevents {rec.destMetrics.stockoutRisk} Stockout</span>
-                                                                    </div>
-                                                                </div>
+                                                    <div className="flex flex-col space-y-6">
+                                                        {/* AI Logic / Explanation Section */}
+                                                        <div className="bg-blue-900/10 border border-blue-900/30 rounded-lg p-4">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <Brain className="w-4 h-4 text-blue-400" />
+                                                                <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider">AI Recommendation Logic</h3>
                                                             </div>
-
-                                                            <div className="flex items-center space-x-4 pt-2">
-                                                                <Badge variant="outline" className="border-blue-900 bg-blue-900/10 text-blue-300">
-                                                                    Forecast Alignment: Strong
-                                                                </Badge>
-                                                                <Badge variant="outline" className="border-orange-900 bg-orange-900/10 text-orange-300">
-                                                                    Spoilage Saved: High
-                                                                </Badge>
-                                                            </div>
+                                                            <p className="text-sm text-blue-100 leading-relaxed italic">
+                                                                "{rec.explanation || "System generated recommendation based on real-time inventory levels and demand forecasting models. This shift optimizes regional availability and minimizes spoilage risk."}"
+                                                            </p>
                                                         </div>
 
-                                                        {/* Execution Panel */}
-                                                        <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-5 flex flex-col justify-between">
-                                                            <div>
-                                                                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Approval & Execution</h3>
-                                                                <div className="space-y-3">
-                                                                    <div className="flex justify-between text-sm">
-                                                                        <span className="text-gray-300">Logistics Cost:</span>
-                                                                        <span className="text-white">$12.50</span>
+                                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                                            {/* Simulation: Before/After */}
+                                                            <div className="col-span-2 space-y-4">
+                                                                <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
+                                                                    <BarChart3 className="w-4 h-4 mr-2 text-blue-500" /> Transfer Impact Simulation
+                                                                </h3>
+
+                                                                <div className="grid grid-cols-2 gap-4">
+                                                                    <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
+                                                                        <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                                                                        <h4 className="text-gray-300 text-xs uppercase mb-2">Source: {rec.sourceStore}</h4>
+                                                                        <div className="flex justify-between items-end">
+                                                                            <div className="text-gray-400 line-through text-sm">Overstocked</div>
+                                                                            <ArrowRight className="w-4 h-4 text-gray-500" />
+                                                                            <div className="text-green-400 font-bold">Optimal</div>
+                                                                        </div>
+                                                                        <div className="mt-2 text-xs text-gray-400">
+                                                                            Current: <span className="text-red-400 font-medium">Excess (+{rec.sourceMetrics?.overstock || '20%'})</span>
+                                                                        </div>
+                                                                        <div className="mt-1 text-xs text-gray-400">
+                                                                            Post-Transfer: <span className="text-green-500 font-medium">Balanced</span>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="flex justify-between text-sm">
-                                                                        <span className="text-gray-300">Est. Arrival:</span>
-                                                                        <span className="text-white">Today, 2:30 PM</span>
+
+                                                                    <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
+                                                                        <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                                                                        <h4 className="text-gray-300 text-xs uppercase mb-2">Destination: {rec.destStore}</h4>
+                                                                        <div className="flex justify-between items-end">
+                                                                            <div className="text-red-500 text-sm">Stockout Risk</div>
+                                                                            <ArrowRight className="w-4 h-4 text-gray-500" />
+                                                                            <div className="text-green-400 font-bold">Covered</div>
+                                                                        </div>
+                                                                        <div className="mt-2 text-xs text-gray-400">
+                                                                            Demand Forecast: <span className="text-blue-400 font-medium">{rec.destMetrics?.forecast || 'High'}</span>
+                                                                        </div>
+                                                                        <div className="mt-1 text-xs text-gray-400">
+                                                                            Impact: <span className="text-green-500 font-medium">Prevents {rec.destMetrics?.stockoutRisk || 'Stockout'}</span>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="flex justify-between text-sm">
-                                                                        <span className="text-gray-300">Cold Chain:</span>
-                                                                        <span className={rec.coldChain ? "text-blue-400" : "text-gray-400"}>
-                                                                            {rec.coldChain ? "Required (Active)" : "Not Required"}
-                                                                        </span>
-                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex items-center space-x-4 pt-2">
+                                                                    <Badge variant="outline" className="border-blue-900 bg-blue-900/10 text-blue-300">
+                                                                        Forecast Alignment: Strong
+                                                                    </Badge>
+                                                                    <Badge variant="outline" className="border-orange-900 bg-orange-900/10 text-orange-300">
+                                                                        Spoilage Saved: High
+                                                                    </Badge>
                                                                 </div>
                                                             </div>
 
-                                                            <div className="flex flex-col gap-3 mt-6">
-                                                                <Button
-                                                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                                                                    onClick={() => setApprovalDialogOpen(true)}
-                                                                >
-                                                                    <CheckCircle2 className="w-4 h-4 mr-2" /> Approve Transfer
-                                                                </Button>
-                                                                <Button variant="outline" className="w-full border-[#333] text-gray-300 hover:text-white bg-transparent">
-                                                                    Modify Quantity
-                                                                </Button>
+                                                            {/* Execution Panel */}
+                                                            <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-5 flex flex-col justify-between">
+                                                                <div>
+                                                                    <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Approval & Execution</h3>
+                                                                    <div className="space-y-3">
+                                                                        <div className="flex justify-between text-sm">
+                                                                            <span className="text-gray-300">Logistics Cost:</span>
+                                                                            <span className="text-white">$12.50</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between text-sm">
+                                                                            <span className="text-gray-300">Est. Arrival:</span>
+                                                                            <span className="text-white">Today, 2:30 PM</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between text-sm">
+                                                                            <span className="text-gray-300">Cold Chain:</span>
+                                                                            <span className={rec.coldChain ? "text-blue-400" : "text-gray-400"}>
+                                                                                {rec.coldChain ? "Required (Active)" : "Not Required"}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex flex-col gap-3 mt-6">
+                                                                    <Button
+                                                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/20"
+                                                                        onClick={() => setApprovalDialogOpen(true)}
+                                                                    >
+                                                                        <CheckCircle2 className="w-4 h-4 mr-2" /> Approve Transfer
+                                                                    </Button>
+                                                                    <Button variant="outline" className="w-full border-[#333] text-gray-300 hover:text-white bg-transparent">
+                                                                        Modify Quantity
+                                                                    </Button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -848,7 +913,6 @@ const StockRebalancingPage = () => {
                     </div>
                 </SheetContent>
             </Sheet>
-
         </div>
     );
 };

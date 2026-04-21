@@ -1,5 +1,5 @@
 {
-    "model_name": "OptiFresh Demand Engine v1",
+    "model_name": "DemandIQ Demand Engine v1",
     "algorithm": "Facebook Prophet",
     "horizons": {
         "3d": {

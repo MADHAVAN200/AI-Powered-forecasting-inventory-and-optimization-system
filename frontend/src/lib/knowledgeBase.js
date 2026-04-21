@@ -71,7 +71,7 @@ export const knowledgeBase = [
         keywords: ['live checkout', 'vision verification', 'checkout analytics', 'control tower'],
         title: 'Checkout Intelligence (Control Tower)',
         content: "Monitors the front-end. 'Live Checkout' tracks 8 active lanes. 'Vision Verification' shows AI confidence (98%) in product recognition. 'Checkout Analytics' tracks error rates (1.2%).",
-        actions: [{ label: 'Vision Verification', route: '/control-tower/checkout-vision' }]
+        actions: [{ label: 'Vision Verification', route: '/checkout-vision' }]
     },
     {
         id: 'control-tower-ai',

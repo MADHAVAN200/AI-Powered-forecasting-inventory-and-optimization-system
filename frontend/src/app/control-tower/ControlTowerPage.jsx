@@ -11,13 +11,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import AlertSidebar, { AlertContent } from '@/components/alert-sidebar';
+import Sidebar from '@/components/Sidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { AlertContent } from '@/components/alert-sidebar';
 import { useAuth } from '@/context/AuthContext';
 
 const ControlTowerPage = () => {
     const navigate = useNavigate();
-    const { signOut, role } = useAuth();
+    const { role } = useAuth();
 
     // Data Structure for Partitions
     const partitions = [
@@ -53,156 +55,46 @@ const ControlTowerPage = () => {
             ]
         },
         {
-            title: "Forecasting & Planning Intelligence",
-            description: "Forecasting is a decision-support function, not raw analytics.",
+            title: "Planning & Simulation",
+            description: "Advanced simulation tools for strategic decision support.",
             id: "forecasting",
             cards: [
-                {
-                    title: "Demand Forecast Engine",
-                    icon: LineChart,
-                    description: "AI-driven demand prediction at store & SKU level",
-                    metrics: ["Past vs forecast sparkline"],
-                    action: "Forecast Engine Page",
-                    path: "/control-tower/forecast-engine"
-                },
                 {
                     title: "Scenario Planning",
                     icon: Brain,
                     description: "Simulate demand under events and weather changes",
-                    metrics: ["Comparator Active"],
+                    metrics: ["Scenario Planner Active"],
                     action: "Open Simulator",
                     path: "/control-tower/scenario-planning",
                     badge: "Beta"
                 }
             ]
         },
-        {
-            title: "Inventory & Store Operations",
-            description: "Inventory is where forecast meets execution.",
-            id: "inventory",
-            cards: [
-                {
-                    title: "Inventory Risk Dashboard",
-                    icon: AlertTriangle,
-                    description: "Detect shortages, overstock, and demand mismatches",
-                    metrics: ["Shortages: 12", "Overstock: 5"],
-                    action: "Inventory Dashboard Page",
-                    path: "/control-tower/inventory-risk"
-                },
-                {
-                    title: "Store Health Overview",
-                    icon: Store,
-                    description: "Operational readiness per store",
-                    metrics: ["Risk Index: Low", "Critical SKUs: 2"],
-                    action: "Store Health Page",
-                    path: "/control-tower/store-health"
-                }
-            ]
-        },
-        {
-            title: "Checkout Intelligence & Verification",
-            description: "Self-checkout is operational AI, not customer UX.",
-            id: "checkout",
-            cards: [
-                {
-                    title: "Live Checkout Monitoring",
-                    icon: Eye,
-                    description: "Monitor self-checkout lanes and anomalies",
-                    metrics: ["Active lanes: 8", "Alerts: 0"],
-                    action: "Checkout Monitoring Page",
-                    path: "/control-tower/live-checkout"
-                },
-                {
-                    title: "Vision-Based Verification",
-                    icon: Camera,
-                    description: "AI-assisted product recognition & mismatch detection",
-                    metrics: ["Confidence: 98%"],
-                    action: "Checkout Vision Page",
-                    path: "/control-tower/checkout-vision"
-                },
-                {
-                    title: "Checkout Analytics",
-                    icon: Scan,
-                    description: "Analyze errors, confidence, and store patterns",
-                    metrics: ["Error rate: 1.2%"],
-                    action: "Checkout Analytics Page",
-                    path: "/control-tower/checkout-analytics"
-                }
-            ]
-        },
-        {
-            title: "Alerts & Recommendations",
-            description: "Users don’t want dashboards — they want decisions surfaced.",
-            id: "alerts",
-            cards: [
-                {
-                    title: "Operational Alerts",
-                    icon: Bell,
-                    description: "Prioritized alerts requiring human action",
-                    metrics: ["High: 3", "Medium: 5"],
-                    action: "View Alerts",
-                    path: "/control-tower/alerts",
-                    alertCount: 8
-                },
-                {
-                    title: "AI Recommendations",
-                    icon: Lightbulb,
-                    description: "Context-aware suggestions across modules",
-                    metrics: ["New suggestions: 4"],
-                    action: "View Recommendations",
-                    path: "/recommendations"
-                }
-            ]
-        }
     ];
+
+    // Admin Only Section
+    if (role === 'admin') {
+        partitions.push({
+            title: "Administrative Oversight",
+            description: "Centralized monitoring for store operations and financial compliance.",
+            id: "admin",
+            cards: [
+                {
+                    title: "Store Transactions",
+                    icon: ArrowRightLeft,
+                    description: "Comprehensive log of all transactions across all checkout lanes",
+                    metrics: ["Real-time feed", "8 Lanes active"],
+                    action: "Audit Transactions",
+                    path: "/control-tower/admin-transactions",
+                    badge: "Admin"
+                }
+            ]
+        });
+    }
 
     return (
         <div className="flex min-h-screen bg-[#0a0a0a] text-foreground">
-            {/* Sidebar (Vertical Navigation) */}
-            <aside className="w-16 md:w-64 bg-[#111] border-r border-[#222] flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-                <div className="p-4 flex items-center space-x-2 border-b border-[#222]">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <Activity className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="font-bold text-lg text-white hidden md:block">OptiFresh</span>
-                </div>
-
-                <nav className="flex-1 py-4 space-y-2 px-2">
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-[#222]" onClick={() => navigate('/dashboard')}>
-                        <Store className="w-5 h-5 mr-3" />
-                        <span className="hidden md:block">Dashboard</span>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-[#222]">
-                        <Activity className="w-5 h-5 mr-3" />
-                        <span className="hidden md:block">Control Tower</span>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-[#222]" onClick={() => navigate('/control-tower/alerts')}>
-                        <Zap className="w-5 h-5 mr-3" />
-                        <span className="hidden md:block">Operational Alerts</span>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-blue-400 hover:text-blue-300 hover:bg-[#222]" onClick={() => navigate('/control-tower/stock-rebalancing')}>
-                        <ArrowRightLeft className="w-5 h-5 mr-3" />
-                        <span className="hidden md:block">Stock Rebalancing</span>
-                    </Button>
-                    {role === 'admin' && (
-                        <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-[#222]" onClick={() => navigate('/vendor')}>
-                            <Package className="w-5 h-5 mr-3" />
-                            <span className="hidden md:block">Vendor Portal</span>
-                        </Button>
-                    )}
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-[#222]" onClick={() => navigate('/logistics')}>
-                        <MapPin className="w-5 h-5 mr-3" />
-                        <span className="hidden md:block">Logistics</span>
-                    </Button>
-                </nav>
-
-                <div className="p-4 border-t border-[#222]">
-                    <Button variant="ghost" className="w-full justify-start text-gray-400 hover:text-white hover:bg-[#222]" onClick={signOut}>
-                        <LogOut className="w-5 h-5 mr-3" />
-                        <span className="hidden md:block">Sign Out</span>
-                    </Button>
-                </div>
-            </aside>
+            <Sidebar />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0">
@@ -244,7 +136,7 @@ const ControlTowerPage = () => {
                 <div className="flex flex-1 overflow-hidden">
                     {/* Content Canvas */}
                     <main className="flex-1 p-6 space-y-8 overflow-y-auto bg-[#0a0a0a]">
-                        {partitions.filter(p => p.id !== 'alerts').map((partition) => (
+                        {partitions.map((partition) => (
                             <div key={partition.id} className="space-y-4">
                                 <div className="flex items-end justify-between border-b border-[#222] pb-2">
                                     <div>

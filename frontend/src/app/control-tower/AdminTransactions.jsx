@@ -79,53 +79,50 @@ const AdminTransactionsPage = () => {
             totalRevenue,
             avgBasketSize,
             busiestLane,
-            count: filteredTransactions.length
+            count: filteredTransactions.length,
+            total: filteredTransactions.length,
+            inflow: 0,
+            outflow: filteredTransactions.length
         };
     }, [filteredTransactions]);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30">
-            {/* Header */}
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222]">
+        <div className="min-h-screen bg-background text-foreground pb-20">
+            <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border px-6 py-6 shadow-md transition-all">
                 <div className="px-6 pt-3">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
+                                <BreadcrumbLink onClick={() => navigate('/')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-600 cursor-pointer text-[11px] transition-colors">
                                     <Home className="w-3 h-3" /> Home
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-gray-600" />
+                            <BreadcrumbSeparator className="text-border" />
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
+                                <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-600 cursor-pointer text-[11px] transition-colors">
                                     Control Tower
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-gray-600" />
+                            <BreadcrumbSeparator className="text-border" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">Audit Transactions</BreadcrumbPage>
+                                <BreadcrumbPage className="text-blue-600 text-[11px] font-medium">Audit Transactions</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
                 <div className="px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2 bg-blue-600/20 rounded-lg">
-                            <ArrowRightLeft className="w-6 h-6 text-blue-500" />
+                    <div>
+                        <div className="flex items-center space-x-3">
+                            <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            <h1 className="text-2xl font-bold text-foreground tracking-tight">Store Transaction Audit</h1>
+                            <Badge variant="outline" className="text-blue-600 border-blue-500/30 bg-blue-100 dark:bg-blue-900/10 text-[10px] h-5">
+                                Ledger v2.1
+                            </Badge>
                         </div>
-                        <div>
-                            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                                Store-wide Transaction Audit <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20 ml-2">Admin</Badge>
-                            </h1>
-                            <div className="text-xs text-gray-400 font-mono mt-0.5 flex items-center gap-3">
-                                <span className="flex items-center"><Store className="w-3 h-3 mr-1" /> All Lanes Active</span>
-                                <span className="text-gray-600">|</span>
-                                <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
-                            </div>
-                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">Immutable record of high-velocity inventory movements & SKU reconciliations.</p>
                     </div>
                     <div className="flex gap-3">
-                        <Button variant="outline" className="border-[#333] hover:bg-[#222] text-xs h-9">
+                        <Button variant="outline" className="text-xs h-9">
                             <Download className="w-4 h-4 mr-2" /> Export CSV
                         </Button>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-9">
@@ -133,189 +130,149 @@ const AdminTransactionsPage = () => {
                         </Button>
                     </div>
                 </div>
-            </header>
+            </div>
 
             <main className="p-6 space-y-6">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-[#111] border-[#333]">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <Card className="bg-card border-border relative overflow-hidden group hover:border-blue-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                <DollarSign className="w-3 h-3" /> Total Daily Revenue
-                            </CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Volume</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-end justify-between">
-                                <div className="text-2xl font-bold text-white leading-none">{formatPrice(stats.totalRevenue)}</div>
-                                <div className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-green-500/10 text-green-500">+8.4%</div>
+                            <div className="text-3xl font-black text-foreground tabular-nums tracking-tighter">{stats.total}</div>
+                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
+                                <Database className="w-3 h-3 mr-1" /> Ledger Entries
                             </div>
                         </CardContent>
                     </Card>
-
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border relative overflow-hidden group hover:border-green-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                <ShoppingCart className="w-3 h-3" /> Transactions
-                            </CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stock Inflow</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-end justify-between">
-                                <div className="text-2xl font-bold text-white leading-none">{stats.count}</div>
-                                <div className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500">+12 units</div>
+                            <div className="text-3xl font-black text-green-600 dark:text-green-500 tabular-nums tracking-tighter">{stats.inflow}</div>
+                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
+                                <ArrowUpRight className="w-3 h-3 mr-1" /> Re-stocking events
                             </div>
                         </CardContent>
                     </Card>
-
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border relative overflow-hidden group hover:border-red-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                <Package className="w-3 h-3" /> Avg Basket Value
-                            </CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stock Outflow</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-end justify-between">
-                                <div className="text-2xl font-bold text-white leading-none">{formatPrice(stats.avgBasketSize)}</div>
-                                <div className="text-[11px] font-bold px-1.5 py-0.5 rounded bg-green-500/10 text-green-500">+2.1%</div>
+                            <div className="text-3xl font-black text-red-500 tabular-nums tracking-tighter">{stats.outflow}</div>
+                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
+                                <ArrowDownRight className="w-3 h-3 mr-1" /> Sales fulfillments
                             </div>
                         </CardContent>
                     </Card>
-
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border relative overflow-hidden group hover:border-purple-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                <MapPin className="w-3 h-3" /> Peak Counter
-                            </CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Store Sync Purity</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-end justify-between">
-                                <div className="text-2xl font-bold text-white leading-none">{stats.busiestLane}</div>
-                                <Badge variant="outline" className="text-[10px] border-blue-500/30 text-blue-400">Bottleneck Zone</Badge>
+                            <div className="text-3xl font-black text-blue-600 dark:text-blue-400 tabular-nums tracking-tighter">99.8%</div>
+                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
+                                <Globe className="w-3 h-3 mr-1" /> Node consistency
                             </div>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Filters */}
-                <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[#111] border border-[#333] p-4 rounded-xl">
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card border border-border p-4 rounded-xl">
                     <div className="flex flex-1 gap-4 w-full md:w-auto">
                         <div className="relative flex-1 max-w-sm">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input 
                                 placeholder="Search Transaction ID or Customer..." 
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10 bg-[#0a0a0a] border-[#333] text-white h-10 w-full"
+                                className="pl-10 bg-background border-border text-foreground h-10 w-full"
                             />
                         </div>
-                        <Select value={selectedLane} onValueChange={setSelectedLane}>
-                            <SelectTrigger className="w-[180px] bg-[#0a0a0a] border-[#333] text-white h-10">
-                                <Filter className="w-3 h-3 mr-2 text-gray-500" />
-                                <SelectValue placeholder="Lane All" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#111] border-[#333] text-white">
-                                <SelectItem value="all">All Lanes</SelectItem>
-                                <SelectItem value="Lane 01">Lane 01 (Express)</SelectItem>
-                                <SelectItem value="Lane 02">Lane 02 (Express)</SelectItem>
-                                <SelectItem value="Lane 03">Lane 03 (Express)</SelectItem>
-                                <SelectItem value="Lane 04">Lane 04 (Regular)</SelectItem>
-                                <SelectItem value="Lane 05">Lane 05 (Regular)</SelectItem>
-                                <SelectItem value="Lane 06">Lane 06 (Regular)</SelectItem>
-                                <SelectItem value="Lane 07">Lane 07 (Bulk)</SelectItem>
-                                <SelectItem value="Lane 08">Lane 08 (Bulk)</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Select value={selectedPayment} onValueChange={setSelectedPayment}>
-                            <SelectTrigger className="w-[160px] bg-[#0a0a0a] border-[#333] text-white h-10">
-                                <CreditCard className="w-3 h-3 mr-2 text-gray-500" />
-                                <SelectValue placeholder="Payment Method" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#111] border-[#333] text-white">
-                                <SelectItem value="all">All Methods</SelectItem>
-                                <SelectItem value="UPI">UPI / Digital</SelectItem>
-                                <SelectItem value="Card">Credit/Debit Card</SelectItem>
-                                <SelectItem value="Cash">Cash</SelectItem>
-                                <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <div className="flex flex-col space-y-1.5">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Target Lane</label>
+                            <Select value={selectedLane} onValueChange={setSelectedLane}>
+                                <SelectTrigger className="h-10 w-[180px] bg-card border-border text-xs text-foreground font-medium hover:border-blue-500/50 transition-all">
+                                    <SelectValue placeholder="All Lanes" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-card border-border text-foreground">
+                                    <SelectItem value="all">Global Network</SelectItem>
+                                    <SelectItem value="Lane 01">Lane 01 (Express)</SelectItem>
+                                    <SelectItem value="Lane 02">Lane 02 (Express)</SelectItem>
+                                    <SelectItem value="Lane 03">Lane 03 (Express)</SelectItem>
+                                    <SelectItem value="Lane 04">Lane 04 (Regular)</SelectItem>
+                                    <SelectItem value="Lane 05">Lane 05 (Regular)</SelectItem>
+                                    <SelectItem value="Lane 06">Lane 06 (Regular)</SelectItem>
+                                    <SelectItem value="Lane 07">Lane 07 (Bulk)</SelectItem>
+                                    <SelectItem value="Lane 08">Lane 08 (Bulk)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 </div>
 
-                {/* Audit Table */}
-                <Card className="bg-[#111] border-[#333] overflow-hidden">
-                    <CardHeader className="border-b border-[#222]">
+                <Card className="bg-card border-border overflow-hidden">
+                    <CardHeader className="pb-0 border-b border-border bg-muted/30 px-6 py-4">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle className="text-lg text-white">Transaction Audit Trail</CardTitle>
-                                <CardDescription className="text-xs text-gray-500 font-mono italic">Showing records with non-uniform density across counters</CardDescription>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="text-[10px] text-gray-500">Live Updates</div>
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                            </div>
+                            <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                                <History className="w-4 h-4 text-muted-foreground" /> Audit Log
+                            </CardTitle>
+                            <div className="text-[10px] text-muted-foreground">Showing {filteredTransactions.length} transactions</div>
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
-                            <TableHeader className="bg-[#0d0d0d]">
-                                <TableRow className="border-[#222] hover:bg-transparent">
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">LANE ID</TableHead>
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">TXN ID</TableHead>
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">Customer / Account</TableHead>
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">Timestamp</TableHead>
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">Qty</TableHead>
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">Net Vol</TableHead>
-                                    <TableHead className="text-gray-500 font-bold uppercase text-[10px]">Method</TableHead>
-                                    <TableHead className="text-right text-gray-500 font-bold uppercase text-[10px]">Audit</TableHead>
+                            <TableHeader>
+                                <TableRow className="border-border bg-muted/20 hover:bg-transparent">
+                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4 pl-6">Timestamp</TableHead>
+                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4">Node (Store)</TableHead>
+                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4">Customer / ID</TableHead>
+                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4">Net Vol</TableHead>
+                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4 text-right pr-6">Signature</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    <TableRow className="border-[#222]">
-                                        <TableCell colSpan={8} className="h-64 text-center text-gray-500">
+                                    <TableRow className="border-border">
+                                        <TableCell colSpan={5} className="h-64 text-center text-muted-foreground">
                                             Decrypting and loading transaction logs...
                                         </TableCell>
                                     </TableRow>
                                 ) : filteredTransactions.length === 0 ? (
-                                    <TableRow className="border-[#222]">
-                                        <TableCell colSpan={8} className="h-64 text-center text-gray-500">
+                                    <TableRow className="border-border">
+                                        <TableCell colSpan={5} className="h-64 text-center text-muted-foreground">
                                             No transactions matching the audit filters.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    filteredTransactions.map((txn, idx) => (
-                                        <TableRow key={idx} className="border-[#222] hover:bg-[#1a1a1a]/50 group transition-colors">
-                                            <TableCell>
-                                                <Badge variant="outline" className={`text-[10px] font-bold ${
-                                                    txn.lane?.includes('Express') || ['Lane 01', 'Lane 02', 'Lane 03'].includes(txn.lane)
-                                                    ? 'border-orange-500/30 text-orange-400 bg-orange-500/5' 
-                                                    : 'border-blue-500/30 text-blue-400 bg-blue-500/5'
-                                                }`}>
-                                                    {txn.lane}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="font-mono text-xs text-blue-400">{txn.id}</TableCell>
-                                            <TableCell className="text-sm text-gray-300 font-medium">
-                                                {txn.customer || 'Guest User'}
-                                            </TableCell>
-                                            <TableCell className="text-[11px] text-gray-500 font-mono">
-                                                {txn.timestamp}
-                                            </TableCell>
-                                            <TableCell className="text-xs text-gray-400">
-                                                {txn.items?.length || 0}
-                                            </TableCell>
-                                            <TableCell className="text-sm font-bold text-white">
-                                                {formatPrice(txn.total)}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2 text-xs text-gray-400">
-                                                    {txn.paymentMethod === 'Cash' ? <Banknote className="w-3 h-3" /> : <CreditCard className="w-3 h-3" />}
-                                                    {txn.paymentMethod}
+                                    filteredTransactions.map((tx, idx) => (
+                                        <TableRow key={tx.id || idx} className="border-border hover:bg-accent/40 group transition-all">
+                                            <TableCell className="py-5 pl-6">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[11px] font-bold text-foreground tabular-nums">{tx.timestamp}</span>
+                                                    <span className="text-[9px] text-muted-foreground font-mono mt-0.5">TX-{tx.id?.substring(0, 8)}</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-right">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-600 hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <Eye className="w-4 h-4" />
-                                                </Button>
+                                            <TableCell>
+                                                <div className="flex items-center space-x-2">
+                                                    <MapPin className="w-3.5 h-3.5 text-blue-500" />
+                                                    <span className="text-xs font-bold text-foreground">{tx.lane}</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="text-xs font-medium text-foreground">{tx.customer || 'Guest User'}</span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                                                    {formatPrice(tx.total || 0)}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right pr-6">
+                                                <Badge variant="outline" className="text-[9px] font-bold border-none bg-muted/50 text-muted-foreground uppercase">
+                                                    Verified
+                                                </Badge>
                                             </TableCell>
                                         </TableRow>
                                     ))

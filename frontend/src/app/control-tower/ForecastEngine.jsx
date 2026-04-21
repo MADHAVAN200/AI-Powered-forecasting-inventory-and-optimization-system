@@ -29,6 +29,7 @@ import { forecastService } from '@/services/forecastService';
 import { fusionService } from '@/services/fusionService';
 import { masterDataService } from '@/services/masterDataService';
 import AIInsightsPanel from '@/components/AIInsightsPanel';
+import { useAuth } from '@/context/AuthContext';
 
 const CATEGORY_NAME_MAP = {
     'Category 1': 'Biscuits & Snacks',
@@ -46,6 +47,7 @@ const CATEGORY_NAME_MAP = {
 };
 
 const ForecastEnginePage = () => {
+    const { role } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -197,10 +199,12 @@ const ForecastEnginePage = () => {
                             <Activity className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
-                            <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                                <span className="hover:text-blue-400 cursor-pointer" onClick={() => navigate('/')}>Home</span>
+                             <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
+                                <span className="hover:text-blue-400 cursor-pointer" onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')}>
+                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
+                                </span>
                                 <span>/</span>
-                                {fromControlTower && (
+                                {fromControlTower && role !== 'vendor' && (
                                     <>
                                         <span className="hover:text-blue-400 cursor-pointer" onClick={() => navigate('/control-tower')}>Control Tower</span>
                                         <span>/</span>

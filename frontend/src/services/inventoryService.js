@@ -55,8 +55,20 @@ export const inventoryService = {
             query = query.eq('product_id', filters.productId);
         }
 
+        if (filters.storeId && filters.storeId !== 'all') {
+            query = query.eq('store_id', filters.storeId);
+        }
+
+        if (Array.isArray(filters.storeIds) && filters.storeIds.length > 0) {
+            query = query.in('store_id', filters.storeIds);
+        }
+
         if (filters.cityId && filters.cityId !== 'all') {
             query = query.eq('stores.city_id', filters.cityId);
+        }
+
+        if (Array.isArray(filters.cityIds) && filters.cityIds.length > 0) {
+            query = query.in('stores.city_id', filters.cityIds);
         }
 
         if (filters.date && filters.date !== 'all') {
@@ -66,6 +78,12 @@ export const inventoryService = {
             endDate.setUTCHours(23, 59, 59, 999);
             query = query.gte('detected_at', startDate.toISOString())
                          .lte('detected_at', endDate.toISOString());
+        }
+
+        if (filters.daysBack && Number(filters.daysBack) > 0) {
+            const startDate = new Date();
+            startDate.setHours(startDate.getHours() - Number(filters.daysBack));
+            query = query.gte('detected_at', startDate.toISOString());
         }
 
         if (filters.regionId && filters.regionId !== 'all') {
@@ -79,10 +97,29 @@ export const inventoryService = {
         if (error) throw error;
         if (!data || data.length === 0) return [];
 
+        const postFiltered = data.filter((risk) => {
+            if (filters.storeId && filters.storeId !== 'all' && risk.store_id !== filters.storeId) return false;
+            if (Array.isArray(filters.storeIds) && filters.storeIds.length > 0 && !filters.storeIds.includes(risk.store_id)) return false;
+
+            if (filters.cityId && filters.cityId !== 'all') {
+                const cityId = risk.stores?.city_id;
+                if (cityId !== filters.cityId) return false;
+            }
+
+            if (Array.isArray(filters.cityIds) && filters.cityIds.length > 0) {
+                const cityId = risk.stores?.city_id;
+                if (!filters.cityIds.includes(cityId)) return false;
+            }
+
+            return true;
+        });
+
+        if (postFiltered.length === 0) return [];
+
         // --- NEW LOGIC: DB-Aware AI Insights and Quantities ---
         
         // 1. Get unique product IDs to check network-wide availability
-        const productIds = [...new Set(data.map(r => r.product_id))];
+        const productIds = [...new Set(postFiltered.map(r => r.product_id))];
 
         // 2. Fetch network-wide inventory for these products (to find transfer sources/destinations)
         const { data: networkInventory } = await supabase
@@ -106,7 +143,7 @@ export const inventoryService = {
         const { data: networkForecasts } = await forecastQuery;
 
         // Augment the retrieved risks
-        const augmentedData = data.map(risk => {
+        const augmentedData = postFiltered.map(risk => {
             // Find current store's inventory and forecast
             const localInv = networkInventory?.find(inv => inv.product_id === risk.product_id && inv.store_id === risk.store_id);
             const localForecast = networkForecasts?.find(f => f.product_id === risk.product_id && f.store_id === risk.store_id);

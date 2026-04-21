@@ -199,9 +199,9 @@ const TrendIntelligencePage = () => {
     const uniqueRegions = Array.from(new Set(trends.map(t => t.regions?.region_name).filter(Boolean))).sort();
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20">
+        <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header & Filters */}
-            <div className="sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#222] px-6 py-3 shadow-md">
+            <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border px-6 py-3 shadow-md">
                 {/* Breadcrumb */}
                 <div className="mb-2">
                     <Breadcrumb>
@@ -245,8 +245,8 @@ const TrendIntelligencePage = () => {
                         </div>
                         <div>
                             <div className="flex items-center space-x-3">
-                                <h1 className="text-xl font-bold text-white">Trend Intelligence</h1>
-                                <Badge variant="outline" className="text-yellow-500 border-yellow-500/30 bg-yellow-900/10 text-[10px] h-5">
+                                <h1 className="text-xl font-bold text-foreground">Trend Intelligence</h1>
+                                <Badge variant="outline" className="text-yellow-600 border-yellow-500/30 bg-yellow-100 dark:bg-yellow-900/10 text-[10px] h-5">
                                     <Zap className="w-3 h-3 mr-1" />
                                     Live
                                 </Badge>
@@ -255,24 +255,24 @@ const TrendIntelligencePage = () => {
                                     disabled={isTraining}
                                     variant="outline" 
                                     size="sm" 
-                                    className="h-6 px-2 text-[10px] bg-[#1a1a1a] border-[#333] text-purple-400 hover:text-purple-300 hover:bg-[#222]"
+                                    className="h-6 px-2 text-[10px] bg-card border-border text-purple-600 hover:text-purple-500 hover:bg-accent"
                                 >
                                     <RefreshCw className={`w-3 h-3 mr-1 ${isTraining ? 'animate-spin' : ''}`} />
                                     {isTraining ? 'Syncing...' : 'Sync & Retrain'}
                                 </Button>
                             </div>
-                            <p className="text-xs text-gray-400">Demand momentum signals & normalized scores across regional clusters.</p>
+                            <p className="text-xs text-muted-foreground">Demand momentum signals & normalized scores across regional clusters.</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Region Scope</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Region Scope</label>
                             <Select value={selectedCity} onValueChange={setSelectedCity}>
-                                <SelectTrigger className="h-9 w-[160px] bg-[#1a1a1a] border-[#333] text-sm text-white hover:border-blue-500/50 transition-colors">
+                                <SelectTrigger className="h-9 w-[160px] bg-card border-border text-sm text-foreground hover:border-blue-500/50 transition-colors">
                                     <SelectValue placeholder="All Regions" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#111] text-white">
+                                <SelectContent className="bg-card border-border text-foreground">
                                     <SelectItem value="all">Global System</SelectItem>
                                     {uniqueRegions.map(region => (
                                         <SelectItem key={region} value={region}>{region}</SelectItem>
@@ -306,11 +306,11 @@ const TrendIntelligencePage = () => {
                 {/* ── TOP LAYER: PULSE & BREAKOUTS ─────────────────── */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* System Pulse Gauge */}
-                    <Card className="lg:col-span-4 bg-[#111] border-[#222] relative overflow-hidden group">
+                    <Card className="lg:col-span-4 bg-card border-border relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[80px] group-hover:bg-blue-500/10 transition-all" />
                         <CardHeader className="pb-0">
-                            <CardTitle className="text-sm font-semibold text-gray-400 flex items-center gap-2">
-                                <Target className="w-4 h-4 text-blue-400" />
+                            <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+                                <Target className="w-4 h-4 text-blue-500" />
                                 System Performance Pulse
                             </CardTitle>
                         </CardHeader>
@@ -318,12 +318,12 @@ const TrendIntelligencePage = () => {
                             <div className="relative w-48 h-48 flex items-center justify-center">
                                 <Activity className="absolute w-12 h-12 text-blue-500/20 animate-pulse" />
                                 <div className="text-center z-10">
-                                    <div className="text-5xl font-black text-white tracking-tighter">{kpiData.score}</div>
-                                    <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mt-1">Velocity Index</div>
+                                    <div className="text-5xl font-black text-foreground tracking-tighter">{kpiData.score}</div>
+                                    <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-1">Velocity Index</div>
                                 </div>
                                 {/* SVG Gauge Background */}
                                 <svg className="absolute w-full h-full -rotate-90">
-                                    <circle cx="96" cy="96" r="88" fill="transparent" stroke="#222" strokeWidth="8" />
+                                    <circle cx="96" cy="96" r="88" fill="transparent" stroke="currentColor" opacity={0.1} strokeWidth="8" />
                                     <circle 
                                         cx="96" cy="96" r="88" fill="transparent" 
                                         stroke="url(#pulseGradient)" strokeWidth="8" 
@@ -371,24 +371,24 @@ const TrendIntelligencePage = () => {
                             <Separator className="bg-[#222]" />
 
                             <div className="space-y-4">
-                                <div className="flex items-center gap-2 text-purple-400">
+                                <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
                                     <Brain className="w-4 h-4" />
                                     <span className="text-xs font-bold uppercase tracking-widest">AI Engine: LightGBM</span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <div className="text-[10px] text-gray-500 uppercase">R² Score</div>
-                                        <div className="text-sm font-bold text-white">0.762</div>
+                                        <div className="text-[10px] text-muted-foreground uppercase">R² Score</div>
+                                        <div className="text-sm font-bold text-foreground">0.762</div>
                                     </div>
                                     <div>
-                                        <div className="text-[10px] text-gray-500 uppercase">Direction Acc</div>
-                                        <div className="text-sm font-bold text-white">89%</div>
+                                        <div className="text-[10px] text-muted-foreground uppercase">Direction Acc</div>
+                                        <div className="text-sm font-bold text-foreground">89%</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <Button className="w-full mt-6 bg-[#1a1a1a] hover:bg-[#222] border border-[#333] text-gray-300 text-xs h-8">
+                        <Button className="w-full mt-6 bg-card hover:bg-accent border border-border text-muted-foreground text-xs h-8">
                             View Detailed ML Report
                         </Button>
                     </Card>
@@ -525,16 +525,16 @@ const TrendIntelligencePage = () => {
                                     <div className="h-full flex items-center justify-center text-gray-600">No trend vectors detected for current filter.</div>
                                 ) : (
                                     <LineChart data={trendTimeline}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-                                        <XAxis dataKey="date" stroke="#555" fontSize={12} tickLine={false} axisLine={false} />
-                                        <YAxis stroke="#555" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
+                                        <XAxis dataKey="date" stroke="currentColor" opacity={0.5} fontSize={12} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="currentColor" opacity={0.5} fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#111', borderColor: '#333' }}
-                                            itemStyle={{ color: '#fff' }}
+                                            contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
+                                            itemStyle={{ color: 'hsl(var(--foreground))' }}
                                         />
-                                        <Legend />
+                                        <Legend wrapperStyle={{ color: 'hsl(var(--foreground))' }} />
                                         <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: '#3b82f6' }} activeDot={{ r: 6 }} name="Trend Score" />
-                                        <Line type="monotone" dataKey="baseline" stroke="#555" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Historical Baseline" />
+                                        <Line type="monotone" dataKey="baseline" stroke="currentColor" opacity={0.3} strokeWidth={2} strokeDasharray="5 5" dot={false} name="Historical Baseline" />
                                     </LineChart>
                                 )}
                             </ResponsiveContainer>
@@ -608,11 +608,11 @@ const TrendIntelligencePage = () => {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-6 gap-0.5 border border-[#222] rounded-lg overflow-hidden bg-[#1a1a1a]">
+                            <div className="grid grid-cols-6 gap-0.5 border border-border rounded-lg overflow-hidden bg-muted/20">
                                 {/* Header Row */}
-                                <div className="bg-[#111] p-3 text-xs font-bold text-gray-500 uppercase border-b border-r border-[#222]">Region</div>
+                                <div className="bg-card p-3 text-xs font-bold text-muted-foreground uppercase border-b border-r border-border">Region</div>
                                 {heatmapRows.length > 0 && heatmapRows[0].products.map((p, i) => (
-                                    <div key={i} className="bg-[#111] p-3 text-[10px] font-bold text-center text-gray-500 uppercase border-b border-r border-[#222] last:border-r-0 truncate">
+                                    <div key={i} className="bg-card p-3 text-[10px] font-bold text-center text-muted-foreground uppercase border-b border-r border-border last:border-r-0 truncate">
                                         {p.name}
                                     </div>
                                 ))}

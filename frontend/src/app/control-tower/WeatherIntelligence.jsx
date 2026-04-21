@@ -209,9 +209,9 @@ const WeatherIntelligencePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20">
+        <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header & Filters */}
-            <div className="sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#222] px-6 py-3 shadow-md">
+            <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border px-6 py-3 shadow-md">
                 {/* Breadcrumb */}
                 <div className="mb-2">
                     <Breadcrumb>
@@ -255,8 +255,8 @@ const WeatherIntelligencePage = () => {
                         </div>
                         <div>
                             <div className="flex items-center space-x-3">
-                                <h1 className="text-xl font-bold text-white">Weather Intelligence</h1>
-                                <Badge variant="outline" className="text-yellow-500 border-yellow-500/30 bg-yellow-900/10 text-[10px] h-5">
+                                <h1 className="text-xl font-bold text-foreground">Weather Intelligence</h1>
+                                <Badge variant="outline" className="text-yellow-600 border-yellow-500/30 bg-yellow-100 dark:bg-yellow-900/10 text-[10px] h-5">
                                     <Zap className="w-3 h-3 mr-1" />
                                     Live
                                 </Badge>
@@ -265,24 +265,24 @@ const WeatherIntelligencePage = () => {
                                     disabled={isTraining}
                                     variant="outline" 
                                     size="sm" 
-                                    className="h-6 px-2 text-[10px] bg-[#1a1a1a] border-[#333] text-purple-400 hover:text-purple-300 hover:bg-[#222]"
+                                    className="h-6 px-2 text-[10px] bg-card border-border text-purple-600 hover:text-purple-500 hover:bg-accent"
                                 >
                                     <RefreshCw className={`w-3 h-3 mr-1 ${isTraining ? 'animate-spin' : ''}`} />
                                     {isTraining ? 'Training Model...' : 'Sync & Retrain'}
                                 </Button>
                             </div>
-                            <p className="text-xs text-gray-500">Weather-driven demand & operational risk signals</p>
+                            <p className="text-xs text-muted-foreground">Weather-driven demand & operational risk signals</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Region / City</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Region / City</label>
                             <Select value={selectedCityId} onValueChange={setSelectedCityId}>
-                                <SelectTrigger className="h-9 w-[180px] bg-[#1a1a1a] border-[#333] text-sm text-white">
+                                <SelectTrigger className="h-9 w-[180px] bg-card border-border text-sm text-foreground">
                                     <SelectValue placeholder="Select City" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-card border-border text-foreground">
                                     {cities.map(city => (
                                         <SelectItem key={city.city_id} value={city.city_id}>{city.city_name}</SelectItem>
                                     ))}
@@ -291,12 +291,12 @@ const WeatherIntelligencePage = () => {
                         </div>
 
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Horizon</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Horizon</label>
                             <Select value={forecastHorizon} onValueChange={setForecastHorizon}>
-                                <SelectTrigger className="h-9 w-[140px] bg-[#1a1a1a] border-[#333] text-sm text-white">
+                                <SelectTrigger className="h-9 w-[140px] bg-card border-border text-sm text-foreground">
                                     <SelectValue placeholder="Next 7 Days" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-card border-border text-foreground">
                                     <SelectItem value="3">Next 3 Days</SelectItem>
                                     <SelectItem value="7">Next 7 Days</SelectItem>
                                     <SelectItem value="14">Next 14 Days</SelectItem>
@@ -305,12 +305,12 @@ const WeatherIntelligencePage = () => {
                         </div>
 
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Impact Focus</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Impact Focus</label>
                             <Select value={impactFocus} onValueChange={setImpactFocus}>
-                                <SelectTrigger className="h-9 w-[150px] bg-[#1a1a1a] border-[#333] text-sm text-white">
+                                <SelectTrigger className="h-9 w-[150px] bg-card border-border text-sm text-foreground">
                                     <SelectValue placeholder="Demand Impact" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-card border-border text-foreground">
                                     <SelectItem value="demand">Demand Impact</SelectItem>
                                     <SelectItem value="inventory">Inventory Risk</SelectItem>
                                     <SelectItem value="logistics">Logistics Risk</SelectItem>
@@ -324,26 +324,26 @@ const WeatherIntelligencePage = () => {
             <div className="p-6 w-full space-y-8">
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <Card className="bg-[#111] border-[#333] border-l-4 border-l-blue-500">
+                    <Card className="bg-card border-border border-l-4 border-l-blue-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold text-gray-400 uppercase">Operational Severity</CardTitle>
+                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Operational Severity</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{kpiData.severity}</div>
-                            <div className="mt-2 h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div className="text-2xl font-bold text-foreground">{kpiData.severity}</div>
+                            <div className="mt-2 h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                 <div className={`h-full ${kpiData.severity === 'High' ? 'bg-red-500' : 'bg-yellow-500'}`} style={{ width: kpiData.severity === 'High' ? '85%' : '45%' }} />
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] border-l-4 border-l-purple-500">
+                    <Card className="bg-card border-border border-l-4 border-l-purple-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold text-gray-400 uppercase">Weather Stress Index</CardTitle>
+                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Weather Stress Index</CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-col items-center">
                             <div className="relative h-12 w-24">
                                 <svg viewBox="0 0 100 50" className="w-full h-full">
-                                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#222" strokeWidth="8" />
+                                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="currentColor" opacity="0.1" strokeWidth="8" />
                                     <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#stressGradient)" strokeWidth="8" strokeDasharray="125.6" strokeDashoffset={125.6 - (125.6 * (kpiData.sensitivity === 'High' ? 0.8 : 0.4))} />
                                     <defs>
                                         <linearGradient id="stressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -353,44 +353,44 @@ const WeatherIntelligencePage = () => {
                                     </defs>
                                 </svg>
                                 <div className="absolute inset-0 flex items-end justify-center pb-1">
-                                    <span className="text-lg font-bold text-white">{kpiData.sensitivity === 'High' ? '82' : '48'}</span>
+                                    <span className="text-lg font-bold text-foreground">{kpiData.sensitivity === 'High' ? '82' : '48'}</span>
                                 </div>
                             </div>
-                            <span className="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-widest">{kpiData.sensitivity} Impact</span>
+                            <span className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-widest">{kpiData.sensitivity} Impact</span>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] border-l-4 border-l-orange-500">
+                    <Card className="bg-card border-border border-l-4 border-l-orange-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold text-gray-400 uppercase">Spoilage Risk</CardTitle>
+                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Spoilage Risk</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{kpiData.spoilage}</div>
-                            <div className="flex items-center text-xs text-orange-500 mt-1">
+                            <div className="text-2xl font-bold text-foreground">{kpiData.spoilage}</div>
+                            <div className="flex items-center text-xs text-orange-600 dark:text-orange-500 mt-1">
                                 <TrendingUp className="w-3 h-3 mr-1" /> Heat Stress Active
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] border-l-4 border-l-green-500">
+                    <Card className="bg-card border-border border-l-4 border-l-green-500">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold text-gray-400 uppercase">Logistics Status</CardTitle>
+                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Logistics Status</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{kpiData.logistics}</div>
-                            <div className="flex items-center text-xs text-green-500 mt-1">
+                            <div className="text-2xl font-bold text-foreground">{kpiData.logistics}</div>
+                            <div className="flex items-center text-xs text-green-600 dark:text-green-500 mt-1">
                                 <Truck className="w-3 h-3 mr-1" /> Last-mile normal
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] border-l-4 border-l-blue-400">
+                    <Card className="bg-card border-border border-l-4 border-l-blue-400">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold text-gray-400 uppercase">Active Alerts</CardTitle>
+                            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase">Active Alerts</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{advisories.length}</div>
-                            <div className="flex items-center text-xs text-blue-400 mt-1">
+                            <div className="text-2xl font-bold text-foreground">{advisories.length}</div>
+                            <div className="flex items-center text-xs text-blue-600 dark:text-blue-400 mt-1">
                                 <Zap className="w-3 h-3 mr-1" /> Actionable Insights
                             </div>
                         </CardContent>
@@ -398,35 +398,35 @@ const WeatherIntelligencePage = () => {
                 </div>
 
                 {/* 7-Day Forecast */}
-                <Card className="bg-[#111] border-[#333]">
+                <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-white">Upcoming Weather Conditions</CardTitle>
-                        <CardDescription className="text-gray-400">{forecastHorizon}-Day forecast for {activeCityName}</CardDescription>
+                        <CardTitle className="text-foreground">Upcoming Weather Conditions</CardTitle>
+                        <CardDescription className="text-muted-foreground">{forecastHorizon}-Day forecast for {activeCityName}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                             {loading ? (
-                                <div className="col-span-full text-center py-10 text-gray-500 italic">Syncing regional sensors...</div>
+                                <div className="col-span-full text-center py-10 text-muted-foreground italic">Syncing regional sensors...</div>
                             ) : forecast.length > 0 ? forecast.map((day, i) => {
                                 const Icon = day.icon;
                                 const isDisruption = day.weather_condition?.includes('Rain') || day.weather_condition?.includes('Storm');
                                 return (
-                                    <div key={i} className={`flex flex-col items-center p-3 rounded-lg border ${isDisruption ? 'bg-blue-900/10 border-blue-800/30 shadow-inner shadow-blue-500/5' : 'bg-[#1a1a1a] border-[#333]'}`}>
-                                        <span className="text-[10px] text-gray-500 mb-1 uppercase tracking-tighter">{day.date}</span>
-                                        <span className="text-sm font-bold text-white mb-2">{day.day}</span>
+                                    <div key={i} className={`flex flex-col items-center p-3 rounded-lg border ${isDisruption ? 'bg-blue-500/10 border-blue-200 dark:border-blue-800/30 shadow-inner' : 'bg-muted/30 border-border'}`}>
+                                        <span className="text-[10px] text-muted-foreground mb-1 uppercase tracking-tighter">{day.date}</span>
+                                        <span className="text-sm font-bold text-foreground mb-2">{day.day}</span>
                                         <Icon className={`w-8 h-8 mb-2 ${day.weather_condition?.includes('Sunny') ? 'text-yellow-500' :
-                                            day.weather_condition?.includes('Rain') ? 'text-blue-500' : 'text-gray-400'
+                                            day.weather_condition?.includes('Rain') ? 'text-blue-500' : 'text-muted-foreground'
                                             }`} />
                                         <div className="text-center">
-                                            <div className="text-lg font-bold text-white">{day.temp}°C</div>
-                                            <div className="text-[10px] text-gray-500 mt-1 flex items-center justify-center">
+                                            <div className="text-lg font-bold text-foreground">{day.temp}°C</div>
+                                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center justify-center">
                                                 <Droplets className="w-3 h-3 mr-1" /> {Math.round(day.humidity)}%
                                             </div>
                                         </div>
                                     </div>
                                 )
                             }) : (
-                                <div className="col-span-full text-center py-10 text-gray-500 italic">No forecast data available for this region.</div>
+                                <div className="col-span-full text-center py-10 text-muted-foreground italic">No forecast data available for this region.</div>
                             )}
                         </div>
                     </CardContent>
@@ -434,53 +434,54 @@ const WeatherIntelligencePage = () => {
 
                 {/* Business Impact Analysis */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <Card className="lg:col-span-2 bg-[#111] border-[#333]">
+                    <Card className="lg:col-span-2 bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white">Weather-Driven Expected Demand</CardTitle>
-                            <CardDescription className="text-gray-400">Projected metrics based on environmental signals.</CardDescription>
+                            <CardTitle className="text-foreground">Weather-Driven Expected Demand</CardTitle>
+                            <CardDescription className="text-muted-foreground">Projected metrics based on environmental signals.</CardDescription>
                         </CardHeader>
                         <CardContent className="h-[300px]">
                             {loading ? (
-                                <div className="h-full flex items-center justify-center text-gray-600 italic">Regressing environmental deltas...</div>
+                                <div className="h-full flex items-center justify-center text-muted-foreground italic">Regressing environmental deltas...</div>
                             ) : demandImpact.length > 0 ? (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={demandImpact}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-                                        <XAxis dataKey="day" stroke="#555" fontSize={11} tickLine={false} axisLine={false} />
-                                        <YAxis stroke="#555" fontSize={11} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} vertical={false} />
+                                        <XAxis dataKey="day" stroke="currentColor" opacity={0.5} fontSize={11} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="currentColor" opacity={0.5} fontSize={11} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }}
-                                            itemStyle={{ fontSize: '12px' }}
+                                            contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
+                                            itemStyle={{ fontSize: '12px', color: 'hsl(var(--foreground))' }}
                                         />
-                                        <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px' }} />
+                                        <Legend wrapperStyle={{ paddingTop: '20px', fontSize: '11px', color: 'hsl(var(--foreground))' }} />
                                         <Line type="monotone" dataKey="impacted" stroke="#3b82f6" strokeWidth={3} name="Predicted Demand" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 0 }} activeDot={{ r: 6 }} />
                                         <Line type="monotone" dataKey="actualStock" stroke="#ef4444" strokeWidth={2} name="Actual Available Stock" dot={{ r: 3, fill: '#ef4444' }} strokeDasharray="4 4" />
-                                        <Line type="monotone" dataKey="baseline" stroke="#444" strokeWidth={1} name="Baseline (Avg)" dot={false} strokeDasharray="8 8" />
+                                        <Line type="monotone" dataKey="baseline" stroke="currentColor" opacity={0.2} strokeWidth={1} name="Baseline (Avg)" dot={false} strokeDasharray="8 8" />
                                     </LineChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div className="h-full flex items-center justify-center text-gray-600 italic">No impact vectors detected.</div>
+                                <div className="h-full flex items-center justify-center text-muted-foreground italic">No impact vectors detected.</div>
                             )}
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white">Category Sensitivity</CardTitle>
-                            <CardDescription className="text-gray-400">Impact by grouping.</CardDescription>
+                            <CardTitle className="text-foreground">Category Sensitivity</CardTitle>
+                            <CardDescription className="text-muted-foreground">Impact by grouping.</CardDescription>
                         </CardHeader>
                         <CardContent className="h-[300px]">
                             {loading ? (
-                                <div className="h-full flex items-center justify-center text-gray-600 italic">Calculating elasticities...</div>
+                                <div className="h-full flex items-center justify-center text-muted-foreground italic">Calculating elasticities...</div>
                             ) : categoryImpact.length > 0 ? (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={categoryImpact} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#222" />
-                                        <XAxis type="number" stroke="#555" fontSize={10} hide />
-                                        <YAxis dataKey="category" type="category" stroke="#fff" fontSize={10} width={80} axisLine={false} tickLine={false} />
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" opacity={0.1} />
+                                        <XAxis type="number" stroke="currentColor" opacity={0.5} fontSize={10} hide />
+                                        <YAxis dataKey="category" type="category" stroke="currentColor" opacity={0.8} fontSize={10} width={80} axisLine={false} tickLine={false} />
                                         <Tooltip
-                                            cursor={{ fill: '#ffffff10' }}
-                                            contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '6px' }}
+                                            cursor={{ fill: 'currentColor', opacity: 0.05 }}
+                                            contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '6px' }}
+                                            itemStyle={{ color: 'hsl(var(--foreground))' }}
                                         />
                                         <Bar dataKey="impact" radius={[0, 4, 4, 0]} barSize={18}>
                                             {categoryImpact.map((entry, index) => (
@@ -490,7 +491,7 @@ const WeatherIntelligencePage = () => {
                                     </BarChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div className="h-full flex items-center justify-center text-gray-600 italic">No category data.</div>
+                                <div className="h-full flex items-center justify-center text-muted-foreground italic">No category data.</div>
                             )}
                         </CardContent>
                     </Card>
@@ -498,42 +499,42 @@ const WeatherIntelligencePage = () => {
 
                 {/* Risk Panels & Insights */}
                 <div className="w-full">
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white flex items-center">
+                            <CardTitle className="text-foreground flex items-center">
                                 <AlertTriangle className="w-5 h-5 mr-2 text-yellow-500" />
                                 High-Risk SKUs
                             </CardTitle>
-                            <CardDescription className="text-gray-400">Inventory requiring attention.</CardDescription>
+                            <CardDescription className="text-muted-foreground">Inventory requiring attention.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
-                                    <TableRow className="border-[#222] hover:bg-transparent">
-                                        <TableHead className="text-gray-400">SKU Profile</TableHead>
-                                        <TableHead className="text-gray-400">Primary Driver</TableHead>
-                                        <TableHead className="text-gray-400">Operational Risk</TableHead>
-                                        <TableHead className="text-gray-400 text-right">Confidence</TableHead>
+                                    <TableRow className="border-border hover:bg-transparent">
+                                        <TableHead className="text-muted-foreground">SKU Profile</TableHead>
+                                        <TableHead className="text-muted-foreground">Primary Driver</TableHead>
+                                        <TableHead className="text-muted-foreground">Operational Risk</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Confidence</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {loading ? (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center py-10 text-gray-600 italic">Scanning SKU volatility...</TableCell>
+                                            <TableCell colSpan={4} className="text-center py-10 text-muted-foreground italic">Scanning SKU volatility...</TableCell>
                                         </TableRow>
                                     ) : riskSkus.length > 0 ? riskSkus.map((item, i) => (
-                                        <TableRow key={i} className="border-[#222] hover:bg-[#1a1a1a]">
+                                        <TableRow key={i} className="border-border hover:bg-accent transition-colors">
                                             <TableCell>
                                                 <div className="flex flex-col">
-                                                    <div className="font-semibold text-white flex items-center">
+                                                    <div className="font-semibold text-foreground flex items-center">
                                                         {item.sku}
-                                                        {item.trend === 'up' && <ArrowUpRight className="w-3 h-3 ml-1 text-blue-400" />}
-                                                        {item.trend === 'down' && <ArrowDownRight className="w-3 h-3 ml-1 text-red-400" />}
+                                                        {item.trend === 'up' && <ArrowUpRight className="w-3 h-3 ml-1 text-blue-500" />}
+                                                        {item.trend === 'down' && <ArrowDownRight className="w-3 h-3 ml-1 text-red-500" />}
                                                     </div>
-                                                    <div className="text-[10px] text-gray-500 uppercase tracking-widest">{item.advice}</div>
+                                                    <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{item.advice}</div>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-gray-300">
+                                            <TableCell className="text-muted-foreground">
                                                 <div className="flex items-center text-xs">
                                                     {item.type.includes('Spoilage') || item.type.includes('Wilt') ? <Thermometer className="w-3 h-3 mr-1 text-orange-500" /> : <Droplets className="w-3 h-3 mr-1 text-blue-500" />}
                                                     {item.type}
@@ -542,10 +543,10 @@ const WeatherIntelligencePage = () => {
                                             <TableCell>
                                                 <div className="w-24">
                                                     <div className="flex justify-between text-[10px] mb-1">
-                                                        <span className="text-gray-500">{item.risk}</span>
-                                                        <span className="text-white">{item.risk === 'High' ? '85' : item.risk === 'Medium' ? '50' : '20'}%</span>
+                                                        <span className="text-muted-foreground">{item.risk}</span>
+                                                        <span className="text-foreground">{item.risk === 'High' ? '85' : item.risk === 'Medium' ? '50' : '20'}%</span>
                                                     </div>
-                                                    <div className="h-1 w-full bg-[#222] rounded-full overflow-hidden">
+                                                    <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
                                                         <div 
                                                             className={`h-full ${item.risk === 'High' ? 'bg-red-500' : item.risk === 'Medium' ? 'bg-yellow-500' : 'bg-green-500'}`} 
                                                             style={{ width: item.risk === 'High' ? '85%' : item.risk === 'Medium' ? '50%' : '20%' }} 
@@ -555,14 +556,14 @@ const WeatherIntelligencePage = () => {
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-blue-400 font-mono text-xs font-bold">{item.confidence}%</span>
-                                                    <Badge variant="outline" className="text-[9px] h-3.5 px-1 border-blue-900/30 text-blue-500">AI VERIFIED</Badge>
+                                                    <span className="text-blue-600 dark:text-blue-400 font-mono text-xs font-bold">{item.confidence}%</span>
+                                                    <Badge variant="outline" className="text-[9px] h-3.5 px-1 border-blue-200 dark:border-blue-900/30 text-blue-600 dark:text-blue-500">AI VERIFIED</Badge>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
                                     )) : (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center py-10 text-gray-600 italic">No acute environmental risks detected.</TableCell>
+                                            <TableCell colSpan={4} className="text-center py-10 text-muted-foreground italic">No acute environmental risks detected.</TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>

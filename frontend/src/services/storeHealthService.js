@@ -9,21 +9,33 @@ export const storeHealthService = {
     /**
      * Fetches comprehensive health data for a specific store.
      */
-    async getStoreHealth(storeId) {
+    async getStoreHealth(storeId, filters = {}) {
         if (!storeId || storeId === 'all') return null;
 
         // 1. Fetch persistent metrics from DB
-        const { data: dbMetrics, error: mError } = await supabase
+        let metricQuery = supabase
             .from('store_health_metrics')
             .select('dimension_name, score_value, trend_direction')
             .eq('store_id', storeId);
+
+        if (filters.daysBack && Number(filters.daysBack) > 0) {
+            const startDate = new Date();
+            startDate.setHours(startDate.getHours() - Number(filters.daysBack));
+            metricQuery = metricQuery.gte('recorded_at', startDate.toISOString());
+        }
+
+        const { data: dbMetrics, error: mError } = await metricQuery;
 
         if (mError) {
             console.warn("Failed to fetch persistent metrics, falling back to derivation:", mError);
         }
 
         // 2. Fetch current inventory risks for this store (Dynamic)
-        const risks = await inventoryService.getInventoryRisksFiltered({ storeId });
+        const risks = await inventoryService.getInventoryRisksFiltered({
+            storeId,
+            cityId: filters.cityId || 'all',
+            daysBack: filters.daysBack,
+        });
 
         // 3. Count severity types
         const criticalCount = risks.filter(r => r.severity_level === 'Critical').length;
@@ -32,7 +44,8 @@ export const storeHealthService = {
         // 4. Map Metrics (Prefer DB, fallback to derivation if not seeded)
         const getMetric = (name, fallback) => {
             const m = dbMetrics?.find(dm => dm.dimension_name === name);
-            return m ? Number(m.score_value) : fallback;
+            const score = m ? Number(m.score_value) : fallback;
+            return Math.max(0, Math.min(100, Number.isFinite(score) ? score : fallback));
         };
 
         const demandReadiness = getMetric("Demand Readiness", Math.max(0, 92 - (risks.filter(r => r.risk_type === 'Shortage').length * 4)));
@@ -43,10 +56,19 @@ export const storeHealthService = {
 
         // Overall score: Weighted average with penalties for criticals
         const rawAverage = (demandReadiness + inventoryStability + opsEfficiency + checkoutSpeed + aiConfidence) / 5;
-        const healthScore = Math.round(rawAverage - (criticalCount * 2));
+        const healthScore = Math.max(0, Math.min(100, Math.round(rawAverage - (criticalCount * 2))));
+
+        const severityRank = { Critical: 0, High: 1, Medium: 2, Low: 3 };
 
         // 5. Transform Risky Items into Attention Queue
-        const attentionQueue = risks.slice(0, 5).map(risk => ({
+        const attentionQueue = [...risks]
+            .sort((a, b) => {
+                const severityDelta = (severityRank[a.severity_level] ?? 4) - (severityRank[b.severity_level] ?? 4);
+                if (severityDelta !== 0) return severityDelta;
+                return new Date(b.detected_at || 0) - new Date(a.detected_at || 0);
+            })
+            .slice(0, 5)
+            .map(risk => ({
             id: risk.risk_id,
             issue: `${risk.risk_type} Risk`,
             desc: `${risk.products?.product_name}: ${risk.ai_insight}`,
@@ -82,11 +104,11 @@ export const storeHealthService = {
     /**
      * Generates an in-depth operational summary for a specific store.
      */
-    async getStoreSummary(storeId) {
+    async getStoreSummary(storeId, filters = {}) {
         if (!storeId || storeId === 'all') return null;
 
         // Fetch health data for context
-        const health = await this.getStoreHealth(storeId);
+        const health = await this.getStoreHealth(storeId, filters);
         if (!health) return null;
 
         // Pick a persistent narrative based on the Strategic Summary score value
