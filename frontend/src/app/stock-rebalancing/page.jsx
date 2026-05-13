@@ -282,263 +282,244 @@ const StockRebalancingPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30 pb-20">
-            {/* 1. HEADER & CONTROLS */}
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
-                <div className="px-6 py-2 border-b border-[#222]/50">
+        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-blue-500/30 pb-20">
+            {/* Header & Filters */}
+            <div className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-3 shadow-md">
+                {/* Breadcrumb */}
+                <div className="mb-2">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[10px]">
-                                    <Home className="w-3 h-3" /> {role === 'vendor' ? 'Vendor Portal' : 'Home'}
+                                <BreadcrumbLink
+                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/')}
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                >
+                                    <Home className="w-3 h-3" />
+                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            {fromControlTower && (
+                            <BreadcrumbSeparator className="text-gray-600" />
+                            {fromControlTower && role !== 'vendor' && (
                                 <>
-                                    <BreadcrumbSeparator />
                                     <BreadcrumbItem>
-                                        <BreadcrumbLink onClick={() => navigate('/control-tower')} className="text-gray-500 hover:text-blue-400 cursor-pointer text-[10px]">Control Tower</BreadcrumbLink>
+                                        <BreadcrumbLink
+                                            onClick={() => navigate('/control-tower')}
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                        >
+                                            Control Tower
+                                        </BreadcrumbLink>
                                     </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="text-gray-600" />
                                 </>
                             )}
-                            <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="text-blue-400 text-[10px]">Stock Rebalancing</BreadcrumbPage>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
+                                    Stock Rebalancing
+                                </BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
 
-                <div className="px-6 py-3">
-                    <div className="flex items-center justify-between gap-6">
-                        {/* Title Section */}
-                        <div className="flex items-center space-x-3 shrink-0">
-                            <div className="p-2 bg-blue-900/20 rounded-lg">
-                                <ArrowRightLeft className="w-5 h-5 text-blue-500" />
-                            </div>
-                            <h1 className="text-lg font-bold text-white tracking-tight">Stock Rebalancing</h1>
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-blue-500/10 rounded-lg">
+                            <ArrowRightLeft className="w-6 h-6 text-blue-500" />
                         </div>
-
-                        {/* Filters Row - Single Line */}
-                        <div className="flex flex-1 items-center gap-3 overflow-x-auto no-scrollbar">
-                            <div className="flex flex-col space-y-1">
-                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">City</label>
-                                <Select value={selectedCity} onValueChange={setSelectedCity}>
-                                    <SelectTrigger className="w-[130px] h-8 bg-[#1a1a1a] border-[#333] text-white text-[11px]">
-                                        <SelectValue placeholder="City" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                                        {INDIAN_CITIES.map(city => (
-                                            <SelectItem key={city} value={city}>{city}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="flex flex-col space-y-1">
-                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Analysis Date</label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button variant={"outline"} className="w-[150px] h-8 justify-start text-left font-normal bg-[#1a1a1a] border-[#333] text-white text-[11px]">
-                                            <CalendarIcon className="mr-2 h-3 w-3 text-blue-400" />
-                                            {date ? format(date, "MMM dd, yyyy") : <span>Date</span>}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0 bg-[#111] border-[#333]" align="start">
-                                        <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} initialFocus className="bg-[#111] text-white" />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-
-                            <div className="flex flex-col space-y-1">
-                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Source Store</label>
-                                <Select value={selectedSourceStore} onValueChange={setSelectedSourceStore}>
-                                    <SelectTrigger className="w-[160px] h-8 bg-[#1a1a1a] border-[#333] text-white text-[11px]">
-                                        <SelectValue placeholder="All Stores" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                                        <SelectItem value="all">All Stores</SelectItem>
-                                        <SelectItem value="delhi-402">Store 402 (Delhi)</SelectItem>
-                                        <SelectItem value="gurgaon-115">Store 115 (Gurgaon)</SelectItem>
-                                        <SelectItem value="mumbai-892">Store 892 (Mumbai)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="flex flex-col space-y-1">
-                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Category</label>
-                                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                                    <SelectTrigger className="w-[130px] h-8 bg-[#1a1a1a] border-[#333] text-white text-[11px]">
-                                        <SelectValue placeholder="All Categories" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                                        <SelectItem value="all">All Categories</SelectItem>
-                                        <SelectItem value="staples">Staples</SelectItem>
-                                        <SelectItem value="dairy">Dairy</SelectItem>
-                                        <SelectItem value="snacks">Snacks</SelectItem>
-                                        <SelectItem value="produce">Produce</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="flex flex-col space-y-1">
-                                <label className="text-[9px] font-bold text-gray-500 uppercase ml-1">Status</label>
-                                <div className="h-8 flex items-center bg-[#1a1a1a] rounded-md px-3 border border-[#333]">
-                                    <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'} mr-2`}></span>
-                                    <span className="text-[10px] text-gray-300 font-medium">Live</span>
+                        <div>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-xl font-bold text-foreground tracking-tight">Stock Rebalancing Engine</h1>
+                                <Badge variant="outline" className="text-blue-500 border-blue-500/30 bg-blue-100 dark:bg-blue-900/10 text-[10px] h-5">
+                                    AI Optimized
+                                </Badge>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-card border border-border text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                    Live Inventory
                                 </div>
                             </div>
+                            <p className="text-xs text-muted-foreground">Inter-store inventory optimization to minimize spoilage and maximize availability.</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex flex-col space-y-1">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Region Focus</label>
+                            <Select value={selectedCity} onValueChange={setSelectedCity}>
+                                <SelectTrigger className="h-9 w-[130px] bg-card border-border text-sm text-foreground hover:border-blue-500/50 transition-colors">
+                                    <SelectValue placeholder="City" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-card border-border text-foreground">
+                                    {INDIAN_CITIES.map(city => (
+                                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
-                        {/* Add Button */}
-                        <div className="shrink-0 pt-4">
+                        <div className="flex flex-col space-y-1">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Analysis Date</label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button variant={"outline"} className="w-[150px] h-9 justify-start text-left font-normal bg-card border-border text-foreground text-xs hover:border-blue-500/50 transition-colors">
+                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                                        {date ? format(date, "MMM dd, yyyy") : <span>Date</span>}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="start">
+                                    <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} initialFocus className="bg-card text-foreground" />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+
+                        <div className="shrink-0 self-end">
                             <Button
-                                className="h-9 bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-900/20 px-4"
+                                className="h-9 bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-900/20 px-4 text-xs font-semibold"
                                 onClick={() => {
                                     resetRecommendationForm();
                                     setCreateSheetOpen(true);
                                 }}
                             >
-                                <ShoppingCart className="w-4 h-4 mr-2" /> <span className="hidden xl:inline">Add Recommendation</span><span className="xl:hidden">Add</span>
+                                <ShoppingCart className="w-3.5 h-3.5 mr-2" /> Add Recommendation
                             </Button>
                         </div>
                     </div>
                 </div>
-            </header>
+            </div>
 
             <div className="p-6 w-full space-y-6">
 
                 {/* 2. SOURCE STORE RISK SUMMARY */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-blue-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Excess Stock Units</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Excess Stock Units</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-white">{summary.excessStockUnits.toLocaleString()}</div>
-                            <p className="text-xs text-red-400 mt-1 font-medium flex items-center">
-                                across 15 SKUs
+                            <div className="text-3xl font-bold text-foreground tabular-nums">{summary.excessStockUnits.toLocaleString()}</div>
+                            <p className="text-[10px] text-red-500 mt-1 font-semibold uppercase tracking-wider">
+                                Distribution Surplus
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-orange-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Spoilage Risk</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Spoilage Risk</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-orange-500">{summary.spoilageRisk}</div>
-                            <p className="text-xs text-gray-300 mt-1 flex items-center font-medium">
-                                $1.2k potential loss (48h)
+                            <div className="text-3xl font-bold text-orange-500 tabular-nums">{summary.spoilageRisk}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center font-medium uppercase tracking-wider">
+                                $1.2k Value Exposed
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-blue-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Low Demand Confidence</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Demand Confidence</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-white">{summary.lowDemandConfidence}</div>
-                            <p className="text-xs text-gray-300 mt-1 flex items-center font-medium">
-                                of items have declining forecast
+                            <div className="text-3xl font-bold text-foreground tabular-nums">{summary.lowDemandConfidence}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center font-medium uppercase tracking-wider">
+                                Forecast Alignment
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-blue-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Insight</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">AI Strategic Insight</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-blue-300 leading-relaxed">"{summary.insight}"</p>
+                            <p className="text-xs text-blue-400 font-medium leading-relaxed">"{summary.insight}"</p>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* 3. RECOMMENDATIONS TABLE */}
-                <Card className="bg-[#111] border-[#333]">
-                    <CardHeader className="border-b border-[#222] py-4 bg-[#141414]">
-                        <CardTitle className="text-lg font-bold text-white flex items-center">
+                <Card className="bg-card border-border overflow-hidden">
+                    <CardHeader className="border-b border-border py-4 bg-muted/30">
+                        <CardTitle className="text-lg font-bold text-foreground flex items-center">
                             <ShieldCheck className="w-5 h-5 mr-2 text-green-500" />
                             AI Transfer Recommendations
                         </CardTitle>
-                        <CardDescription className="text-gray-400">Ranked by highest net inventory risk reduction</CardDescription>
+                        <CardDescription className="text-muted-foreground text-xs">Ranked by highest net inventory risk reduction</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
-                            <TableHeader className="bg-[#1a1a1a]">
-                                <TableRow className="border-none hover:bg-transparent">
-                                    <TableHead className="text-gray-400 font-bold">Product / SKU</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Source</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Destination</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Transfer Qty</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Demand Gap (Dest)</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Risk Reduction</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Confidence</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Logistics</TableHead>
-                                    <TableHead className="w-[50px]"></TableHead>
+                            <TableHeader className="bg-muted/50">
+                                <TableRow className="border-border hover:bg-transparent">
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Product / SKU</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Source</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Destination</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Transfer Qty</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Demand Gap</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Risk Reduction</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Confidence</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Logistics</TableHead>
+                                    <TableHead className="w-[50px] h-10"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {transferRecommendations.map((rec) => (
                                     <React.Fragment key={rec.id}>
                                         <TableRow
-                                            className={`border-b border-[#222] hover:bg-[#1a1a1a] transition-colors cursor-pointer group ${rec.id === selectedTransfer?.id ? 'bg-[#1a1a1a] border-blue-900/50' : ''}`}
+                                            className={`border-b border-border hover:bg-muted transition-colors cursor-pointer group ${rec.id === selectedTransfer?.id ? 'bg-muted' : ''}`}
                                             onClick={() => setSelectedTransfer(selectedTransfer?.id === rec.id ? null : rec)}
                                         >
                                             <TableCell>
-                                                <div className="font-medium text-white">{rec.marketingName}</div>
-                                                <div className="text-xs text-gray-400">{rec.skuId}</div>
+                                                <div className="font-semibold text-foreground text-sm tracking-tight">{rec.marketingName}</div>
+                                                <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono mt-0.5">{rec.skuId}</div>
                                             </TableCell>
-                                            <TableCell className="text-gray-300 text-sm">{rec.sourceStore}</TableCell>
-                                            <TableCell className="text-blue-300 font-medium text-sm flex items-center">
+                                            <TableCell className="text-muted-foreground text-xs">{rec.sourceStore}</TableCell>
+                                            <TableCell className="text-blue-500 font-medium text-xs flex items-center">
                                                 {rec.destStore} <ArrowRight className="w-3 h-3 ml-1" />
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="bg-[#222] text-white border-[#444]">
+                                                <Badge variant="outline" className="bg-card text-foreground border-border text-[10px] h-5">
                                                     {rec.qty} {rec.unit}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-red-400 text-sm font-medium">{rec.demandGap}</TableCell>
+                                            <TableCell className="text-red-500 text-xs font-bold tabular-nums">{rec.demandGap}</TableCell>
                                             <TableCell>
                                                 <Badge variant="outline" className={`
-                                                    ${rec.riskReduction === 'High' ? 'text-green-400 border-green-900 bg-green-900/10' :
-                                                        'text-yellow-400 border-yellow-900 bg-yellow-900/10'}
+                                                    ${rec.riskReduction === 'High' ? 'text-green-600 border-green-500/30 bg-green-100 dark:bg-green-900/10' :
+                                                        'text-yellow-600 border-yellow-500/30 bg-yellow-100 dark:bg-yellow-900/10'}
+                                                    text-[10px] h-5
                                                 `}>
                                                     {rec.riskReduction}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
-                                                    <Progress value={rec.confidence} className="w-16 h-1.5 bg-[#222]" />
-                                                    <span className="text-xs text-gray-300">{rec.confidence}%</span>
+                                                    <Progress value={rec.confidence} className="w-12 h-1 bg-muted" />
+                                                    <span className="text-[11px] text-muted-foreground tabular-nums">{rec.confidence}%</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center text-xs text-gray-300">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <div className="flex items-center text-[11px] text-muted-foreground">
                                                         <Truck className="w-3 h-3 mr-1" /> {rec.time}
                                                     </div>
                                                     {rec.feasibility === 'Risky' && (
-                                                        <span className="text-[10px] text-red-500 font-bold uppercase">Risky</span>
+                                                        <span className="text-[9px] text-red-500 font-bold uppercase tracking-tighter">Logistics Risk</span>
                                                     )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${selectedTransfer?.id === rec.id ? 'rotate-180' : ''}`} />
+                                                <ChevronDown className={`w-4 h-4 text-muted-foreground/40 transition-transform ${selectedTransfer?.id === rec.id ? 'rotate-180 text-blue-500' : ''}`} />
                                             </TableCell>
                                         </TableRow>
 
                                         {/* EXPANDED SIMULATION VIEW */}
                                         {selectedTransfer?.id === rec.id && (
-                                            <TableRow className="bg-[#141414] hover:bg-[#141414] border-b border-[#222]">
+                                            <TableRow className="bg-muted/30 hover:bg-muted/30 border-b border-border">
                                                 <TableCell colSpan={9} className="p-6">
                                                     <div className="flex flex-col space-y-6">
                                                         {/* AI Logic / Explanation Section */}
-                                                        <div className="bg-blue-900/10 border border-blue-900/30 rounded-lg p-4">
+                                                        <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-4">
                                                             <div className="flex items-center gap-2 mb-2">
-                                                                <Brain className="w-4 h-4 text-blue-400" />
-                                                                <h3 className="text-sm font-bold text-blue-400 uppercase tracking-wider">AI Recommendation Logic</h3>
+                                                                <Brain className="w-4 h-4 text-blue-500" />
+                                                                <h3 className="text-xs font-bold text-blue-500 uppercase tracking-widest">AI Strategic Rationale</h3>
                                                             </div>
-                                                            <p className="text-sm text-blue-100 leading-relaxed italic">
+                                                            <p className="text-sm text-foreground/80 leading-relaxed italic">
                                                                 "{rec.explanation || "System generated recommendation based on real-time inventory levels and demand forecasting models. This shift optimizes regional availability and minimizes spoilage risk."}"
                                                             </p>
                                                         </div>
@@ -546,40 +527,40 @@ const StockRebalancingPage = () => {
                                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                                             {/* Simulation: Before/After */}
                                                             <div className="col-span-2 space-y-4">
-                                                                <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
+                                                                <h3 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center">
                                                                     <BarChart3 className="w-4 h-4 mr-2 text-blue-500" /> Transfer Impact Simulation
                                                                 </h3>
 
                                                                 <div className="grid grid-cols-2 gap-4">
-                                                                    <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
+                                                                    <div className="bg-card border border-border rounded-lg p-4 relative overflow-hidden shadow-sm">
                                                                         <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                                                                        <h4 className="text-gray-300 text-xs uppercase mb-2">Source: {rec.sourceStore}</h4>
+                                                                        <h4 className="text-muted-foreground text-[10px] font-bold uppercase mb-2 tracking-wider">Source: {rec.sourceStore}</h4>
                                                                         <div className="flex justify-between items-end">
-                                                                            <div className="text-gray-400 line-through text-sm">Overstocked</div>
-                                                                            <ArrowRight className="w-4 h-4 text-gray-500" />
-                                                                            <div className="text-green-400 font-bold">Optimal</div>
+                                                                            <div className="text-muted-foreground line-through text-xs font-medium">Overstocked</div>
+                                                                            <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/30" />
+                                                                            <div className="text-green-500 font-bold text-sm">Balanced</div>
                                                                         </div>
-                                                                        <div className="mt-2 text-xs text-gray-400">
-                                                                            Current: <span className="text-red-400 font-medium">Excess (+{rec.sourceMetrics?.overstock || '20%'})</span>
+                                                                        <div className="mt-3 text-[11px] text-muted-foreground">
+                                                                            Current: <span className="text-red-500 font-semibold">Excess (+{rec.sourceMetrics?.overstock || '20%'})</span>
                                                                         </div>
-                                                                        <div className="mt-1 text-xs text-gray-400">
-                                                                            Post-Transfer: <span className="text-green-500 font-medium">Balanced</span>
+                                                                        <div className="mt-1 text-[11px] text-muted-foreground">
+                                                                            Result: <span className="text-green-500 font-semibold tracking-tight">Optimal Par Level</span>
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
+                                                                    <div className="bg-card border border-border rounded-lg p-4 relative overflow-hidden shadow-sm">
                                                                         <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
-                                                                        <h4 className="text-gray-300 text-xs uppercase mb-2">Destination: {rec.destStore}</h4>
+                                                                        <h4 className="text-muted-foreground text-[10px] font-bold uppercase mb-2 tracking-wider">Destination: {rec.destStore}</h4>
                                                                         <div className="flex justify-between items-end">
-                                                                            <div className="text-red-500 text-sm">Stockout Risk</div>
-                                                                            <ArrowRight className="w-4 h-4 text-gray-500" />
-                                                                            <div className="text-green-400 font-bold">Covered</div>
+                                                                            <div className="text-red-500 text-xs font-bold">Stockout Risk</div>
+                                                                            <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/30" />
+                                                                            <div className="text-green-500 font-bold text-sm">Covered</div>
                                                                         </div>
-                                                                        <div className="mt-2 text-xs text-gray-400">
-                                                                            Demand Forecast: <span className="text-blue-400 font-medium">{rec.destMetrics?.forecast || 'High'}</span>
+                                                                        <div className="mt-3 text-[11px] text-muted-foreground">
+                                                                            Forecast: <span className="text-blue-500 font-semibold">{rec.destMetrics?.forecast || 'High'}</span>
                                                                         </div>
-                                                                        <div className="mt-1 text-xs text-gray-400">
-                                                                            Impact: <span className="text-green-500 font-medium">Prevents {rec.destMetrics?.stockoutRisk || 'Stockout'}</span>
+                                                                        <div className="mt-1 text-[11px] text-muted-foreground">
+                                                                            Result: <span className="text-green-500 font-semibold tracking-tight">Safety Stock Restored</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -595,36 +576,36 @@ const StockRebalancingPage = () => {
                                                             </div>
 
                                                             {/* Execution Panel */}
-                                                            <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-5 flex flex-col justify-between">
+                                                            <div className="bg-muted/50 border border-border rounded-lg p-5 flex flex-col justify-between shadow-sm">
                                                                 <div>
-                                                                    <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Approval & Execution</h3>
+                                                                    <h3 className="text-xs font-bold text-foreground uppercase tracking-widest mb-4">Execution Plan</h3>
                                                                     <div className="space-y-3">
-                                                                        <div className="flex justify-between text-sm">
-                                                                            <span className="text-gray-300">Logistics Cost:</span>
-                                                                            <span className="text-white">$12.50</span>
+                                                                        <div className="flex justify-between text-[13px]">
+                                                                            <span className="text-muted-foreground">Logistics Cost:</span>
+                                                                            <span className="text-foreground font-semibold tabular-nums">$12.50</span>
                                                                         </div>
-                                                                        <div className="flex justify-between text-sm">
-                                                                            <span className="text-gray-300">Est. Arrival:</span>
-                                                                            <span className="text-white">Today, 2:30 PM</span>
+                                                                        <div className="flex justify-between text-[13px]">
+                                                                            <span className="text-muted-foreground">Est. Arrival:</span>
+                                                                            <span className="text-foreground font-semibold">Today, 2:30 PM</span>
                                                                         </div>
-                                                                        <div className="flex justify-between text-sm">
-                                                                            <span className="text-gray-300">Cold Chain:</span>
-                                                                            <span className={rec.coldChain ? "text-blue-400" : "text-gray-400"}>
-                                                                                {rec.coldChain ? "Required (Active)" : "Not Required"}
+                                                                        <div className="flex justify-between text-[13px]">
+                                                                            <span className="text-muted-foreground">Environment:</span>
+                                                                            <span className={rec.coldChain ? "text-blue-500 font-semibold" : "text-muted-foreground font-medium"}>
+                                                                                {rec.coldChain ? "Cold Chain Required" : "Standard Ambient"}
                                                                             </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
 
-                                                                <div className="flex flex-col gap-3 mt-6">
+                                                                <div className="flex flex-col gap-3 mt-8">
                                                                     <Button
-                                                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/20"
+                                                                        className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-md shadow-blue-500/10 h-10"
                                                                         onClick={() => setApprovalDialogOpen(true)}
                                                                     >
-                                                                        <CheckCircle2 className="w-4 h-4 mr-2" /> Approve Transfer
+                                                                        <CheckCircle2 className="w-4 h-4 mr-2" /> Approve & Dispatch
                                                                     </Button>
-                                                                    <Button variant="outline" className="w-full border-[#333] text-gray-300 hover:text-white bg-transparent">
-                                                                        Modify Quantity
+                                                                    <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground bg-card h-10 text-xs font-semibold uppercase tracking-wider">
+                                                                        Modify Parameters
                                                                     </Button>
                                                                 </div>
                                                             </div>
@@ -644,25 +625,25 @@ const StockRebalancingPage = () => {
 
             {/* APPROVAL DIALOG */}
             <Dialog open={approvalDialogOpen} onOpenChange={setApprovalDialogOpen}>
-                <DialogContent className="bg-[#111] border-[#222] text-white sm:max-w-[425px]">
+                <DialogContent className="bg-card border-border text-foreground sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Confirm Stock Transfer</DialogTitle>
-                        <DialogDescription className="text-gray-300">
-                            You are approving the transfer of <b>{selectedTransfer?.qty} {selectedTransfer?.unit}</b> of <b>{selectedTransfer?.marketingName}</b> from <b>{selectedTransfer?.sourceStore}</b> to <b>{selectedTransfer?.destStore}</b>.
+                        <DialogTitle className="text-lg font-bold">Confirm Stock Transfer</DialogTitle>
+                        <DialogDescription className="text-muted-foreground text-sm">
+                            You are approving the transfer of <b className="text-foreground">{selectedTransfer?.qty} {selectedTransfer?.unit}</b> of <b className="text-foreground">{selectedTransfer?.marketingName}</b> from <b className="text-foreground">{selectedTransfer?.sourceStore}</b> to <b className="text-foreground">{selectedTransfer?.destStore}</b>.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-2 space-y-4">
-                        <div className="p-3 bg-blue-900/10 border border-blue-900/30 rounded-md">
-                            <h4 className="text-xs font-bold text-blue-400 uppercase mb-1">Impact</h4>
-                            <p className="text-sm text-blue-100">Reduces overstock at source (-40%) and prevents imminent stockout at destination.</p>
+                        <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
+                            <h4 className="text-[10px] font-bold text-blue-500 uppercase mb-1 tracking-widest">Expected Outcome</h4>
+                            <p className="text-xs text-blue-500/80 font-medium leading-tight">Reduces source overstock impact and restores safety stock at destination.</p>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-200">Approval Reason</label>
+                            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Approval Rationale</label>
                             <Select defaultValue="demand">
-                                <SelectTrigger className="w-full bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
+                                <SelectTrigger className="w-full bg-muted/50 border-border text-sm text-foreground">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-card border-border text-foreground">
                                     <SelectItem value="demand">Address Demand Mismatch</SelectItem>
                                     <SelectItem value="spoilage">Prevent Spoilage</SelectItem>
                                     <SelectItem value="space">Space Constraints</SelectItem>
@@ -670,13 +651,13 @@ const StockRebalancingPage = () => {
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-200">Notes (Optional)</label>
-                            <Textarea placeholder="Add logistics notes..." className="bg-[#1a1a1a] border-[#333] text-white" />
+                            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Logistics Notes</label>
+                            <Textarea placeholder="Add dispatch instructions..." className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 resize-none min-h-[80px]" />
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setApprovalDialogOpen(false)} className="border-[#333] text-gray-300">Cancel</Button>
-                        <Button onClick={handleApprove} className="bg-green-600 hover:bg-green-700 text-white">Confirm & Execute</Button>
+                    <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                        <Button variant="ghost" onClick={() => setApprovalDialogOpen(false)} className="text-muted-foreground hover:text-foreground">Cancel</Button>
+                        <Button onClick={handleApprove} className="bg-green-600 hover:bg-green-500 text-white font-bold px-6 shadow-md shadow-green-500/10">Confirm & Execute</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

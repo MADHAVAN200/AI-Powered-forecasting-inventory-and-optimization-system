@@ -5,7 +5,7 @@ import {
   Package, FileText, Bell,
   AlertTriangle, ArrowLeft, ArrowRight,
   MoreHorizontal, Download, ChevronRight,
-  RefreshCw, Moon, Sun
+  RefreshCw, Moon, Sun, Activity
 } from 'lucide-react';
 import {
   Card, CardContent, CardHeader, CardTitle, CardFooter
@@ -23,6 +23,7 @@ import {
 import {
   Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle,
 } from '@/components/ui/sheet';
+import { Home } from 'lucide-react';
 import VendorSidebar from '@/components/VendorSidebar';
 import ThemeToggle from '@/components/ThemeToggle';
 import { backendModuleService } from '@/services/backendModuleService';
@@ -263,34 +264,43 @@ const VendorPortalPage = () => {
       <VendorSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col pb-20">
-        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
-          <div className="flex min-h-16 items-center justify-between gap-4 px-4 py-3 md:px-6">
-            <h1 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">{headerTitle}</h1>
+        <header className="sticky top-0 z-40 border-b border-sidebar-border bg-sidebar/95 backdrop-blur-md px-4 md:px-6 h-16 flex items-center">
+
+          <div className="flex items-center justify-between gap-4 w-full">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                <Package className="w-6 h-6 text-blue-500" />
+              </div>
+              <h1 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">{headerTitle}</h1>
+            </div>
 
             <div className="flex items-center gap-2">
               {role === 'admin' && (
                 <Button
                   variant="outline"
-                  className="border-border bg-background text-foreground hover:bg-accent"
+                  size="sm"
+                  className="h-9 border-border bg-background text-muted-foreground hover:text-foreground"
                   onClick={() => navigate(adminBackPath)}
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Inventory Dashboard
+                  Back to Inventory
                 </Button>
               )}
 
-              <Button variant="outline" size="icon" className="relative border-border text-muted-foreground bg-background hover:bg-muted hover:text-foreground">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-background"></span>
+              <Button variant="outline" size="icon" className="h-9 w-9 relative border-border text-muted-foreground bg-background hover:bg-muted hover:text-foreground">
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border border-background"></span>
               </Button>
-              <Button variant="outline" size="icon" className="border-border text-muted-foreground bg-background hover:bg-muted hover:text-foreground" onClick={loadVendorData} disabled={isLoading}>
-                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              <Button variant="outline" size="icon" className="h-9 w-9 border-border text-muted-foreground bg-background hover:bg-muted hover:text-foreground" onClick={loadVendorData} disabled={isLoading}>
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
               </Button>
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-900/20">
-                <Download className="w-4 h-4 mr-2" /> Export
+              <Button size="sm" className="h-9 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20">
+                <Download className="w-3.5 h-3.5 mr-2" /> Export
               </Button>
 
-              <ThemeToggle />
+              <div className="ml-1 pl-1 border-l border-border h-6 flex items-center">
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </header>
@@ -306,37 +316,63 @@ const VendorPortalPage = () => {
         {/* DASHBOARD CONTENT */}
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
+            {/* Summary Impact Strip */}
+            <div className="flex items-center gap-4 bg-blue-500/5 p-4 rounded-xl border border-blue-500/10 overflow-x-auto custom-scrollbar">
+              <div className="flex items-center gap-3 pr-6 border-r border-blue-500/20">
+                <Activity className="w-5 h-5 text-blue-500" />
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Portal Insights</p>
+                  <p className="text-xs text-blue-500 dark:text-blue-400 font-medium">Real-time Operational Summary</p>
+                </div>
+              </div>
+              
+              <div className="flex gap-8 px-4">
+                <div className="flex flex-col">
+                  <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Active Coverage</span>
+                  <span className="text-xl font-bold text-foreground">100%</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Response Rate</span>
+                  <span className="text-xl font-bold text-green-600 dark:text-green-500">94.2%</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Alert Volume</span>
+                  <span className="text-xl font-bold text-foreground">{dashboardMetrics.pendingRequests} <span className="text-[10px] text-muted-foreground font-normal">Active</span></span>
+                </div>
+              </div>
+            </div>
+
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="bg-card border-border shadow-sm">
+              <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Products</CardTitle>
+                  <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Active Products</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-foreground">{dashboardMetrics.activeProducts}</div>
-                  <p className="text-xs text-green-500 mt-1 flex items-center font-medium">
+                  <div className="text-3xl font-bold text-foreground tracking-tight">{dashboardMetrics.activeProducts}</div>
+                  <p className="text-xs text-green-600 dark:text-green-500 mt-1 flex items-center font-medium">
                     <ArrowRight className="w-3 h-3 mr-1" /> 100% Availability
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-card border-border shadow-sm">
+              <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Stores</CardTitle>
+                  <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Active Stores</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-foreground">{dashboardMetrics.activeStores}</div>
+                  <div className="text-3xl font-bold text-foreground tracking-tight">{dashboardMetrics.activeStores}</div>
                   <p className="text-xs text-muted-foreground mt-1 font-medium">
                     Across 3 Regions
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-card border-border shadow-sm">
+              <Card className="bg-card border-border shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-blue-500">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Pending Requests</CardTitle>
+                  <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Pending Requests</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-indigo-400">{dashboardMetrics.pendingRequests}</div>
-                  <p className="text-xs text-orange-500 mt-1 flex items-center font-medium">
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 tracking-tight">{dashboardMetrics.pendingRequests}</div>
+                  <p className="text-xs text-orange-600 dark:text-orange-500 mt-1 flex items-center font-medium">
                     <AlertTriangle className="w-3 h-3 mr-1" /> Action Required
                   </p>
                 </CardContent>
@@ -366,12 +402,12 @@ const VendorPortalPage = () => {
                         <TableCell className="text-muted-foreground">{req.product}</TableCell>
                         <TableCell className="text-muted-foreground">{req.reason}</TableCell>
                         <TableCell>
-                          <Badge className={`${req.urgency === 'High' ? 'bg-red-900/20 text-red-400 hover:bg-red-900/30' : 'bg-yellow-900/20 text-yellow-400 hover:bg-yellow-900/30'}`}>
+                          <Badge className={`border-none ${req.urgency === 'High' ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'}`}>
                             {req.urgency}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" variant="outline" className="text-indigo-400 border-border hover:bg-muted bg-transparent">
+                          <Button size="sm" variant="ghost" className="text-blue-600 dark:text-blue-400 hover:bg-muted font-bold">
                             Review
                           </Button>
                         </TableCell>
@@ -381,7 +417,7 @@ const VendorPortalPage = () => {
                 </Table>
               </CardContent>
               <CardFooter className="py-3 border-t border-border bg-muted/40">
-                <Button variant="link" className="text-indigo-400 p-0 h-auto font-medium" onClick={() => navigate('/vendor/requests')}>
+                <Button variant="link" className="text-blue-600 dark:text-blue-400 p-0 h-auto font-medium" onClick={() => navigate('/vendor/requests')}>
                   View all requests <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </CardFooter>
@@ -392,15 +428,15 @@ const VendorPortalPage = () => {
         {/* PRODUCTS CONTENT */}
         {activeTab === 'products' && (
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-3 mb-4 bg-muted/30 p-4 rounded-xl border border-border">
               <Input
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
                 placeholder="Search products, SKUs..."
-                className="max-w-md bg-background border-border text-foreground placeholder:text-muted-foreground"
+                className="max-w-md bg-background border-border text-foreground placeholder:text-muted-foreground h-9"
               />
               <Select value={productStockFilter} onValueChange={setProductStockFilter}>
-                <SelectTrigger className="w-[180px] bg-background border-border text-foreground"><SelectValue placeholder="Stock Status" /></SelectTrigger>
+                <SelectTrigger className="w-[180px] bg-background border-border text-foreground h-9"><SelectValue placeholder="Stock Status" /></SelectTrigger>
                 <SelectContent className="bg-background border-border text-foreground">
                   <SelectItem value="all">All Stock Status</SelectItem>
                   <SelectItem value="Healthy">Healthy</SelectItem>
@@ -409,7 +445,7 @@ const VendorPortalPage = () => {
                 </SelectContent>
               </Select>
               <Select value={productTrendFilter} onValueChange={setProductTrendFilter}>
-                <SelectTrigger className="w-[160px] bg-background border-border text-foreground"><SelectValue placeholder="Trend" /></SelectTrigger>
+                <SelectTrigger className="w-[160px] bg-background border-border text-foreground h-9"><SelectValue placeholder="Trend" /></SelectTrigger>
                 <SelectContent className="bg-background border-border text-foreground">
                   <SelectItem value="all">All Trends</SelectItem>
                   <SelectItem value="up">Rising</SelectItem>
@@ -418,7 +454,7 @@ const VendorPortalPage = () => {
                 </SelectContent>
               </Select>
               <Select value={productCategoryFilter} onValueChange={setProductCategoryFilter}>
-                <SelectTrigger className="w-[180px] bg-background border-border text-foreground"><SelectValue placeholder="Category" /></SelectTrigger>
+                <SelectTrigger className="w-[180px] bg-background border-border text-foreground h-9"><SelectValue placeholder="Category" /></SelectTrigger>
                 <SelectContent className="bg-background border-border text-foreground">
                   <SelectItem value="all">All Categories</SelectItem>
                   {productCategories.map((category) => (
@@ -426,7 +462,7 @@ const VendorPortalPage = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Badge variant="outline" className="border-[#333] text-gray-400">{filteredProducts.length} results</Badge>
+              <Badge variant="outline" className="border-border text-muted-foreground ml-auto">{filteredProducts.length} results</Badge>
             </div>
 
             <Card className="bg-card border-border shadow-sm">
@@ -452,9 +488,9 @@ const VendorPortalPage = () => {
                         <TableCell className="text-muted-foreground">{prod.activeStores}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className={`
-                                                        ${prod.stockStatus === 'Healthy' ? 'bg-green-900/20 text-green-400 border-green-800' :
-                              prod.stockStatus === 'Low' ? 'bg-red-900/20 text-red-400 border-red-800' :
-                                'bg-yellow-900/20 text-yellow-400 border-yellow-800'}
+                                                        ${prod.stockStatus === 'Healthy' ? 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' :
+                               prod.stockStatus === 'Low' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20' :
+                                 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20'}
                                                     `}>
                             {prod.stockStatus}
                           </Badge>
@@ -489,15 +525,41 @@ const VendorPortalPage = () => {
         {/* REQUESTS CONTENT */}
         {activeTab === 'requests' && (
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-3">
+            {/* Requests Insight Strip */}
+            <div className="flex items-center gap-4 bg-purple-500/5 p-4 rounded-xl border border-purple-500/10 overflow-x-auto custom-scrollbar">
+              <div className="flex items-center gap-3 pr-6 border-r border-purple-500/20">
+                <FileText className="w-5 h-5 text-purple-500" />
+                <div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Collaboration</p>
+                  <p className="text-xs text-purple-500 dark:text-purple-400 font-medium">Request Queue Status</p>
+                </div>
+              </div>
+              
+              <div className="flex gap-8 px-4">
+                <div className="flex flex-col">
+                  <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Pending</span>
+                  <span className="text-xl font-bold text-orange-600 dark:text-orange-500">{requests.filter(r => r.status === 'Pending').length}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">In Progress</span>
+                  <span className="text-xl font-bold text-blue-600 dark:text-blue-400">{requests.filter(r => r.status === 'In Progress').length}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight">Avg. Response</span>
+                  <span className="text-xl font-bold text-foreground">1.2 <span className="text-[10px] text-muted-foreground font-normal">Days</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 bg-muted/30 p-4 rounded-xl border border-border">
               <Input
                 value={requestSearch}
                 onChange={(e) => setRequestSearch(e.target.value)}
                 placeholder="Search ID, product, reason..."
-                className="max-w-md bg-background border-border text-foreground placeholder:text-muted-foreground"
+                className="max-w-md bg-background border-border text-foreground placeholder:text-muted-foreground h-9"
               />
               <Select value={requestStatusFilter} onValueChange={setRequestStatusFilter}>
-                <SelectTrigger className="w-[180px] bg-background border-border text-foreground"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectTrigger className="w-[180px] bg-background border-border text-foreground h-9"><SelectValue placeholder="Status" /></SelectTrigger>
                 <SelectContent className="bg-background border-border text-foreground">
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="Pending">Pending</SelectItem>
@@ -506,7 +568,7 @@ const VendorPortalPage = () => {
                 </SelectContent>
               </Select>
               <Select value={requestUrgencyFilter} onValueChange={setRequestUrgencyFilter}>
-                <SelectTrigger className="w-[180px] bg-background border-border text-foreground"><SelectValue placeholder="Urgency" /></SelectTrigger>
+                <SelectTrigger className="w-[180px] bg-background border-border text-foreground h-9"><SelectValue placeholder="Urgency" /></SelectTrigger>
                 <SelectContent className="bg-background border-border text-foreground">
                   <SelectItem value="all">All Urgency</SelectItem>
                   <SelectItem value="High">High</SelectItem>
@@ -515,7 +577,7 @@ const VendorPortalPage = () => {
                 </SelectContent>
               </Select>
               <Select value={requestTypeFilter} onValueChange={setRequestTypeFilter}>
-                <SelectTrigger className="w-[220px] bg-background border-border text-foreground"><SelectValue placeholder="Request Type" /></SelectTrigger>
+                <SelectTrigger className="w-[220px] bg-background border-border text-foreground h-9"><SelectValue placeholder="Request Type" /></SelectTrigger>
                 <SelectContent className="bg-background border-border text-foreground">
                   <SelectItem value="all">All Types</SelectItem>
                   {requestTypes.map((type) => (
@@ -523,14 +585,14 @@ const VendorPortalPage = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Badge variant="outline" className="border-[#333] text-gray-400">{filteredRequests.length} results</Badge>
+              <Badge variant="outline" className="border-border text-muted-foreground ml-auto">{filteredRequests.length} results</Badge>
             </div>
 
             <Card className="bg-card border-border shadow-sm">
               <CardHeader className="border-b border-border py-4">
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-lg font-bold text-foreground">Collaboration Inbox</CardTitle>
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20">
                     <FileText className="w-4 h-4 mr-2" /> New Request
                   </Button>
                 </div>
@@ -557,12 +619,12 @@ const VendorPortalPage = () => {
                         <TableCell className="text-muted-foreground max-w-xs truncate">{req.reason}</TableCell>
                         <TableCell className="text-muted-foreground">{formatDate(req.date)}</TableCell>
                         <TableCell>
-                          <Badge className={`
-                                                        ${req.status === 'Accepted' ? 'bg-green-900/20 text-green-400 hover:bg-green-900/30' :
-                              req.status === 'Rejected' ? 'bg-red-900/20 text-red-400 hover:bg-red-900/30' :
-                              req.status === 'Completed' ? 'bg-gray-800 text-gray-300 hover:bg-gray-800' :
-                              req.status === 'In Progress' ? 'bg-blue-900/20 text-blue-400 hover:bg-blue-900/30' :
-                                'bg-orange-900/20 text-orange-400 hover:bg-orange-900/30'}
+                          <Badge className={`border-none
+                                                        ${req.status === 'Accepted' ? 'bg-green-500/10 text-green-600 dark:text-green-400' :
+                               req.status === 'Rejected' ? 'bg-red-500/10 text-red-600 dark:text-red-400' :
+                               req.status === 'Completed' ? 'bg-muted text-muted-foreground' :
+                               req.status === 'In Progress' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400' :
+                                 'bg-orange-500/10 text-orange-600 dark:text-orange-400'}
                                                     `}>
                             {req.status}
                           </Badge>

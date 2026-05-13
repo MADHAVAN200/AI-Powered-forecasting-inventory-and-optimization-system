@@ -51,7 +51,7 @@ export default function PlatformShell() {
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       <div className="flex min-h-screen">
-        <aside className="hidden w-[280px] shrink-0 border-r border-white/10 bg-[linear-gradient(180deg,rgba(10,10,10,0.98),rgba(7,7,7,0.95))] px-5 py-6 lg:block">
+        <aside className="hidden w-[280px] shrink-0 border-r border-sidebar-border bg-sidebar px-5 py-6 lg:block">
           <div className="mb-8 space-y-4">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/20">
@@ -75,7 +75,7 @@ export default function PlatformShell() {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="sticky top-0 z-40 border-b border-white/10 bg-[#070707]/90 px-4 py-3 backdrop-blur lg:hidden">
+          <div className="sticky top-0 z-40 border-b border-sidebar-border bg-sidebar/95 px-4 py-3 backdrop-blur-md lg:hidden">
             <div className="mb-3 flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/15">
                 <PackageCheck className="h-5 w-5 text-emerald-300" />

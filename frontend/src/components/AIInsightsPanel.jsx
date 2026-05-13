@@ -415,29 +415,31 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
         };
     }, [cityId, source, modelMeta]);
 
-    const urgencyColor = (u) => u === 'High' ? 'text-red-400 border-red-800/40 bg-red-900/10' : 'text-yellow-400 border-yellow-800/40 bg-yellow-900/10';
+    const urgencyColor = (u) => u === 'High' 
+        ? 'text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/40 bg-red-50 dark:bg-red-900/10' 
+        : 'text-yellow-600 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/40 bg-yellow-50 dark:bg-yellow-900/10';
 
     return (
-        <Card className="bg-[#0d0d0d] border border-purple-900/40 hover:border-purple-600/50 transition-all">
-            <CardHeader className="pb-3 border-b border-[#1a1a1a]">
+        <Card className="bg-card border border-purple-200 dark:border-purple-900/40 hover:border-purple-400/50 dark:hover:border-purple-600/50 transition-all shadow-sm">
+            <CardHeader className="pb-3 border-b border-border">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="p-1.5 bg-purple-900/20 rounded-md">
-                            <Brain className="h-4 w-4 text-purple-400" />
+                        <div className="p-1.5 bg-purple-100 dark:bg-purple-900/20 rounded-md">
+                            <Brain className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                            <CardTitle className="text-sm font-semibold text-purple-300">AI Warehouse Intelligence</CardTitle>
-                            <CardDescription className="text-[10px] text-gray-500 mt-0.5">
+                            <CardTitle className="text-sm font-semibold text-purple-900 dark:text-purple-300">AI Warehouse Intelligence</CardTitle>
+                            <CardDescription className="text-[10px] text-muted-foreground mt-0.5">
                                 {model.algorithm} · 5-Fold CV · {model.split} Split · Live Data
                             </CardDescription>
                         </div>
                     </div>
                     {isTraining ? (
-                        <Badge variant="outline" className="text-purple-400 border-purple-800/40 bg-purple-900/10 text-[9px] flex items-center gap-1">
+                        <Badge variant="outline" className="text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800/40 bg-purple-50 dark:bg-purple-900/10 text-[9px] flex items-center gap-1">
                             <RefreshCw className="w-2.5 h-2.5 animate-spin" /> Retraining...
                         </Badge>
                     ) : (
-                        <Badge variant="outline" className="text-green-400 border-green-800/40 bg-green-900/10 text-[9px] flex items-center gap-1">
+                        <Badge variant="outline" className="text-green-600 dark:text-green-400 border-green-200 dark:border-green-800/40 bg-green-50 dark:bg-green-900/10 text-[9px] flex items-center gap-1">
                             <CheckCircle className="w-2.5 h-2.5" /> Model Active
                         </Badge>
                     )}
@@ -448,42 +450,42 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
 
                 {/* ── MODEL ACCURACY SCORES ──────────────────────────── */}
                 <div>
-                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1">
                         <BarChart2 className="w-3 h-3" /> Model Performance
                     </h4>
                     <div className="grid grid-cols-4 gap-2">
                         {[
-                            { label: 'Directional Acc', value: `${model.accuracy}%`, color: 'text-green-400' },
-                            { label: 'R² Score', value: model.r2.toFixed(3), color: 'text-blue-400' },
-                            { label: 'CV MAPE', value: `${model.mape}%`, color: 'text-yellow-400' },
-                            { label: 'RMSE', value: model.rmse, color: 'text-orange-400' },
+                            { label: 'Directional Acc', value: `${model.accuracy}%`, color: 'text-green-600 dark:text-green-400' },
+                            { label: 'R² Score', value: model.r2.toFixed(3), color: 'text-blue-600 dark:text-blue-400' },
+                            { label: 'CV MAPE', value: `${model.mape}%`, color: 'text-yellow-600 dark:text-yellow-400' },
+                            { label: 'RMSE', value: model.rmse, color: 'text-orange-600 dark:text-orange-400' },
                         ].map((m, i) => (
-                            <div key={i} className="bg-[#111] rounded-md p-2 border border-[#222] text-center">
+                            <div key={i} className="bg-muted/50 dark:bg-card rounded-md p-2 border border-border text-center transition-colors">
                                 <div className={`text-sm font-bold ${m.color}`}>{m.value}</div>
-                                <div className="text-[9px] text-gray-500 mt-0.5 leading-tight">{m.label}</div>
+                                <div className="text-[9px] text-muted-foreground mt-0.5 leading-tight">{m.label}</div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <Separator className="bg-[#1a1a1a]" />
+                <Separator className="bg-muted" />
 
                 {/* ── HIGH-IMPACT SIGNALS ────────────────────────────── */}
                 {insights?.highImpactItems?.length > 0 && (
                     <div>
-                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1">
                             <Zap className="w-3 h-3 text-yellow-500" /> Highest Impact Signals
                         </h4>
                         <div className="space-y-1.5">
                             {insights.highImpactItems.map((item, i) => (
-                                <div key={i} className="flex items-center justify-between p-2 bg-[#111] rounded-md border border-[#222]">
+                                <div key={i} className="flex items-center justify-between p-2 bg-card rounded-md border border-border">
                                     <div>
-                                        <span className="text-xs font-medium text-white">{item.name}</span>
-                                        <span className="text-[10px] text-gray-500 ml-1.5">· {item.city}</span>
+                                        <span className="text-xs font-medium text-foreground">{item.name}</span>
+                                        <span className="text-[10px] text-muted-foreground ml-1.5">· {item.city}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        <Badge variant="outline" className="text-[9px] text-orange-400 border-orange-800/40 bg-orange-900/10">{item.type}</Badge>
-                                        <span className="text-xs font-bold text-yellow-400">↑{item.score}</span>
+                                        <Badge variant="outline" className="text-[9px] text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800/40 bg-orange-50 dark:bg-orange-900/10">{item.type}</Badge>
+                                        <span className="text-xs font-bold text-yellow-600 dark:text-yellow-400">↑{item.score}</span>
                                     </div>
                                 </div>
                             ))}
@@ -491,22 +493,22 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
                     </div>
                 )}
 
-                <Separator className="bg-[#1a1a1a]" />
+                <Separator className="bg-muted" />
 
                 {/* ── RESTOCK ALERTS ──────────────────────────────────── */}
                 <div>
-                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1">
                         <Package className="w-3 h-3 text-blue-400" /> Restock Required
                     </h4>
                     {!insights || insights.restockNeeded.length === 0 ? (
-                        <p className="text-xs text-gray-600 italic">No restock alerts for current filters.</p>
+                        <p className="text-xs text-muted-foreground italic">No restock alerts for current filters.</p>
                     ) : (
                         <div className="space-y-1.5">
                             {insights.restockNeeded.map((item, i) => (
-                                <div key={i} className="flex items-start justify-between p-2 bg-[#111] rounded-md border border-[#222]">
+                                <div key={i} className="flex items-start justify-between p-2 bg-card rounded-md border border-border">
                                     <div className="flex-1 min-w-0">
-                                        <div className="text-xs font-medium text-white truncate">{item.product}</div>
-                                        <div className="text-[10px] text-gray-500">{item.reason}</div>
+                                        <div className="text-xs font-medium text-foreground truncate">{item.product}</div>
+                                        <div className="text-[10px] text-muted-foreground">{item.reason}</div>
                                     </div>
                                     <Badge variant="outline" className={`text-[9px] ml-2 shrink-0 ${urgencyColor(item.urgency)}`}>
                                         {item.urgency}
@@ -517,23 +519,23 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
                     )}
                 </div>
 
-                <Separator className="bg-[#1a1a1a]" />
+                <Separator className="bg-muted" />
 
                 {/* ── OVERSTOCK / REDUCE ──────────────────────────────── */}
                 <div>
-                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1">
                         <TrendingDown className="w-3 h-3 text-red-400" /> Reduce / Markdown
                     </h4>
                     {!insights || insights.overstockWarnings.length === 0 ? (
-                        <p className="text-xs text-gray-600 italic">No overstock signals detected.</p>
+                        <p className="text-xs text-muted-foreground italic">No overstock signals detected.</p>
                     ) : (
                         <div className="space-y-1.5">
                             {insights.overstockWarnings.map((item, i) => (
-                                <div key={i} className="flex items-start gap-2 p-2 bg-[#111] rounded-md border border-[#222]">
+                                <div key={i} className="flex items-start gap-2 p-2 bg-card rounded-md border border-border">
                                     <XCircle className="w-3 h-3 text-red-500 mt-0.5 shrink-0" />
                                     <div>
-                                        <div className="text-xs font-medium text-white">{item.product}</div>
-                                        <div className="text-[10px] text-gray-500">{item.reason}</div>
+                                        <div className="text-xs font-medium text-foreground">{item.product}</div>
+                                        <div className="text-[10px] text-muted-foreground">{item.reason}</div>
                                     </div>
                                 </div>
                             ))}
@@ -541,11 +543,11 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
                     )}
                 </div>
 
-                <Separator className="bg-[#1a1a1a]" />
+                <Separator className="bg-muted" />
 
                 {/* ── CROSS-CITY TRANSFERS ─────────────────────────────── */}
                 <div>
-                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1">
                         <ArrowRightLeft className="w-3 h-3 text-cyan-400" /> Cross-Region Stock Transfer
                     </h4>
                     {!insights || insights.transferOpportunities.length === 0 ? (
@@ -553,26 +555,26 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
                     ) : (
                         <div className="space-y-2">
                             {insights.transferOpportunities.map((t, i) => (
-                                <div key={i} className="p-2.5 bg-[#0f1a1f] rounded-md border border-cyan-900/30">
+                                <div key={i} className="p-2.5 bg-cyan-50 dark:bg-[#0f1a1f] rounded-md border border-cyan-100 dark:border-cyan-900/30">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-xs text-gray-400 font-medium">{t.from}</span>
-                                        <ArrowRightLeft className="w-3 h-3 text-cyan-400" />
-                                        <span className="text-xs text-cyan-300 font-semibold">{t.to}</span>
+                                        <span className="text-xs text-muted-foreground font-medium">{t.from}</span>
+                                        <ArrowRightLeft className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
+                                        <span className="text-xs text-cyan-700 dark:text-cyan-300 font-semibold">{t.to}</span>
                                     </div>
-                                    <div className="text-[10px] text-gray-400 font-medium mb-0.5">{t.product}</div>
-                                    <div className="text-[10px] text-gray-500">{t.reason}</div>
+                                    <div className="text-[10px] text-muted-foreground font-medium mb-0.5">{t.product}</div>
+                                    <div className="text-[10px] text-muted-foreground">{t.reason}</div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
 
-                <Separator className="bg-[#1a1a1a]" />
+                <Separator className="bg-muted" />
 
                 {/* ── TOP PRODUCT CATEGORIES ────────────────────────────── */}
                 {insights?.topProducts?.length > 0 && (
                     <div>
-                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+                        <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1">
                             <ShoppingCart className="w-3 h-3 text-purple-400" /> Top Impacted Products
                         </h4>
                         <div className="space-y-1.5">
@@ -581,11 +583,11 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
                                 const pct = Math.round((score / maxScore) * 100);
                                 return (
                                     <div key={i} className="space-y-0.5">
-                                        <div className="flex justify-between text-[10px] text-gray-300">
+                                        <div className="flex justify-between text-[10px] text-muted-foreground">
                                             <span>{cat}</span>
-                                            <span className="font-semibold text-purple-400">{(score * 100).toFixed(0)}%</span>
+                                            <span className="font-semibold text-purple-600 dark:text-purple-400">{(score * 100).toFixed(0)}%</span>
                                         </div>
-                                        <div className="h-1.5 bg-[#222] rounded-full overflow-hidden">
+                                        <div className="h-1.5 bg-border rounded-full overflow-hidden">
                                             <div className="h-full bg-gradient-to-r from-purple-600 to-blue-500 rounded-full" style={{ width: `${pct}%` }} />
                                         </div>
                                     </div>
@@ -597,7 +599,7 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
 
                 {/* ── NO DATA STATE ─────────────────────────────────────── */}
                 {(!insights || data.length === 0) && !isTraining && (
-                    <div className="text-center py-8 text-gray-600 text-xs italic">
+                    <div className="text-center py-8 text-muted-foreground text-xs italic">
                         Apply filters to generate AI warehouse insights.
                     </div>
                 )}
@@ -614,3 +616,5 @@ const AIInsightsPanel = ({ source = 'event', data = [], signals = [], modelMeta 
 };
 
 export default AIInsightsPanel;
+
+

@@ -25,6 +25,7 @@ import {
     Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
     BreadcrumbPage, BreadcrumbSeparator
 } from '@/components/ui/breadcrumb';
+import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/Sidebar';
 
 // --- Mock Data ---
@@ -139,6 +140,7 @@ export default function LogisticsPage() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const fromControlTower = queryParams.get('from') === 'control-tower';
+  const { role } = useAuth();
 
   const [isLoading, setIsLoading] = useState(true);
   const [transfersData, setTransfersData] = useState([]);
@@ -360,288 +362,359 @@ export default function LogisticsPage() {
       default: return 'text-gray-500';
     }
   };
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30 pb-20">
-        {/* Breadcrumb Section */}
-        <div className="px-6 pt-4">
-            <Breadcrumb>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink
-                            onClick={() => navigate('/')}
-                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
-                        >
-                            <Home className="w-3 h-3" />
-                            Home
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="text-gray-600" />
-                    {fromControlTower && (
-                        <>
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-blue-500/30 pb-20 flex flex-col">
+            {/* Header Section */}
+            <header className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg">
+                {/* Breadcrumb Section */}
+                <div className="px-6 pt-3">
+                    <Breadcrumb>
+                        <BreadcrumbList>
                             <BreadcrumbItem>
                                 <BreadcrumbLink
-                                    onClick={() => navigate('/control-tower')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')}
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
-                                    Control Tower
+                                    <Home className="w-3 h-3" />
+                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="text-gray-600" />
-                        </>
-                    )}
-                    <BreadcrumbItem>
-                        <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
-                            Logistics
-                        </BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
-        </div>
-
-        <div className="p-6 space-y-6">
-
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-4 p-4 bg-[#111] border border-[#222] rounded-lg sticky top-6 z-10 shadow-lg">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
-              <Select value={regionFilter} onValueChange={setRegionFilter}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white">
-                  <SelectValue placeholder="Region" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                  <SelectItem value="all">All Regions</SelectItem>
-                  {regionOptions.map((region) => (
-                    <SelectItem key={region} value={region.toLowerCase()}>{region}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white">
-                  <SelectValue placeholder="Transfer Type" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="inter-store">Inter-Store</SelectItem>
-                  <SelectItem value="warehouse">Warehouse &rarr; Store</SelectItem>
-                  <SelectItem value="vendor">Vendor &rarr; Store</SelectItem>
-                  {typeOptions.map((type) => (
-                    <SelectItem key={type} value={type.toLowerCase()}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="planned">Planned</SelectItem>
-                  <SelectItem value="dispatched">Dispatched</SelectItem>
-                  <SelectItem value="in transit">In Transit</SelectItem>
-                  <SelectItem value="delayed">Delayed</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-                <Input
-                  placeholder="Search SKU, ID..."
-                  className="pl-9 bg-[#1a1a1a] border-[#333] text-white"
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                />
-              </div>
-            </div>
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={openCreateSheet}>
-              <Truck className="w-4 h-4 mr-2" /> Add Transfer
-            </Button>
-            <Button variant="outline" size="icon" className="border-[#333] text-gray-400 hover:text-white hover:bg-[#222]" onClick={loadLogisticsData} disabled={isLoading}>
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-            </Button>
-          </div>
-
-
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {kpiMetrics.map((kpi, index) => {
-              const Icon = kpi.icon;
-              const isCritical = kpi.status === 'critical';
-              const isWarning = kpi.status === 'warning';
-
-              return (
-                <Card key={index} className="bg-[#111] border-[#333]">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-400">
-                      {kpi.label}
-                    </CardTitle>
-                    <Icon className={`h-4 w-4 ${isCritical ? 'text-red-500' : isWarning ? 'text-orange-500' : 'text-gray-400'}`} />
-                  </CardHeader>
-                  <CardContent>
-                    <div className={`text-2xl font-bold ${isCritical ? 'text-red-500' : 'text-white'}`}>{kpi.value}</div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      <span className={kpi.trend.startsWith('+') ? 'text-green-500' : 'text-red-500'}>
-                        {kpi.trend}
-                      </span> vs yesterday
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-
-          {/* Active Transfers Table */}
-          <Card className="bg-[#111] border-[#333] flex-1">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg font-bold text-white">Active Transfer Pipeline</CardTitle>
-                  <CardDescription className="text-gray-400">Real-time status of all inventory movements.</CardDescription>
+                            {fromControlTower && (
+                                <>
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink
+                                            onClick={() => navigate('/control-tower')}
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                        >
+                                            Control Tower
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="text-gray-600" />
+                                </>
+                            )}
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
+                                    Logistics
+                                </BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
                 </div>
-                <Button variant="outline" size="sm" className="border-[#333] text-gray-400 hover:text-white hover:bg-[#222]">
-                  <MoreHorizontal className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-[#222] hover:bg-transparent">
-                    <TableHead className="text-gray-400 font-medium">Transfer ID / Product</TableHead>
-                    <TableHead className="text-gray-400 font-medium">Route</TableHead>
-                    <TableHead className="text-gray-400 font-medium">Type</TableHead>
-                    <TableHead className="text-gray-400 font-medium">Status</TableHead>
-                    <TableHead className="text-gray-400 font-medium">ETA</TableHead>
-                    <TableHead className="text-gray-400 font-medium">Risk / SLA</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredTransfers.map((transfer) => (
-                    <TableRow
-                      key={transfer.id}
-                      className="border-[#222] hover:bg-[#1a1a1a] cursor-pointer group"
-                      onClick={() => handleRowClick(transfer)}
-                    >
-                      <TableCell>
-                        <div className="font-mono text-xs text-gray-500 mb-1">{transfer.id}</div>
-                        <div className="font-medium text-white">{transfer.product}</div>
-                        <div className="text-xs text-gray-500">{transfer.qty} {transfer.unit} • {transfer.sku}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col text-sm">
-                          <span className="text-gray-300 flex items-center"><span className="w-2 h-2 rounded-full bg-blue-500 mr-2"></span> {transfer.source}</span>
-                          <div className="h-3 ml-1 border-l border-gray-700 my-0.5"></div>
-                          <span className="text-gray-300 flex items-center"><span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span> {transfer.destination}</span>
+
+                <div className="px-6 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-blue-500/10 rounded-lg">
+                            <Truck className="w-6 h-6 text-blue-500" />
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="border-gray-700 text-gray-400 font-normal">
-                          {transfer.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={`${getStatusColor(transfer.status)} border rounded-md`}>
-                          {transfer.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm text-gray-300">{transfer.eta}</div>
-                        {transfer.status === 'Delayed' && <span className="text-xs text-red-500 font-medium">+2h delay</span>}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {transfer.cold_chain && <Thermometer className="w-4 h-4 text-blue-400" title="Cold Chain" />}
-                          <span className={`text-sm font-medium ${getRiskColor(transfer.risk_level)}`}>
-                            {transfer.sla_status}
-                          </span>
+                        <div>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">Logistics & Transfers</h1>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-card border border-border text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                    Real-time Feed
+                                </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Monitoring active inventory movements and inter-store replenishment lanes.</p>
                         </div>
-                        {transfer.risk_level === 'Critical' && (
-                          <div className="text-xs text-red-400 mt-1 flex items-center">
-                            <AlertTriangle className="w-3 h-3 mr-1" /> {transfer.risk_reason}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-blue-400" />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-9 border-border bg-muted text-muted-foreground hover:bg-border hover:text-foreground shadow-inner"
+                            onClick={loadLogisticsData}
+                            disabled={isLoading}
+                        >
+                            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                            Sync Feed
+                        </Button>
+                        <Button
+                            className="h-9 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-blue-600/20"
+                            onClick={openCreateSheet}
+                        >
+                            <Truck className="w-4 h-4 mr-2" /> Add Transfer
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            <main className="p-6 space-y-6 overflow-y-auto">
+                {/* Search & Filters Bar */}
+                <Card className="bg-card/50 border-border shadow-sm">
+                    <CardContent className="p-3">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search SKU, ID, or Product..."
+                                    className="pl-9 h-9 bg-muted/50 border-border text-xs focus-visible:ring-blue-500/50"
+                                    value={searchQuery}
+                                    onChange={(event) => setSearchQuery(event.target.value)}
+                                />
+                            </div>
+
+                            <Select value={regionFilter} onValueChange={setRegionFilter}>
+                                <SelectTrigger className="h-9 bg-muted/50 border-border text-xs">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                                        <SelectValue placeholder="Region" />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent className="bg-popover border-border">
+                                    <SelectItem value="all" className="text-xs">All Regions</SelectItem>
+                                    {regionOptions.map((region) => (
+                                        <SelectItem key={region} value={region.toLowerCase()} className="text-xs">{region}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Select value={typeFilter} onValueChange={setTypeFilter}>
+                                <SelectTrigger className="h-9 bg-muted/50 border-border text-xs">
+                                    <div className="flex items-center gap-2">
+                                        <ArrowRightLeft className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                                        <SelectValue placeholder="Transfer Type" />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent className="bg-popover border-border">
+                                    <SelectItem value="all" className="text-xs">All Types</SelectItem>
+                                    <SelectItem value="inter-store" className="text-xs">Inter-Store</SelectItem>
+                                    <SelectItem value="warehouse" className="text-xs">Warehouse &rarr; Store</SelectItem>
+                                    <SelectItem value="vendor" className="text-xs">Vendor &rarr; Store</SelectItem>
+                                    {typeOptions.map((type) => (
+                                        <SelectItem key={type} value={type.toLowerCase()} className="text-xs">{type}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                <SelectTrigger className="h-9 bg-muted/50 border-border text-xs">
+                                    <div className="flex items-center gap-2">
+                                        <Activity className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                                        <SelectValue placeholder="Status" />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent className="bg-popover border-border">
+                                    <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
+                                    <SelectItem value="planned" className="text-xs">Planned</SelectItem>
+                                    <SelectItem value="dispatched" className="text-xs">Dispatched</SelectItem>
+                                    <SelectItem value="in transit" className="text-xs">In Transit</SelectItem>
+                                    <SelectItem value="delayed" className="text-xs">Delayed</SelectItem>
+                                    <SelectItem value="delivered" className="text-xs">Delivered</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </CardContent>
+                </Card>
+
+
+                {/* KPI Cards Section */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {kpiMetrics.map((kpi, index) => {
+                        const Icon = kpi.icon;
+                        const isCritical = kpi.status === 'critical';
+                        const isWarning = kpi.status === 'warning';
+
+                        return (
+                            <Card key={index} className="bg-card border-border hover:border-blue-500/30 transition-colors shadow-sm overflow-hidden group">
+                                <div className={`absolute top-0 left-0 w-1 h-full ${isCritical ? 'bg-red-500' : isWarning ? 'bg-orange-500' : 'bg-blue-500'}`} />
+                                <CardContent className="flex items-center justify-between p-4">
+                                    <div>
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{kpi.label}</p>
+                                        <p className={`text-2xl font-black mt-1 tabular-nums tracking-tighter ${isCritical ? 'text-red-500' : 'text-foreground'}`}>{kpi.value}</p>
+                                        <p className="text-[10px] font-medium mt-1">
+                                            <span className={kpi.trend.startsWith('+') ? 'text-green-500' : 'text-red-500'}>
+                                                {kpi.trend}
+                                            </span>
+                                            <span className="text-muted-foreground ml-1">vs yesterday</span>
+                                        </p>
+                                    </div>
+                                    <div className={`p-2.5 bg-muted rounded-xl border border-border shadow-inner group-hover:scale-110 transition-transform ${isCritical ? 'text-red-500' : isWarning ? 'text-orange-500' : 'text-blue-500'}`}>
+                                        <Icon className="w-5 h-5" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+
+
+                {/* Main Table Section */}
+                <Card className="bg-card border-border shadow-md overflow-hidden">
+                    <CardHeader className="py-4 px-6 border-b border-border/50 bg-muted/10">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle className="text-base font-bold text-foreground uppercase tracking-tight">Active Transfer Pipeline</CardTitle>
+                                <CardDescription className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Real-time telemetry from all inventory movement lanes.</CardDescription>
+                            </div>
+                            <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest border-border bg-muted/50">
+                                Export Batch <MoreHorizontal className="w-3.5 h-3.5 ml-2" />
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader className="bg-muted/50">
+                                    <TableRow className="border-border/50 hover:bg-transparent">
+                                        <TableHead className="text-[10px] font-black text-muted-foreground uppercase tracking-widest py-3 px-6">Identifier / Product</TableHead>
+                                        <TableHead className="text-[10px] font-black text-muted-foreground uppercase tracking-widest py-3">Logistics Route</TableHead>
+                                        <TableHead className="text-[10px] font-black text-muted-foreground uppercase tracking-widest py-3">Classification</TableHead>
+                                        <TableHead className="text-[10px] font-black text-muted-foreground uppercase tracking-widest py-3">Status Index</TableHead>
+                                        <TableHead className="text-[10px] font-black text-muted-foreground uppercase tracking-widest py-3">Arrival Window</TableHead>
+                                        <TableHead className="text-[10px] font-black text-muted-foreground uppercase tracking-widest py-3 text-right pr-6">Risk Profile</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredTransfers.map((transfer) => (
+                                        <TableRow
+                                            key={transfer.id}
+                                            className="border-border/30 hover:bg-muted/30 cursor-pointer group transition-colors"
+                                            onClick={() => handleRowClick(transfer)}
+                                        >
+                                            <TableCell className="px-6 py-4">
+                                                <div className="font-bold text-[10px] text-blue-500 tabular-nums tracking-widest mb-1">{transfer.id}</div>
+                                                <div className="font-bold text-foreground text-sm tracking-tight">{transfer.product}</div>
+                                                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter mt-0.5">
+                                                    <span className="tabular-nums">{transfer.qty}</span> {transfer.unit} • {transfer.sku}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-col space-y-1">
+                                                    <div className="flex items-center text-[11px] font-medium text-foreground">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 shrink-0" />
+                                                        {transfer.source}
+                                                    </div>
+                                                    <div className="h-2 ml-[3px] border-l border-border/50" />
+                                                    <div className="flex items-center text-[11px] font-medium text-foreground">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 shrink-0" />
+                                                        {transfer.destination}
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-border bg-muted/30 text-muted-foreground px-2 h-5">
+                                                    {transfer.type}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className={`text-[9px] font-black uppercase tracking-widest px-2 h-5 shadow-sm border ${getStatusColor(transfer.status)}`}>
+                                                    {transfer.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="text-[11px] font-bold text-foreground tabular-nums">{transfer.eta}</div>
+                                                {transfer.status === 'Delayed' && (
+                                                    <div className="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-0.5">+2H VARIANCE</div>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right pr-6">
+                                                <div className="flex items-center justify-end space-x-2">
+                                                    {transfer.cold_chain && (
+                                                        <div className="p-1 bg-blue-500/10 rounded border border-blue-500/20">
+                                                            <Thermometer className="w-3 h-3 text-blue-500" />
+                                                        </div>
+                                                    )}
+                                                    <span className={`text-[10px] font-black uppercase tracking-widest ${getRiskColor(transfer.risk_level)}`}>
+                                                        {transfer.sla_status}
+                                                    </span>
+                                                </div>
+                                                {transfer.risk_level === 'Critical' && (
+                                                    <div className="text-[9px] font-bold text-red-500 mt-1 flex items-center justify-end uppercase tracking-tighter">
+                                                        <AlertTriangle className="w-2.5 h-2.5 mr-1" /> {transfer.risk_reason}
+                                                    </div>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    {filteredTransfers.length === 0 && (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="h-40 text-center text-muted-foreground italic text-sm">
+                                                No active transfers found matching current criteria.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </CardContent>
+                </Card>
+            </main>
 
       {/* Detail Panel Sheet */}
       <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
-        <SheetContent className="w-[400px] sm:w-[540px] bg-[#111] border-l border-[#222] text-white overflow-y-auto">
+        <SheetContent className="w-full sm:max-w-xl bg-card border-l border-border text-foreground overflow-y-auto p-0">
           {selectedTransfer && (
-            <>
-              <SheetHeader className="mb-6">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Badge variant="outline" className="border-gray-700 text-gray-400">{selectedTransfer.id}</Badge>
-                  <Badge className={getStatusColor(selectedTransfer.status)}>{selectedTransfer.status}</Badge>
+            <div className="flex flex-col h-full">
+              <SheetHeader className="p-8 border-b border-border/50 bg-muted/20">
+                <div className="flex items-center space-x-3 mb-4">
+                  <Badge variant="outline" className="text-[10px] font-black tabular-nums border-border bg-card text-blue-500 px-3 h-6 uppercase tracking-widest">{selectedTransfer.id}</Badge>
+                  <Badge variant="outline" className={`text-[10px] font-black px-3 h-6 uppercase tracking-widest shadow-sm border ${getStatusColor(selectedTransfer.status)}`}>{selectedTransfer.status}</Badge>
                 </div>
-                <SheetTitle className="text-2xl font-bold text-white">{selectedTransfer.product}</SheetTitle>
-                <SheetDescription className="text-gray-400">
+                <SheetTitle className="text-3xl font-black text-foreground tracking-tighter uppercase leading-none">{selectedTransfer.product}</SheetTitle>
+                <SheetDescription className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2">
                   SKU: {selectedTransfer.sku} • {selectedTransfer.qty} {selectedTransfer.unit}
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="space-y-6">
+              <div className="p-8 space-y-10">
                 {/* Route Info */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Route Details</h3>
-                  <div className="relative pl-6 border-l border-[#333] space-y-6">
+                <div className="space-y-6">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] border-b border-border pb-2">Logistics Routing</h3>
+                  <div className="relative pl-8 border-l-2 border-dashed border-border space-y-10">
                     <div className="relative">
-                      <div className="absolute -left-[31px] bg-[#111] p-1">
-                        <div className="w-3 h-3 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></div>
+                      <div className="absolute -left-[41px] bg-card p-1">
+                        <div className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)] border-2 border-card"></div>
                       </div>
-                      <div className="text-sm font-medium text-white mb-1">Origin</div>
-                      <div className="text-gray-400 text-sm">{selectedTransfer.source}</div>
+                      <div className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-1">Point of Origin</div>
+                      <div className="text-lg font-bold text-foreground tracking-tight">{selectedTransfer.source}</div>
                     </div>
                     <div className="relative">
-                      <div className="absolute -left-[31px] bg-[#111] p-1">
-                        <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50"></div>
+                      <div className="absolute -left-[41px] bg-card p-1">
+                        <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.5)] border-2 border-card"></div>
                       </div>
-                      <div className="text-sm font-medium text-white mb-1">Destination</div>
-                      <div className="text-gray-400 text-sm">{selectedTransfer.destination}</div>
+                      <div className="text-[11px] font-black text-muted-foreground uppercase tracking-widest mb-1">Final Destination</div>
+                      <div className="text-lg font-bold text-foreground tracking-tight">{selectedTransfer.destination}</div>
                     </div>
                   </div>
                 </div>
 
-                <Separator className="bg-[#222]" />
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Update Transfer</h3>
-                  <Select value={selectedTransferStatus} onValueChange={setSelectedTransferStatus}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectItem value="Planned">Planned</SelectItem>
-                      <SelectItem value="Dispatched">Dispatched</SelectItem>
-                      <SelectItem value="In Transit">In Transit</SelectItem>
-                      <SelectItem value="Delayed">Delayed</SelectItem>
-                      <SelectItem value="Delivered">Delivered</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="space-y-6">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] border-b border-border pb-2">Modify Transfer Status</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                      <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Update State</label>
+                          <Select value={selectedTransferStatus} onValueChange={setSelectedTransferStatus}>
+                            <SelectTrigger className="bg-muted/50 border-border text-foreground font-bold text-xs h-10">
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover border-border">
+                              <SelectItem value="Planned" className="text-xs">Planned</SelectItem>
+                              <SelectItem value="Dispatched" className="text-xs">Dispatched</SelectItem>
+                              <SelectItem value="In Transit" className="text-xs">In Transit</SelectItem>
+                              <SelectItem value="Delayed" className="text-xs">Delayed</SelectItem>
+                              <SelectItem value="Delivered" className="text-xs">Delivered</SelectItem>
+                            </SelectContent>
+                          </Select>
+                      </div>
+                      <Button className="h-10 bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-600/20" onClick={handleUpdateTransfer} disabled={isSavingTransfer}>
+                        {isSavingTransfer ? 'Updating Intelligence...' : 'Commit Status Change'}
+                      </Button>
+                  </div>
                 </div>
 
                 {/* Timeline */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Timeline & Events</h3>
+                <div className="space-y-6">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] border-b border-border pb-2">Telemetry Events</h3>
                   <div className="space-y-4">
                     {(selectedTransfer.events || []).map((event, i) => (
-                      <div key={i} className="flex gap-4">
-                        <div className="text-xs text-gray-500 w-16 pt-1 text-right">{event.time}</div>
-                        <div className="flex-1 bg-[#1a1a1a] p-3 rounded-lg border border-[#333]">
-                          <div className="text-sm font-medium text-white">{event.event}</div>
-                          <div className="text-xs text-gray-500 mt-1 flex items-center">
-                            <MapPin className="w-3 h-3 mr-1" /> {event.location}
+                      <div key={i} className="flex gap-4 group">
+                        <div className="text-[10px] font-bold text-muted-foreground w-20 pt-3 text-right tabular-nums tracking-tighter uppercase">{event.time}</div>
+                        <div className="flex-1 bg-muted/30 p-4 rounded-xl border border-border group-hover:border-blue-500/20 transition-colors">
+                          <div className="text-xs font-bold text-foreground uppercase tracking-tight">{event.event}</div>
+                          <div className="text-[10px] text-muted-foreground mt-1.5 flex items-center font-medium">
+                            <MapPin className="w-3 h-3 mr-1.5 text-blue-500" /> {event.location}
                           </div>
                         </div>
                       </div>
@@ -649,175 +722,173 @@ export default function LogisticsPage() {
                   </div>
                 </div>
 
-                <Separator className="bg-[#222]" />
-
                 {/* Inventory Impact */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Projected Inventory Impact</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <Card className="bg-[#1a1a1a] border-[#333]">
-                      <CardContent className="p-4">
-                        <div className="text-xs text-gray-500 mb-1">Source Store After Dispatch</div>
-                        <div className="text-lg font-bold text-white">120 units</div>
-                        <div className="text-xs text-yellow-500 mt-1">Low Stock Warning</div>
+                <div className="space-y-6">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] border-b border-border pb-2">Projected Inventory Drift</h3>
+                  <div className="grid grid-cols-2 gap-6">
+                    <Card className="bg-muted/30 border-border shadow-inner">
+                      <CardContent className="p-5 text-center">
+                        <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Origin Delta</div>
+                        <div className="text-2xl font-black text-foreground tabular-nums tracking-tighter">120 <span className="text-xs text-muted-foreground font-bold">UNITS</span></div>
+                        <div className="text-[9px] font-black text-orange-500 mt-2 uppercase tracking-tighter bg-orange-500/10 py-1 rounded">Near Safety Stock</div>
                       </CardContent>
                     </Card>
-                    <Card className="bg-[#1a1a1a] border-[#333]">
-                      <CardContent className="p-4">
-                        <div className="text-xs text-gray-500 mb-1">Dest. Store Upon Arrival</div>
-                        <div className="text-lg font-bold text-white">245 units</div>
-                        <div className="text-xs text-green-500 mt-1">Optimal Level</div>
+                    <Card className="bg-muted/30 border-border shadow-inner">
+                      <CardContent className="p-5 text-center">
+                        <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Target Inflow</div>
+                        <div className="text-2xl font-black text-foreground tabular-nums tracking-tighter">245 <span className="text-xs text-muted-foreground font-bold">UNITS</span></div>
+                        <div className="text-[9px] font-black text-green-500 mt-2 uppercase tracking-tighter bg-green-500/10 py-1 rounded">Optimal Level Reached</div>
                       </CardContent>
                     </Card>
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="pt-4">
-                  <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-3">Actions</h3>
-                  <div className="flex gap-3">
-                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={handleUpdateTransfer} disabled={isSavingTransfer}>
-                      {isSavingTransfer ? 'Saving...' : 'Save Status'}
+                {/* Secondary Actions */}
+                <div className="pt-6 border-t border-border flex gap-4">
+                    <Button variant="outline" className="flex-1 h-10 border-red-500/20 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/10 bg-transparent">
+                      <AlertTriangle className="w-3.5 h-3.5 mr-2" /> Report Lane Issue
                     </Button>
-                    <Button variant="outline" className="flex-1 border-red-900/50 text-red-500 hover:bg-red-900/20 bg-transparent">
-                      Report Issue
-                    </Button>
-                  </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </SheetContent>
       </Sheet>
 
       <Sheet open={createSheetOpen} onOpenChange={setCreateSheetOpen}>
-        <SheetContent className="w-[420px] sm:w-[560px] bg-[#111] border-l border-[#222] text-white overflow-y-auto">
-          <div className="space-y-6 pt-4">
-            <SheetHeader className="text-left">
-              <SheetTitle className="text-white text-xl">Add Transfer</SheetTitle>
-              <SheetDescription className="text-gray-400">
-                Create a new logistics transfer and save it to the backend.
+        <SheetContent className="w-full sm:max-w-xl bg-card border-l border-border text-foreground overflow-y-auto p-0">
+          <div className="flex flex-col h-full">
+            <SheetHeader className="p-8 border-b border-border/50 bg-muted/20">
+              <SheetTitle className="text-3xl font-black text-foreground tracking-tighter uppercase leading-none">Initialize Transfer</SheetTitle>
+              <SheetDescription className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2">
+                Register a new inventory movement lane within the logistics network.
               </SheetDescription>
             </SheetHeader>
 
-            <div className="space-y-5">
+            <div className="p-8 space-y-8 flex-1">
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Product Name</label>
-                <Input value={newTransfer.product} onChange={(event) => handleCreateFieldChange('product', event.target.value)} placeholder="Organic Hass Avocados" className="bg-[#1a1a1a] border-[#333] text-white" />
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Product Catalog Item</label>
+                <Input value={newTransfer.product} onChange={(event) => handleCreateFieldChange('product', event.target.value)} placeholder="Organic Hass Avocados" className="h-11 bg-muted/50 border-border text-foreground font-bold text-sm focus-visible:ring-blue-500/50" />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Source</label>
-                  <Input value={newTransfer.source} onChange={(event) => handleCreateFieldChange('source', event.target.value)} className="bg-[#1a1a1a] border-[#333] text-white" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Source Node</label>
+                  <Input value={newTransfer.source} onChange={(event) => handleCreateFieldChange('source', event.target.value)} className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Destination</label>
-                  <Input value={newTransfer.destination} onChange={(event) => handleCreateFieldChange('destination', event.target.value)} className="bg-[#1a1a1a] border-[#333] text-white" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Destination Node</label>
+                  <Input value={newTransfer.destination} onChange={(event) => handleCreateFieldChange('destination', event.target.value)} className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Transfer Type</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Lane Classification</label>
                   <Select value={newTransfer.type} onValueChange={(value) => handleCreateFieldChange('type', value)}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectItem value="Inter-store">Inter-store</SelectItem>
-                      <SelectItem value="Warehouse to Store">Warehouse to Store</SelectItem>
-                      <SelectItem value="Vendor to Warehouse">Vendor to Warehouse</SelectItem>
+                    <SelectTrigger className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-popover border-border">
+                      <SelectItem value="Inter-store" className="text-xs">Inter-store</SelectItem>
+                      <SelectItem value="Warehouse to Store" className="text-xs">Warehouse to Store</SelectItem>
+                      <SelectItem value="Vendor to Warehouse" className="text-xs">Vendor to Warehouse</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Status</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Initial Status</label>
                   <Select value={newTransfer.status} onValueChange={(value) => handleCreateFieldChange('status', value)}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectItem value="Planned">Planned</SelectItem>
-                      <SelectItem value="Dispatched">Dispatched</SelectItem>
-                      <SelectItem value="In Transit">In Transit</SelectItem>
-                      <SelectItem value="Delayed">Delayed</SelectItem>
-                      <SelectItem value="Delivered">Delivered</SelectItem>
+                    <SelectTrigger className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-popover border-border">
+                      <SelectItem value="Planned" className="text-xs">Planned</SelectItem>
+                      <SelectItem value="Dispatched" className="text-xs">Dispatched</SelectItem>
+                      <SelectItem value="In Transit" className="text-xs">In Transit</SelectItem>
+                      <SelectItem value="Delayed" className="text-xs">Delayed</SelectItem>
+                      <SelectItem value="Delivered" className="text-xs">Delivered</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Quantity</label>
-                  <Input type="number" min="1" value={newTransfer.qty} onChange={(event) => handleCreateFieldChange('qty', event.target.value)} className="bg-[#1a1a1a] border-[#333] text-white" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Transfer Qty</label>
+                  <Input type="number" min="1" value={newTransfer.qty} onChange={(event) => handleCreateFieldChange('qty', event.target.value)} className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs tabular-nums" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Unit</label>
-                  <Input value={newTransfer.unit} onChange={(event) => handleCreateFieldChange('unit', event.target.value)} className="bg-[#1a1a1a] border-[#333] text-white" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">UoM</label>
+                  <Input value={newTransfer.unit} onChange={(event) => handleCreateFieldChange('unit', event.target.value)} className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">ETA</label>
-                  <Input value={newTransfer.eta} onChange={(event) => handleCreateFieldChange('eta', event.target.value)} className="bg-[#1a1a1a] border-[#333] text-white" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Est. Completion</label>
+                  <Input value={newTransfer.eta} onChange={(event) => handleCreateFieldChange('eta', event.target.value)} className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs tabular-nums" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Region</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Operation Region</label>
                   <Select value={newTransfer.region} onValueChange={(value) => handleCreateFieldChange('region', value)}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectItem value="North">North</SelectItem>
-                      <SelectItem value="South">South</SelectItem>
-                      <SelectItem value="West">West</SelectItem>
-                      <SelectItem value="East">East</SelectItem>
+                    <SelectTrigger className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-popover border-border">
+                      <SelectItem value="North" className="text-xs">North</SelectItem>
+                      <SelectItem value="South" className="text-xs">South</SelectItem>
+                      <SelectItem value="West" className="text-xs">West</SelectItem>
+                      <SelectItem value="East" className="text-xs">East</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">SLA Status</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">SLA Priority</label>
                   <Select value={newTransfer.sla_status} onValueChange={(value) => handleCreateFieldChange('sla_status', value)}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectItem value="On Track">On Track</SelectItem>
-                      <SelectItem value="At Risk">At Risk</SelectItem>
-                      <SelectItem value="Critical">Critical</SelectItem>
+                    <SelectTrigger className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-popover border-border">
+                      <SelectItem value="On Track" className="text-xs">On Track</SelectItem>
+                      <SelectItem value="At Risk" className="text-xs">At Risk</SelectItem>
+                      <SelectItem value="Critical" className="text-xs">Critical</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Risk Level</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Neural Risk Assessment</label>
                   <Select value={newTransfer.risk_level} onValueChange={(value) => handleCreateFieldChange('risk_level', value)}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                      <SelectItem value="Low">Low</SelectItem>
-                      <SelectItem value="Medium">Medium</SelectItem>
-                      <SelectItem value="High">High</SelectItem>
-                      <SelectItem value="Critical">Critical</SelectItem>
+                    <SelectTrigger className="h-10 bg-muted/50 border-border text-foreground font-bold text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-popover border-border">
+                      <SelectItem value="Low" className="text-xs">Low</SelectItem>
+                      <SelectItem value="Medium" className="text-xs">Medium</SelectItem>
+                      <SelectItem value="High" className="text-xs">High</SelectItem>
+                      <SelectItem value="Critical" className="text-xs">Critical</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                className={`w-full ${newTransfer.cold_chain ? 'border-blue-500 text-blue-300 bg-blue-950/40' : 'border-[#333] text-gray-300 bg-transparent'}`}
-                onClick={() => handleCreateFieldChange('cold_chain', !newTransfer.cold_chain)}
-              >
-                {newTransfer.cold_chain ? 'Cold Chain On' : 'Cold Chain Off'}
-              </Button>
+              <div className="flex items-center space-x-2 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className={`w-full h-11 font-black text-[10px] uppercase tracking-widest transition-all ${newTransfer.cold_chain ? 'border-blue-500 text-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/20' : 'border-border text-muted-foreground bg-transparent'}`}
+                  onClick={() => handleCreateFieldChange('cold_chain', !newTransfer.cold_chain)}
+                >
+                  {newTransfer.cold_chain ? 'Cold Chain Protocol: ACTIVE' : 'Cold Chain Protocol: DISABLED'}
+                </Button>
+              </div>
 
-              {createError && <div className="rounded-lg border border-red-900/60 bg-red-950/30 px-3 py-2 text-sm text-red-300">{createError}</div>}
+              {createError && (
+                  <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs font-bold text-red-500 uppercase tracking-tight flex items-center">
+                    <AlertTriangle className="w-4 h-4 mr-2" /> {createError}
+                  </div>
+              )}
             </div>
 
-            <SheetFooter className="gap-2 sm:justify-end">
-              <Button variant="outline" className="border-[#333] text-gray-300 bg-transparent" onClick={() => { setCreateSheetOpen(false); resetCreateForm(); }}>
+            <SheetFooter className="p-8 border-t border-border/50 bg-muted/10 gap-3 sm:justify-end">
+              <Button variant="outline" className="h-11 px-8 border-border text-muted-foreground font-black text-[10px] uppercase tracking-widest hover:bg-muted" onClick={() => { setCreateSheetOpen(false); resetCreateForm(); }}>
                 Cancel
               </Button>
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={handleSaveTransfer} disabled={isSavingTransfer}>
-                {isSavingTransfer ? 'Saving...' : 'Save Transfer'}
+              <Button className="h-11 px-8 bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-600/20" onClick={handleSaveTransfer} disabled={isSavingTransfer}>
+                {isSavingTransfer ? 'Syncing Network...' : 'Confirm Transfer'}
               </Button>
             </SheetFooter>
           </div>
