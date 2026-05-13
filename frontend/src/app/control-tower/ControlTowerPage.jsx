@@ -93,55 +93,55 @@ const ControlTowerPage = () => {
     }
 
     return (
-        <div className="flex min-h-screen bg-[#0a0a0a] text-foreground">
+        <div className="flex min-h-screen bg-background text-foreground">
             <Sidebar />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0">
                 {/* Global Context Bar */}
-                <header className="h-16 bg-[#111] border-b border-[#222] flex items-center justify-between px-6 sticky top-0 z-10 w-full">
+                <header className="h-16 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border flex items-center justify-between px-6 sticky top-0 z-10 w-full">
                     <div className="flex items-center space-x-6">
                         <div className="md:hidden">
-                            <Menu className="w-6 h-6 text-gray-400" />
+                            <Menu className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-white tracking-tight">Control Tower</h2>
+                            <h2 className="text-lg font-bold text-foreground tracking-tight">Control Tower</h2>
                         </div>
                     </div>
 
                     <div className="flex items-center space-x-4">
                         <div className="text-right hidden sm:block">
-                            <h2 className="text-sm text-gray-400 font-medium">System Health</h2>
+                            <h2 className="text-sm text-muted-foreground font-medium">System Health</h2>
                             <p className="text-green-500 text-sm font-semibold">All Systems Nominal</p>
                         </div>
 
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white relative">
+                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground relative">
                                     <Bell className="w-5 h-5" />
-                                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-[#111]"></span>
+                                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-border"></span>
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent className="bg-[#0f0f0f] border-l border-[#222] text-white p-0 w-80 sm:max-w-sm">
+                            <SheetContent className="bg-background border-l border-border text-foreground p-0 w-80 sm:max-w-sm">
                                 <AlertContent />
                             </SheetContent>
                         </Sheet>
 
-                        <div className="w-8 h-8 bg-[#222] rounded-full flex items-center justify-center border border-[#333]">
-                            <User className="w-4 h-4 text-gray-400" />
+                        <div className="w-8 h-8 bg-border rounded-full flex items-center justify-center border border-border">
+                            <User className="w-4 h-4 text-muted-foreground" />
                         </div>
                     </div>
                 </header>
 
                 <div className="flex flex-1 overflow-hidden">
                     {/* Content Canvas */}
-                    <main className="flex-1 p-6 space-y-8 overflow-y-auto bg-[#0a0a0a]">
+                    <main className="flex-1 p-6 space-y-8 overflow-y-auto bg-background">
                         {partitions.map((partition) => (
                             <div key={partition.id} className="space-y-4">
-                                <div className="flex items-end justify-between border-b border-[#222] pb-2">
+                                <div className="flex items-end justify-between border-b border-border pb-2">
                                     <div>
                                         <h2 className="text-xl font-semibold text-blue-400">{partition.title}</h2>
-                                        <p className="text-sm text-gray-500 mt-1">{partition.description}</p>
+                                        <p className="text-sm text-muted-foreground mt-1">{partition.description}</p>
                                     </div>
                                 </div>
 
@@ -149,17 +149,17 @@ const ControlTowerPage = () => {
                                     {partition.cards.map((card, idx) => {
                                         const Icon = card.icon;
                                         return (
-                                            <Card key={idx} onClick={() => card.path && navigate(`${card.path}?from=control-tower`)} className="bg-[#111] border-[#333] hover:border-blue-500/50 transition-all cursor-pointer group rounded-xl overflow-hidden">
+                                            <Card key={idx} onClick={() => card.path && navigate(`${card.path}?from=control-tower`)} className="bg-card border-border hover:border-blue-500/50 transition-all cursor-pointer group rounded-xl overflow-hidden">
                                                 <CardHeader className="pb-3">
-                                                    <CardTitle className="text-lg font-medium text-gray-200 group-hover:text-blue-400 transition-colors">
+                                                    <CardTitle className="text-lg font-medium text-foreground group-hover:text-blue-400 transition-colors">
                                                         {card.title}
                                                     </CardTitle>
-                                                    <CardDescription className="text-gray-500 line-clamp-2">
+                                                    <CardDescription className="text-muted-foreground line-clamp-2">
                                                         {card.description}
                                                     </CardDescription>
                                                 </CardHeader>
                                                 <CardContent>
-                                                    <div className="pt-4 border-t border-[#222] flex items-center text-xs font-medium text-gray-500 uppercase tracking-wider group-hover:text-blue-400 transition-colors">
+                                                    <div className="pt-4 border-t border-border flex items-center text-xs font-medium text-muted-foreground uppercase tracking-wider group-hover:text-blue-400 transition-colors">
                                                         Open Module <TrendingUp className="w-3 h-3 ml-1" />
                                                     </div>
                                                 </CardContent>
@@ -179,3 +179,5 @@ const ControlTowerPage = () => {
 };
 
 export default ControlTowerPage;
+
+

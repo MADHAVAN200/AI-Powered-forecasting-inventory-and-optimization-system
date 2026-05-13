@@ -198,9 +198,9 @@ const EventIntelligencePage = () => {
     }, [filteredEvents]);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20">
+        <div className="min-h-screen bg-background text-foreground pb-20">
             {/* PAGE HEADER & FILTERS */}
-            <div className="bg-[#111] border-b border-[#222] px-6 py-3 sticky top-0 z-30 backdrop-blur-md bg-[#111]/90">
+            <div className="bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-3 sticky top-0 z-30 backdrop-blur-md bg-card/90">
                 {/* Breadcrumb */}
                 <div className="mb-2">
                     <Breadcrumb>
@@ -208,7 +208,7 @@ const EventIntelligencePage = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     onClick={() => navigate('/')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     Home
@@ -220,7 +220,7 @@ const EventIntelligencePage = () => {
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
@@ -241,19 +241,19 @@ const EventIntelligencePage = () => {
                     <div>
                         <div className="flex items-center space-x-3 mb-1">
                             <Calendar className="w-6 h-6 text-blue-500" />
-                            <h1 className="text-2xl font-bold text-white">Event Intelligence</h1>
+                            <h1 className="text-2xl font-bold text-foreground">Event Intelligence</h1>
                             <Button 
                                 onClick={handleRefreshModel} 
                                 disabled={isTraining}
                                 variant="outline" 
                                 size="sm" 
-                                className="h-6 px-2 text-[10px] bg-[#1a1a1a] border-[#333] text-purple-400 hover:text-purple-300 hover:bg-[#222]"
+                                className="h-6 px-2 text-[10px] bg-muted border-border text-purple-400 hover:text-purple-300 hover:bg-border"
                             >
                                 <RefreshCw className={`w-3 h-3 mr-1 ${isTraining ? 'animate-spin' : ''}`} />
                                 {isTraining ? 'Training Model...' : 'Sync & Retrain'}
                             </Button>
                         </div>
-                        <p className="text-gray-400 text-sm max-w-xl">
+                        <p className="text-muted-foreground text-sm max-w-xl">
                             City-level events influencing demand signals.
                         </p>
                     </div>
@@ -261,12 +261,12 @@ const EventIntelligencePage = () => {
                     <div className="flex flex-wrap items-center gap-4">
                         {/* City Selector */}
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-medium text-gray-500 uppercase">Region / City</label>
+                            <label className="text-[10px] font-medium text-muted-foreground uppercase">Region / City</label>
                             <Select value={selectedCity} onValueChange={setSelectedCity}>
-                                <SelectTrigger className="w-[160px] h-9 bg-[#1a1a1a] border-[#333] text-white text-xs">
+                                <SelectTrigger className="w-[160px] h-9 bg-muted border-border text-foreground text-xs">
                                     <SelectValue placeholder="Select City" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-muted border-border text-foreground">
                                     <SelectItem value="all">All Regions</SelectItem>
                                     {cities.map(city => (
                                         <SelectItem key={city.city_id} value={city.city_name}>{city.city_name}</SelectItem>
@@ -277,12 +277,12 @@ const EventIntelligencePage = () => {
 
                         {/* Event Type Filter */}
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-medium text-gray-500 uppercase">Event Type</label>
+                            <label className="text-[10px] font-medium text-muted-foreground uppercase">Event Type</label>
                             <Select value={eventType} onValueChange={setEventType}>
-                                <SelectTrigger className="w-[140px] h-9 bg-[#1a1a1a] border-[#333] text-white text-xs">
+                                <SelectTrigger className="w-[140px] h-9 bg-muted border-border text-foreground text-xs">
                                     <SelectValue placeholder="All Types" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-muted border-border text-foreground">
                                     <SelectItem value="all">All Types</SelectItem>
                                     {uniqueEventTypes.map(type => (
                                         <SelectItem key={type} value={type.toLowerCase()}>
@@ -295,12 +295,12 @@ const EventIntelligencePage = () => {
 
                         {/* Time Horizon Filter */}
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-medium text-gray-500 uppercase">Time Horizon</label>
+                            <label className="text-[10px] font-medium text-muted-foreground uppercase">Time Horizon</label>
                             <Select value={dateRange} onValueChange={setDateRange}>
-                                <SelectTrigger className="w-[130px] h-9 bg-[#1a1a1a] border-[#333] text-white text-xs">
+                                <SelectTrigger className="w-[130px] h-9 bg-muted border-border text-foreground text-xs">
                                     <SelectValue placeholder="Next 30 Days" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-muted border-border text-foreground">
                                     <SelectItem value="7">Next 7 Days</SelectItem>
                                     <SelectItem value="14">Next 14 Days</SelectItem>
                                     <SelectItem value="30">Next 30 Days</SelectItem>
@@ -323,57 +323,57 @@ const EventIntelligencePage = () => {
 
                 {/* 4. EVENT IMPACT SUMMARY (KPI CARDS) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Card className="bg-[#111] border-[#333] hover:border-blue-500/30 transition-colors">
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-gray-300">High-Impact Events</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">High-Impact Events</CardTitle>
                             <AlertTriangle className="h-4 w-4 text-red-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{loading ? '...' : stats.highImpact}</div>
-                            <p className="text-xs text-gray-400 mt-1">Impact score ≥ 4.0</p>
+                            <div className="text-2xl font-bold text-foreground">{loading ? '...' : stats.highImpact}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Impact score ≥ 4.0</p>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] hover:border-blue-500/30 transition-colors">
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-gray-300">Active Signals</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Active Signals</CardTitle>
                             <Activity className="h-4 w-4 text-orange-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{loading ? '...' : filteredEvents.length}</div>
-                            <p className="text-xs text-gray-400 mt-1">Localized demand shocks</p>
+                            <div className="text-2xl font-bold text-foreground">{loading ? '...' : filteredEvents.length}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Localized demand shocks</p>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] hover:border-blue-500/30 transition-colors">
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-gray-300">Sensitive Categories</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Sensitive Categories</CardTitle>
                             <ShoppingCart className="h-4 w-4 text-blue-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">{loading ? '...' : stats.categories}</div>
-                            <p className="text-xs text-gray-400 mt-1">Impacted by current events</p>
+                            <div className="text-2xl font-bold text-foreground">{loading ? '...' : stats.categories}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Impacted by current events</p>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333] hover:border-purple-500/30 transition-colors">
+                    <Card className="bg-card border-border hover:border-purple-500/30 transition-colors">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-purple-400">AI Model Insights</CardTitle>
                             <Brain className="h-4 w-4 text-purple-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white mb-2">92% <span className="text-[10px] font-normal text-gray-400 tracking-wider uppercase">Directional Acc</span></div>
+                            <div className="text-2xl font-bold text-foreground mb-2">92% <span className="text-[10px] font-normal text-muted-foreground tracking-wider uppercase">Directional Acc</span></div>
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center text-xs">
-                                    <span className="text-gray-500">Algorithm</span>
-                                    <span className="text-gray-300 font-medium">XGBoost (5-Fold CV)</span>
+                                    <span className="text-muted-foreground">Algorithm</span>
+                                    <span className="text-muted-foreground font-medium">XGBoost (5-Fold CV)</span>
                                 </div>
                                 <div className="flex justify-between items-center text-xs">
-                                    <span className="text-gray-500">Train/Test Split</span>
-                                    <span className="text-gray-300 font-medium">80/20 (20k/10k)</span>
+                                    <span className="text-muted-foreground">Train/Test Split</span>
+                                    <span className="text-muted-foreground font-medium">80/20 (20k/10k)</span>
                                 </div>
                                 <div className="flex justify-between items-center text-xs">
-                                    <span className="text-gray-500">CV MAPE</span>
+                                    <span className="text-muted-foreground">CV MAPE</span>
                                     <span className="text-green-400 font-medium">10.50%</span>
                                 </div>
                             </div>
@@ -382,47 +382,47 @@ const EventIntelligencePage = () => {
                 </div>
 
                 {/* 5. UPCOMING EVENTS TABLE */}
-                <Card className="bg-[#111] border-[#333]">
+                <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-lg text-white">Upcoming Events Queue</CardTitle>
-                        <CardDescription className="text-gray-400">Operationally actionable event details for the selected region.</CardDescription>
+                        <CardTitle className="text-lg text-foreground">Upcoming Events Queue</CardTitle>
+                        <CardDescription className="text-muted-foreground">Operationally actionable event details for the selected region.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>
                             <TableHeader>
-                                <TableRow className="border-[#222] hover:bg-transparent">
-                                    <TableHead className="text-gray-300">Event Name</TableHead>
-                                    <TableHead className="text-gray-300">City</TableHead>
-                                    <TableHead className="text-gray-300">Type</TableHead>
-                                    <TableHead className="text-gray-300">Date</TableHead>
-                                    <TableHead className="text-gray-300 text-right">AI Impact (0-5)</TableHead>
-                                    <TableHead className="text-gray-300 text-right">Confidence</TableHead>
+                                <TableRow className="border-border hover:bg-transparent">
+                                    <TableHead className="text-muted-foreground">Event Name</TableHead>
+                                    <TableHead className="text-muted-foreground">City</TableHead>
+                                    <TableHead className="text-muted-foreground">Type</TableHead>
+                                    <TableHead className="text-muted-foreground">Date</TableHead>
+                                    <TableHead className="text-muted-foreground text-right">AI Impact (0-5)</TableHead>
+                                    <TableHead className="text-muted-foreground text-right">Confidence</TableHead>
                                     <TableHead className="w-[50px]"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {loading ? (
-                                    <TableRow className="border-[#222]">
-                                        <TableCell colSpan={7} className="text-center py-20 text-gray-500 italic">Discovered events are being synchronized from the edge nodes...</TableCell>
+                                    <TableRow className="border-border">
+                                        <TableCell colSpan={7} className="text-center py-20 text-muted-foreground italic">Discovered events are being synchronized from the edge nodes...</TableCell>
                                     </TableRow>
                                 ) : filteredEvents.length === 0 ? (
-                                    <TableRow className="border-[#222]">
-                                        <TableCell colSpan={7} className="text-center py-20 text-gray-500 italic">No events detected with current filters.</TableCell>
+                                    <TableRow className="border-border">
+                                        <TableCell colSpan={7} className="text-center py-20 text-muted-foreground italic">No events detected with current filters.</TableCell>
                                     </TableRow>
                                 ) : filteredEvents.map((event) => (
                                     <React.Fragment key={event.event_id}>
                                         <TableRow
-                                            className="border-[#222] hover:bg-[#1a1a1a] cursor-pointer transition-colors"
+                                            className="border-border hover:bg-muted cursor-pointer transition-colors"
                                             onClick={() => toggleEventDetails(event.event_id)}
                                         >
-                                            <TableCell className="font-medium text-white">{event.event_name}</TableCell>
-                                            <TableCell className="text-gray-200">{event.cities?.city_name || 'Global'}</TableCell>
+                                            <TableCell className="font-medium text-foreground">{event.event_name}</TableCell>
+                                            <TableCell className="text-foreground">{event.cities?.city_name || 'Global'}</TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="border-gray-700 text-gray-300">
+                                                <Badge variant="outline" className="border-gray-700 text-muted-foreground">
                                                     {event.event_type}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-gray-200">{new Date(event.event_date).toLocaleDateString()}</TableCell>
+                                            <TableCell className="text-foreground">{new Date(event.event_date).toLocaleDateString()}</TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex items-center justify-end space-x-2">
                                                     <span className={`font-bold ${event.impact_score >= 4 ? 'text-red-500' :
@@ -430,7 +430,7 @@ const EventIntelligencePage = () => {
                                                         }`}>
                                                         {event.impact_score}
                                                     </span>
-                                                    <div className="w-16 h-1.5 bg-[#333] rounded-full overflow-hidden">
+                                                    <div className="w-16 h-1.5 bg-border rounded-full overflow-hidden">
                                                         <div
                                                             className={`h-full ${event.impact_score >= 4 ? 'bg-red-500' :
                                                                 event.impact_score >= 3 ? 'bg-yellow-500' : 'bg-green-500'
@@ -440,20 +440,20 @@ const EventIntelligencePage = () => {
                                                     </div>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-right text-gray-200">94%</TableCell>
+                                            <TableCell className="text-right text-foreground">94%</TableCell>
                                             <TableCell>
                                                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                    <MoreHorizontal className="h-4 w-4 text-gray-400" />
+                                                    <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
                                         {expandedEventId === event.event_id && (
-                                            <TableRow className="border-[#222] bg-[#151515] hover:bg-[#151515]">
+                                            <TableRow className="border-border bg-muted/50 hover:bg-muted/50">
                                                 <TableCell colSpan={7} className="p-0">
                                                     <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 animate-accordion-down">
                                                         <div className="space-y-3">
-                                                            <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Impact Logic</h4>
-                                                            <p className="text-sm text-gray-200">Automated shock detection via Prophet ensemble. Affected categories weighted by historical correlation.</p>
+                                                            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Impact Logic</h4>
+                                                            <p className="text-sm text-foreground">Automated shock detection via Prophet ensemble. Affected categories weighted by historical correlation.</p>
                                                             <div className="flex flex-wrap gap-2">
                                                                 {event.event_category_impact?.map((impact, i) => {
                                                                     const dbName = impact.categories?.category_name || impact.category_id;
@@ -467,21 +467,21 @@ const EventIntelligencePage = () => {
                                                         </div>
 
                                                         <div className="space-y-3">
-                                                            <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Model Insight</h4>
+                                                            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Model Insight</h4>
                                                             <div className="grid grid-cols-1 gap-4">
-                                                                <div className="bg-[#1a1a1a] p-3 rounded-md border border-[#333]">
-                                                                    <div className="text-xs text-gray-400">Projected Uplift</div>
+                                                                <div className="bg-muted p-3 rounded-md border border-border">
+                                                                    <div className="text-xs text-muted-foreground">Projected Uplift</div>
                                                                     <div className="text-sm font-medium text-green-400">+{((event.impact_score / 5) * 45).toFixed(1)}% Demand Surge</div>
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                         <div className="space-y-3 flex flex-col justify-between">
-                                                            <h4 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Quick Links</h4>
+                                                            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quick Links</h4>
                                                             <div className="space-y-2">
                                                                 <Button
                                                                     variant="outline"
-                                                                    className="w-full justify-start border-[#333] hover:bg-[#222] text-gray-200"
+                                                                    className="w-full justify-start border-border hover:bg-border text-foreground"
                                                                     onClick={() => navigate('/control-tower/forecast-engine')}
                                                                 >
                                                                     <TrendingUp className="w-4 h-4 mr-2 text-blue-500" />
@@ -489,7 +489,7 @@ const EventIntelligencePage = () => {
                                                                 </Button>
                                                                 <Button
                                                                     variant="outline"
-                                                                    className="w-full justify-start border-[#333] hover:bg-[#222] text-gray-200"
+                                                                    className="w-full justify-start border-border hover:bg-border text-foreground"
                                                                     onClick={() => navigate('/control-tower/inventory-risk')}
                                                                 >
                                                                     <AlertTriangle className="w-4 h-4 mr-2 text-yellow-500" />
@@ -510,10 +510,10 @@ const EventIntelligencePage = () => {
 
                 {/* 6. DEMAND IMPACT ANALYTICS */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white">Demand Impact Timeline</CardTitle>
-                            <CardDescription className="text-gray-400">Projected demand relative to baseline before, during, and after event.</CardDescription>
+                            <CardTitle className="text-foreground">Demand Impact Timeline</CardTitle>
+                            <CardDescription className="text-muted-foreground">Projected demand relative to baseline before, during, and after event.</CardDescription>
                         </CardHeader>
                         <CardContent className="h-[300px]">
                             {loading ? (
@@ -560,10 +560,10 @@ const EventIntelligencePage = () => {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white">Active Category Sensitivity</CardTitle>
-                            <CardDescription className="text-gray-400">Projected impact weight by category for detected events.</CardDescription>
+                            <CardTitle className="text-foreground">Active Category Sensitivity</CardTitle>
+                            <CardDescription className="text-muted-foreground">Projected impact weight by category for detected events.</CardDescription>
                         </CardHeader>
                         <CardContent className="h-[300px]">
                             {loading ? (
@@ -606,3 +606,6 @@ const EventIntelligencePage = () => {
 };
 
 export default EventIntelligencePage;
+
+
+

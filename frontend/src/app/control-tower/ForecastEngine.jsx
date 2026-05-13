@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-    Activity, TrendingUp, Package, Zap, Info, RefreshCw, Calendar, Inbox, ArrowRight
+    Activity, TrendingUp, Package, Zap, Info, RefreshCw, Calendar, Inbox, ArrowRight, Home
 } from 'lucide-react';
 import {
     Tooltip as TooltipUI, TooltipContent, TooltipProvider, TooltipTrigger
@@ -24,6 +24,10 @@ import {
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
 } from "@/components/ui/dialog";
+import {
+    Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
+    BreadcrumbPage, BreadcrumbSeparator
+} from '@/components/ui/breadcrumb';
 
 import { forecastService } from '@/services/forecastService';
 import { fusionService } from '@/services/fusionService';
@@ -191,59 +195,94 @@ const ForecastEnginePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20">
-            <div className="sticky top-0 z-30 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#222] px-6 py-4">
+        <div className="min-h-screen bg-background text-foreground pb-20">
+            {/* Header & Filters */}
+            <div className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-3 shadow-md">
+                {/* Breadcrumb */}
+                <div className="mb-2">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/')}
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                >
+                                    <Home className="w-3 h-3" />
+                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="text-gray-600" />
+                            {fromControlTower && role !== 'vendor' && (
+                                <>
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink
+                                            onClick={() => navigate('/control-tower')}
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                        >
+                                            Control Tower
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="text-gray-600" />
+                                </>
+                            )}
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
+                                    Demand Forecast Engine
+                                </BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
+
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div className="flex items-center space-x-4">
                         <div className="p-2 bg-blue-500/10 rounded-lg">
                             <Activity className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
-                             <div className="flex items-center space-x-2 text-xs text-gray-500 mb-2">
-                                <span className="hover:text-blue-400 cursor-pointer" onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')}>
-                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
-                                </span>
-                                <span>/</span>
-                                {fromControlTower && role !== 'vendor' && (
-                                    <>
-                                        <span className="hover:text-blue-400 cursor-pointer" onClick={() => navigate('/control-tower')}>Control Tower</span>
-                                        <span>/</span>
-                                    </>
-                                )}
-                                <span className="text-gray-300">Demand Forecast Engine</span>
-                            </div>
                             <div className="flex items-center space-x-3">
-                                <h1 className="text-xl font-bold text-white">Demand Forecast Engine</h1>
-                                <Badge variant="outline" className="text-blue-400 border-blue-400/30 bg-blue-900/10 text-[10px] h-5">Live</Badge>
-                                <Button onClick={handleRefreshModel} disabled={isTraining} variant="outline" size="sm" className="h-6 px-2 text-[10px] bg-[#1a1a1a] border-[#333] text-purple-400">
+                                <h1 className="text-xl font-bold text-foreground">Demand Forecast Engine</h1>
+                                <Badge variant="outline" className="text-blue-400 border-blue-400/30 bg-blue-900/10 text-[10px] h-5">
+                                    Live
+                                </Badge>
+                                <Button 
+                                    onClick={handleRefreshModel} 
+                                    disabled={isTraining} 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="h-6 px-2 text-[10px] bg-card border-border text-purple-400 hover:text-purple-300 hover:bg-accent"
+                                >
                                     <RefreshCw className={`w-3 h-3 mr-1 ${isTraining ? 'animate-spin' : ''}`} />
                                     {isTraining ? 'Training Model...' : 'Sync & Retrain'}
                                 </Button>
                             </div>
+                            <p className="text-xs text-muted-foreground">High-fidelity predictive demand modeling across regional clusters.</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase">Region / City</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Region / City</label>
                             <Select value={selectedCityId} onValueChange={setSelectedCityId}>
-                                <SelectTrigger className="h-9 w-[160px] bg-[#1a1a1a] border-[#333] text-sm text-white">
+                                <SelectTrigger className="h-9 w-[160px] bg-card border-border text-sm text-foreground hover:border-blue-500/50 transition-colors">
                                     <SelectValue placeholder="Select City" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
-                                    <SelectItem value="all">Global (All Cities)</SelectItem>
-                                    {cities.map(city => <SelectItem key={city.city_id} value={city.city_id}>{city.city_name}</SelectItem>)}
+                                <SelectContent className="bg-card border-border text-foreground">
+                                    <SelectItem value="all">Global System</SelectItem>
+                                    {cities.map(city => (
+                                        <SelectItem key={city.city_id} value={city.city_id}>{city.city_name}</SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase">Horizon</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Forecast Horizon</label>
                             <Select value={horizon} onValueChange={setHorizon}>
-                                <SelectTrigger className="h-9 w-[120px] bg-[#1a1a1a] border-[#333] text-sm text-white">
+                                <SelectTrigger className="h-9 w-[140px] bg-card border-border text-sm text-foreground hover:border-blue-500/50 transition-colors">
                                     <SelectValue placeholder="Next 7 Days" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-card border-border text-foreground">
                                     <SelectItem value="3">Next 3 Days</SelectItem>
                                     <SelectItem value="7">Next 7 Days</SelectItem>
                                     <SelectItem value="14">Next 14 Days</SelectItem>
@@ -257,52 +296,52 @@ const ForecastEnginePage = () => {
 
             <div className="p-6 w-full space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <Card className="bg-[#111] border-[#333]">
-                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-gray-300">Predicted Demand</CardTitle></CardHeader>
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Predicted Demand</CardTitle></CardHeader>
                         <CardContent>
                             <div className="flex items-center space-x-2">
                                 <Package className="w-8 h-8 text-blue-500" />
-                                <span className="text-3xl font-bold text-white">{loading ? '...' : kpis.predicted.toLocaleString()}</span>
+                                <span className="text-3xl font-bold text-foreground">{loading ? '...' : kpis.predicted.toLocaleString()}</span>
                             </div>
-                            <p className="mt-2 text-xs text-gray-400">Next {horizon} Days Total</p>
+                            <p className="mt-2 text-xs text-muted-foreground">Next {horizon} Days Total</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333]">
-                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-gray-300">Change Baseline</CardTitle></CardHeader>
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Change Baseline</CardTitle></CardHeader>
                         <CardContent>
                             <div className="flex items-center space-x-2">
                                 <TrendingUp className="w-8 h-8 text-green-500" />
-                                <span className="text-3xl font-bold text-white">+{loading ? '...' : kpis.change}%</span>
+                                <span className="text-3xl font-bold text-foreground">+{loading ? '...' : kpis.change}%</span>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333]">
-                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-gray-300">Confidence Score</CardTitle></CardHeader>
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Confidence Score</CardTitle></CardHeader>
                         <CardContent>
                             <div className="flex items-center space-x-2">
                                 <Activity className="w-8 h-8 text-yellow-500" />
-                                <span className="text-3xl font-bold text-white">{kpis.confidence}</span>
+                                <span className="text-3xl font-bold text-foreground">{kpis.confidence}</span>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333]">
-                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-gray-300">Volatility Index</CardTitle></CardHeader>
+                    <Card className="bg-card border-border">
+                        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Volatility Index</CardTitle></CardHeader>
                         <CardContent>
                             <div className="flex items-center space-x-2">
                                 <Zap className="w-8 h-8 text-orange-500" />
-                                <span className="text-3xl font-bold text-white">{kpis.volatility}</span>
+                                <span className="text-3xl font-bold text-foreground">{kpis.volatility}</span>
                             </div>
                         </CardContent>
                     </Card>
                 </div>
 
-                <Card className="bg-[#111] border-[#333]">
+                <Card className="bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-white text-lg">Demand Forecast Trends</CardTitle>
+                        <CardTitle className="text-foreground text-lg">Demand Forecast Trends</CardTitle>
                     </CardHeader>
                     <CardContent className="h-[400px]">
                         {loading ? (
-                             <div className="h-full flex items-center justify-center text-gray-500">Syncing model outputs...</div>
+                             <div className="h-full flex items-center justify-center text-muted-foreground">Syncing model outputs...</div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart data={forecastData}>
@@ -320,20 +359,20 @@ const ForecastEnginePage = () => {
                 </Card>
 
                 <div className="grid grid-cols-1 gap-6">
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
                             <div className="flex items-center justify-between">
-                                <CardTitle className="text-white">Upcoming 10-Day Forecast Table</CardTitle>
+                                <CardTitle className="text-foreground">Upcoming 10-Day Forecast Table</CardTitle>
                                 <Badge variant="outline" className="text-blue-400 border-blue-400/30">Next 10 Days</Badge>
                             </div>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
-                                    <TableRow className="border-[#222]">
-                                        <TableHead className="text-gray-300">Date</TableHead>
-                                        <TableHead className="text-gray-300 text-right">Forecast</TableHead>
-                                        <TableHead className="text-gray-300 text-right">Status</TableHead>
+                                    <TableRow className="border-border">
+                                        <TableHead className="text-muted-foreground">Date</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Forecast</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Status</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -346,8 +385,8 @@ const ForecastEnginePage = () => {
                                             return diffDays >= 0 && diffDays <= 10;
                                         })
                                         .map((row, i) => (
-                                            <TableRow key={i} className="border-[#222] hover:bg-[#1a1a1a] cursor-pointer" onClick={() => handleRowClick(row.date, row.isoDate)}>
-                                                <TableCell className="font-medium text-white">{row.date}</TableCell>
+                                            <TableRow key={i} className="border-border hover:bg-muted cursor-pointer" onClick={() => handleRowClick(row.date, row.isoDate)}>
+                                                <TableCell className="font-medium text-foreground">{row.date}</TableCell>
                                                 <TableCell className="text-right text-blue-400 font-bold">{Math.round(row.predicted).toLocaleString()}</TableCell>
                                                 <TableCell className="text-right">
                                                     <Badge variant="outline" className="text-green-400 border-green-900 bg-green-900/10">High Confidence</Badge>
@@ -373,27 +412,27 @@ const ForecastEnginePage = () => {
             </div>
 
             <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
-                <DialogContent className="max-w-4xl bg-[#111] border-[#333] text-white">
+                <DialogContent className="max-w-4xl bg-card border-border text-foreground">
                     <DialogHeader>
                         <DialogTitle className="text-xl flex items-center"><Calendar className="w-5 h-5 mr-2 text-blue-500" />Forecasting Report: {reportDate}</DialogTitle>
-                        <DialogDescription className="text-gray-400">Detailed product-level demand analysis and surge detection.</DialogDescription>
+                        <DialogDescription className="text-muted-foreground">Detailed product-level demand analysis and surge detection.</DialogDescription>
                     </DialogHeader>
                     <div className="max-h-[60vh] overflow-y-auto mt-4 pr-2">
                         {loadingReport ? (
-                            <div className="flex flex-col items-center justify-center py-20"><RefreshCw className="w-10 h-10 text-blue-500 animate-spin mb-4" /><p className="text-gray-400">Analysing demand patterns...</p></div>
+                            <div className="flex flex-col items-center justify-center py-20"><RefreshCw className="w-10 h-10 text-blue-500 animate-spin mb-4" /><p className="text-muted-foreground">Analysing demand patterns...</p></div>
                         ) : (
                             <div className="space-y-6">
                                 <div className="grid grid-cols-3 gap-4">
-                                    <div className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333]"><div className="text-[10px] text-gray-500 uppercase font-bold mb-1">Total Products</div><div className="text-2xl font-bold">{reportData.length}</div></div>
-                                    <div className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333]"><div className="text-[10px] text-orange-500 uppercase font-bold mb-1">Surging</div><div className="text-2xl font-bold text-orange-500">{reportData.filter(d => d.status === 'Surging').length}</div></div>
-                                    <div className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333]"><div className="text-[10px] text-blue-500 uppercase font-bold mb-1">Avg Demand</div><div className="text-2xl font-bold text-blue-500">{Math.round(reportData.reduce((a, b) => a + parseFloat(b.predicted_units), 0) / (reportData.length || 1))}</div></div>
+                                    <div className="bg-muted p-4 rounded-lg border border-border"><div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Total Products</div><div className="text-2xl font-bold">{reportData.length}</div></div>
+                                    <div className="bg-muted p-4 rounded-lg border border-border"><div className="text-[10px] text-orange-500 uppercase font-bold mb-1">Surging</div><div className="text-2xl font-bold text-orange-500">{reportData.filter(d => d.status === 'Surging').length}</div></div>
+                                    <div className="bg-muted p-4 rounded-lg border border-border"><div className="text-[10px] text-blue-500 uppercase font-bold mb-1">Avg Demand</div><div className="text-2xl font-bold text-blue-500">{Math.round(reportData.reduce((a, b) => a + parseFloat(b.predicted_units), 0) / (reportData.length || 1))}</div></div>
                                 </div>
                                 <Table>
-                                    <TableHeader><TableRow className="border-[#222]"><TableHead className="text-gray-300">Category / Product</TableHead><TableHead className="text-gray-300 text-right">Predicted</TableHead><TableHead className="text-gray-300 text-right">Status</TableHead></TableRow></TableHeader>
+                                    <TableHeader><TableRow className="border-border"><TableHead className="text-muted-foreground">Category / Product</TableHead><TableHead className="text-muted-foreground text-right">Predicted</TableHead><TableHead className="text-muted-foreground text-right">Status</TableHead></TableRow></TableHeader>
                                     <TableBody>
                                         {reportData.sort((a,b) => b.predicted_units - a.predicted_units).map((item, idx) => (
-                                            <TableRow key={idx} className="border-[#222] hover:bg-[#1a1a1a]">
-                                                <TableCell><div className="text-xs text-gray-500 font-bold uppercase">{item.categoryName}</div><div className="text-sm font-medium">{item.productName}</div></TableCell>
+                                            <TableRow key={idx} className="border-border hover:bg-muted">
+                                                <TableCell><div className="text-xs text-muted-foreground font-bold uppercase">{item.categoryName}</div><div className="text-sm font-medium">{item.productName}</div></TableCell>
                                                 <TableCell className="text-right align-middle"><span className={`font-bold ${item.status === 'Surging' ? 'text-orange-500' : 'text-blue-400'}`}>{Math.round(item.predicted_units).toLocaleString()}</span></TableCell>
                                                 <TableCell className="text-right align-middle">
                                                     <Badge className={item.status === 'Surging' ? 'bg-orange-500/10 text-orange-500 border-orange-500/30' : item.status === 'Low Demand' ? 'bg-red-500/10 text-red-500 border-red-500/30' : 'bg-blue-500/10 text-blue-500 border-blue-500/30'}>{item.status}</Badge>
@@ -412,3 +451,5 @@ const ForecastEnginePage = () => {
 };
 
 export default ForecastEnginePage;
+
+

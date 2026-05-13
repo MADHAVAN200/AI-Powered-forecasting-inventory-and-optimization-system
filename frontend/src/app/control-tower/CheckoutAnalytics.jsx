@@ -69,10 +69,10 @@ const CheckoutAnalyticsPage = () => {
     const [timeRange, setTimeRange] = useState("7d");
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20 font-sans w-full flex flex-col">
+        <div className="min-h-screen bg-background text-foreground pb-20 font-sans w-full flex flex-col">
 
             {/* 1. HEADER & FILTERS */}
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
+            <header className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg">
                 {/* Breadcrumb Section */}
                 <div className="px-6 pt-3">
                     <Breadcrumb>
@@ -80,7 +80,7 @@ const CheckoutAnalyticsPage = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     onClick={() => navigate('/')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     Home
@@ -92,7 +92,7 @@ const CheckoutAnalyticsPage = () => {
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
@@ -109,39 +109,48 @@ const CheckoutAnalyticsPage = () => {
                     </Breadcrumb>
                 </div>
 
-                <div className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-blue-500/10 rounded-lg">
+                            <Scan className="w-6 h-6 text-blue-500" />
+                        </div>
                         <div>
-                            <h1 className="text-xl font-bold text-white tracking-tight">Checkout Analytics</h1>
-                            <p className="text-xs text-gray-500 font-mono">Store performance & anomaly patterns</p>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-xl font-bold text-foreground tracking-tight">Checkout Analytics</h1>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-card border border-border text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                                    Live Stream
+                                </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Store performance, anomaly detection patterns, and lane efficiency metrics.</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <Select defaultValue="all">
-                            <SelectTrigger className="w-[140px] h-8 bg-[#1a1a1a] border-[#333] text-xs">
-                                <SelectValue placeholder="Store" />
+                            <SelectTrigger className="w-[180px] h-9 bg-muted border-border text-xs shadow-inner">
+                                <SelectValue placeholder="Select Store" />
                             </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Store #402</SelectItem>
-                                <SelectItem value="region">Region East</SelectItem>
+                            <SelectContent className="bg-card border-border">
+                                <SelectItem value="all">Store #402 (Ahmedabad)</SelectItem>
+                                <SelectItem value="region">Region East (Hub)</SelectItem>
                             </SelectContent>
                         </Select>
 
-                        <div className="bg-[#1a1a1a] rounded flex p-1 border border-[#333]">
+                        <div className="bg-muted rounded-md flex p-1 border border-border shadow-inner">
                             {['24h', '7d', '30d'].map((range) => (
                                 <button
                                     key={range}
                                     onClick={() => setTimeRange(range)}
-                                    className={`px-3 py-1 text-xs font-medium rounded transition-colors ${timeRange === range ? 'bg-[#333] text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                                    className={`px-4 py-1 text-[10px] font-bold uppercase tracking-widest rounded transition-all ${timeRange === range ? 'bg-card text-blue-400 shadow-sm border border-border' : 'text-muted-foreground hover:text-foreground'}`}
                                 >
                                     {range}
                                 </button>
                             ))}
                         </div>
 
-                        <Button variant="outline" size="sm" className="h-8 border-[#333] text-gray-400 hover:text-white bg-[#1a1a1a]">
-                            <Download className="w-3 h-3 mr-2" /> Export
+                        <Button variant="outline" size="sm" className="h-9 border-border text-muted-foreground hover:text-foreground bg-muted shadow-sm px-4">
+                            <Download className="w-3.5 h-3.5 mr-2" /> <span className="text-[10px] font-bold uppercase tracking-widest">Export</span>
                         </Button>
                     </div>
                 </div>
@@ -151,47 +160,47 @@ const CheckoutAnalyticsPage = () => {
 
                 {/* 2. PERFORMANCE OVERVIEW CARDS */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-colors shadow-sm">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Total Sessions ({timeRange})</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Sessions ({timeRange})</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">12,450</div>
-                            <p className="text-xs text-green-500 flex items-center mt-1">
-                                <TrendingUp className="w-3 h-3 mr-1" /> +5.2% vs last period
+                            <div className="text-2xl font-bold text-foreground tabular-nums">12,450</div>
+                            <p className="text-[10px] text-green-500 font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                <TrendingUp className="w-3 h-3 mr-1" /> +5.2% VS PERIOD
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border hover:border-red-500/30 transition-colors shadow-sm">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Anomaly Rate</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Anomaly Rate</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-yellow-500">2.1%</div>
-                            <p className="text-xs text-red-400 flex items-center mt-1">
-                                <TrendingUp className="w-3 h-3 mr-1" /> +0.4% spike detected
+                            <div className="text-2xl font-bold text-red-500 tabular-nums">2.1%</div>
+                            <p className="text-[10px] text-red-400 font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                <TrendingUp className="w-3 h-3 mr-1" /> +0.4% VOLATILITY
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-colors shadow-sm">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Auto-Correction Rate</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Auto-Correction</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-500">85%</div>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Human intervention needed in 15%
+                            <div className="text-2xl font-bold text-blue-500 tabular-nums">85.4%</div>
+                            <p className="text-[10px] text-muted-foreground font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                AI VERIFIED THRESHOLD
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border hover:border-green-500/30 transition-colors shadow-sm">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Avg Resolution Time</CardTitle>
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Avg Resolution</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white">42s</div>
-                            <p className="text-xs text-green-500 flex items-center mt-1">
-                                <CheckCircle2 className="w-3 h-3 mr-1" /> Within SLA (60s)
+                            <div className="text-2xl font-bold text-foreground tabular-nums">42s</div>
+                            <p className="text-[10px] text-green-500 font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                <CheckCircle2 className="w-3 h-3 mr-1" /> WITHIN SLA RANGE
                             </p>
                         </CardContent>
                     </Card>
@@ -200,36 +209,36 @@ const CheckoutAnalyticsPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* 3. ANOMALY TRENDS (2/3 Width) */}
-                    <Card className="lg:col-span-2 bg-[#111] border-[#333]">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white">Anomaly Trends & Composition</CardTitle>
-                            <CardDescription className="text-gray-500">Daily breakdown of flagged checkout sessions by risk type.</CardDescription>
+                    <Card className="lg:col-span-2 bg-card border-border shadow-md">
+                        <CardHeader className="border-b border-border/50 bg-muted/10">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">Anomaly Trend & Composition</CardTitle>
+                            <CardDescription className="text-xs text-muted-foreground">Daily breakdown of flagged checkout sessions by risk category.</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-[350px]">
+                        <CardContent className="h-[350px] pt-6">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={ANOMALY_TREND_DATA} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-                                    <XAxis dataKey="day" stroke="#555" tick={{ fill: '#888', fontSize: 12 }} />
-                                    <YAxis stroke="#555" tick={{ fill: '#888', fontSize: 12 }} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" vertical={false} />
+                                    <XAxis dataKey="day" stroke="currentColor" className="text-muted-foreground" tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 'bold' }} />
+                                    <YAxis stroke="currentColor" className="text-muted-foreground" tick={{ fill: 'currentColor', fontSize: 10, fontWeight: 'bold' }} />
                                     <RechartsTooltip
-                                        contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px' }}
-                                        itemStyle={{ color: '#fff' }}
+                                        contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12px' }}
+                                        itemStyle={{ fontWeight: 'bold' }}
                                     />
-                                    <Legend />
-                                    <Bar dataKey="misscan" name="Missed Scans" stackId="a" fill="#ef4444" radius={[0, 0, 4, 4]} />
-                                    <Bar dataKey="mismatch" name="Prod. Mismatch" stackId="a" fill="#f97316" radius={[4, 4, 0, 0]} />
+                                    <Legend wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', paddingTop: '20px' }} />
+                                    <Bar dataKey="misscan" name="MISSED SCANS" stackId="a" fill="#ef4444" radius={[0, 0, 2, 2]} />
+                                    <Bar dataKey="mismatch" name="PRODUCT MISMATCH" stackId="a" fill="#3b82f6" radius={[2, 2, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </CardContent>
                     </Card>
 
                     {/* 4. ANOMALY DISTRIBUTION (1/3 Width) */}
-                    <Card className="bg-[#111] border-[#333]">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white">Failure Mode Analysis</CardTitle>
-                            <CardDescription className="text-gray-500">Distribution of anomaly types.</CardDescription>
+                    <Card className="bg-card border-border shadow-md">
+                        <CardHeader className="border-b border-border/50 bg-muted/10">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">Failure Mode Analysis</CardTitle>
+                            <CardDescription className="text-xs text-muted-foreground">Categorical distribution of system anomalies.</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-[350px] flex items-center justify-center">
+                        <CardContent className="h-[350px] flex items-center justify-center pt-6">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
@@ -237,59 +246,60 @@ const CheckoutAnalyticsPage = () => {
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={60}
-                                        outerRadius={80}
-                                        paddingAngle={5}
+                                        outerRadius={90}
+                                        paddingAngle={8}
                                         dataKey="value"
+                                        stroke="none"
                                     >
                                         {ANOMALY_TYPE_DATA.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                            <Cell key={`cell-${index}`} fill={entry.color} opacity={0.8} />
                                         ))}
                                     </Pie>
-                                    <RechartsTooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} />
-                                    <Legend verticalAlign="bottom" height={36} />
+                                    <RechartsTooltip contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px' }} />
+                                    <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 'bold' }} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </CardContent>
                     </Card>
 
                     {/* 5. HIGH RISK LANES TABLE */}
-                    <Card className="lg:col-span-2 bg-[#111] border-[#333]">
-                        <CardHeader className="flex flex-row items-center justify-between">
+                    <Card className="lg:col-span-2 bg-card border-border shadow-md">
+                        <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 bg-muted/10">
                             <div>
-                                <CardTitle className="text-lg font-bold text-white">Lane Performance Risk Matrix</CardTitle>
-                                <CardDescription className="text-gray-500">Identifying hardware or calibration issues per terminal.</CardDescription>
+                                <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">Lane Performance Risk Matrix</CardTitle>
+                                <CardDescription className="text-xs text-muted-foreground mt-1">Terminal-level efficiency and calibration metrics.</CardDescription>
                             </div>
-                            <Button variant="outline" size="sm" className="border-[#333] text-gray-400">
-                                <Filter className="w-3 h-3 mr-2" /> Filter
+                            <Button variant="outline" size="sm" className="border-border text-muted-foreground text-[10px] font-bold uppercase tracking-widest bg-card h-8">
+                                <Filter className="w-3.5 h-3.5 mr-2 text-blue-500" /> Filter Lanes
                             </Button>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-0">
                             <Table>
-                                <TableHeader className="bg-[#1a1a1a]">
-                                    <TableRow className="border-none hover:bg-transparent">
-                                        <TableHead className="text-gray-400">Lane ID</TableHead>
-                                        <TableHead className="text-gray-400">Total Sessions</TableHead>
-                                        <TableHead className="text-gray-400">Anomaly Rate</TableHead>
-                                        <TableHead className="text-gray-400">Avg Resolution</TableHead>
-                                        <TableHead className="text-gray-400">Status</TableHead>
+                                <TableHeader className="bg-muted/50">
+                                    <TableRow className="border-border/50 hover:bg-transparent">
+                                        <TableHead className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest">Lane ID</TableHead>
+                                        <TableHead className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest text-center">Sessions</TableHead>
+                                        <TableHead className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest text-center">Anomaly Rate</TableHead>
+                                        <TableHead className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest text-center">Avg Resolution</TableHead>
+                                        <TableHead className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest text-right">Status</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {LANE_PERFORMANCE_DATA.map((lane) => (
-                                        <TableRow key={lane.id} className="border-b border-[#222] hover:bg-[#1a1a1a] transition-colors">
-                                            <TableCell className="font-mono text-gray-300">{lane.id}</TableCell>
-                                            <TableCell className="text-white">{lane.sessions}</TableCell>
-                                            <TableCell>
-                                                <span className={`${lane.anomalyRate > 3 ? 'text-red-400 font-bold' : 'text-gray-300'}`}>
+                                        <TableRow key={lane.id} className="border-border/50 hover:bg-muted/30 transition-colors">
+                                            <TableCell className="font-mono text-[11px] text-blue-500 font-bold">{lane.id}</TableCell>
+                                            <TableCell className="text-center font-bold tabular-nums text-foreground">{lane.sessions}</TableCell>
+                                            <TableCell className="text-center">
+                                                <span className={`text-[11px] font-bold tabular-nums ${lane.anomalyRate > 3 ? 'text-red-500' : 'text-foreground'}`}>
                                                     {lane.anomalyRate}%
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="text-gray-400">{lane.resolutionTime}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline" className={`
-                                                    ${lane.status === 'High Risk' ? 'text-red-400 border-red-900 bg-red-900/10' :
-                                                        lane.status === 'Warning' ? 'text-yellow-400 border-yellow-900 bg-yellow-900/10' :
-                                                            'text-green-400 border-green-900 bg-green-900/10'}
+                                            <TableCell className="text-center text-muted-foreground text-[11px] font-bold tabular-nums">{lane.resolutionTime}</TableCell>
+                                            <TableCell className="text-right">
+                                                <Badge variant="outline" className={`text-[9px] font-bold uppercase tracking-tighter px-2 h-5
+                                                    ${lane.status === 'High Risk' ? 'text-red-400 border-red-500/20 bg-red-500/5' :
+                                                        lane.status === 'Warning' ? 'text-yellow-400 border-yellow-500/20 bg-yellow-500/5' :
+                                                            'text-green-400 border-green-500/20 bg-green-500/5'}
                                                 `}>
                                                     {lane.status}
                                                 </Badge>
@@ -302,29 +312,29 @@ const CheckoutAnalyticsPage = () => {
                     </Card>
 
                     {/* 6. OPERATIONAL INSIGHTS (AI) */}
-                    <Card className="bg-[#111] border-[#333]">
-                        <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white flex items-center">
-                                <Scan className="w-5 h-5 mr-2 text-purple-400" /> AI Insights
+                    <Card className="bg-card border-border shadow-md">
+                        <CardHeader className="border-b border-border/50 bg-muted/10">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em] flex items-center">
+                                <Scan className="w-4 h-4 mr-2 text-purple-500" /> Operational Insights
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-4 pt-6">
                             {INSIGHTS.map((insight, i) => {
                                 const Icon = insight.icon;
                                 return (
-                                    <div key={i} className="p-3 rounded-lg bg-[#1a1a1a] border border-[#222] flex items-start space-x-3 hover:border-gray-700 transition-colors">
-                                        <div className={`mt-0.5 p-1 rounded bg-[#222] ${insight.color}`}>
-                                            <Icon className="w-4 h-4" />
+                                    <div key={i} className="p-3 rounded-xl bg-muted/30 border border-border flex items-start space-x-3 hover:border-blue-500/30 transition-all cursor-default group shadow-sm">
+                                        <div className={`mt-0.5 p-1.5 rounded-lg bg-card border border-border group-hover:scale-110 transition-transform ${insight.color}`}>
+                                            <Icon className="w-3.5 h-3.5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-gray-300 uppercase mb-1">{insight.type}</p>
-                                            <p className="text-sm text-gray-400 leading-snug">{insight.message}</p>
+                                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.1em] mb-1">{insight.type}</p>
+                                            <p className="text-[11px] text-foreground font-medium leading-relaxed">{insight.message}</p>
                                         </div>
                                     </div>
                                 )
                             })}
-                            <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white text-xs">
-                                Generate New Insights
+                            <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold uppercase text-[10px] tracking-widest h-10 shadow-lg shadow-blue-600/20">
+                                Refresh Intelligence
                             </Button>
                         </CardContent>
                     </Card>
@@ -336,3 +346,6 @@ const CheckoutAnalyticsPage = () => {
 };
 
 export default CheckoutAnalyticsPage;
+
+
+
