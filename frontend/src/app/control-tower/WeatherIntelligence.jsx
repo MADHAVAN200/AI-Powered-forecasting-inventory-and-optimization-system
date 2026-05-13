@@ -211,7 +211,7 @@ const WeatherIntelligencePage = () => {
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header & Filters */}
-            <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border px-6 py-3 shadow-md">
+            <div className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-3 shadow-md">
                 {/* Breadcrumb */}
                 <div className="mb-2">
                     <Breadcrumb>
@@ -219,24 +219,24 @@ const WeatherIntelligencePage = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     onClick={() => navigate('/')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     Home
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-gray-600" />
+                            <BreadcrumbSeparator className="text-muted-foreground/40" />
                             {fromControlTower && (
                                 <>
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
                                     </BreadcrumbItem>
-                                    <BreadcrumbSeparator className="text-gray-600" />
+                                    <BreadcrumbSeparator className="text-muted-foreground/40" />
                                 </>
                             )}
                             <BreadcrumbItem>
@@ -586,3 +586,6 @@ const WeatherIntelligencePage = () => {
 };
 
 export default WeatherIntelligencePage;
+
+
+

@@ -580,7 +580,7 @@ const DashboardPage = () => {
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-md">
+        <header className="sticky top-0 z-30 border-b border-sidebar-border bg-sidebar/95 backdrop-blur-md">
           <div className="flex h-16 items-center justify-between gap-4 px-4 md:px-6">
             <h1 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">Warehouse Operations Dashboard</h1>
 

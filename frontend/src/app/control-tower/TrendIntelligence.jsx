@@ -190,10 +190,10 @@ const TrendIntelligencePage = () => {
 
     // Helper for Heatmap Colors
     const getHeatmapColor = (score) => {
-        if (score >= 80) return "bg-blue-500/90 text-white font-bold";
-        if (score >= 60) return "bg-blue-500/60 text-white";
-        if (score >= 40) return "bg-blue-500/30 text-gray-300";
-        return "bg-blue-500/10 text-gray-500";
+        if (score >= 80) return "bg-blue-500/90 text-foreground font-bold";
+        if (score >= 60) return "bg-blue-500/60 text-foreground";
+        if (score >= 40) return "bg-blue-500/30 text-muted-foreground";
+        return "bg-blue-500/10 text-muted-foreground";
     };
 
     const uniqueRegions = Array.from(new Set(trends.map(t => t.regions?.region_name).filter(Boolean))).sort();
@@ -201,7 +201,7 @@ const TrendIntelligencePage = () => {
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header & Filters */}
-            <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border px-6 py-3 shadow-md">
+            <div className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-3 shadow-md">
                 {/* Breadcrumb */}
                 <div className="mb-2">
                     <Breadcrumb>
@@ -209,7 +209,7 @@ const TrendIntelligencePage = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     onClick={() => navigate('/')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     Home
@@ -221,7 +221,7 @@ const TrendIntelligencePage = () => {
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
@@ -282,12 +282,12 @@ const TrendIntelligencePage = () => {
                         </div>
 
                         <div className="flex flex-col space-y-1">
-                            <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Product Focus</label>
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Product Focus</label>
                             <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                                <SelectTrigger className="h-9 w-[200px] bg-[#1a1a1a] border-[#333] text-sm text-white hover:border-blue-500/50 transition-colors">
+                                <SelectTrigger className="h-9 w-[200px] bg-muted border-border text-sm text-foreground hover:border-blue-500/50 transition-colors">
                                     <SelectValue placeholder="All Products" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#111] text-white">
+                                <SelectContent className="bg-muted border-border text-foreground">
                                     <SelectItem value="all">Aggregate Portfolio</SelectItem>
                                     {products.map(cat => (
                                         <SelectItem key={cat.category_id} value={cat.category_name}>
@@ -342,12 +342,12 @@ const TrendIntelligencePage = () => {
                             </div>
                             <div className="mt-4 flex items-center gap-4">
                                 <div className="text-center">
-                                    <div className="text-xs font-bold text-gray-300">Confidence</div>
+                                    <div className="text-xs font-bold text-muted-foreground">Confidence</div>
                                     <div className="text-[10px] text-green-400">92.4%</div>
                                 </div>
-                                <Separator orientation="vertical" className="h-6 bg-[#222]" />
+                                <Separator orientation="vertical" className="h-6 bg-border" />
                                 <div className="text-center">
-                                    <div className="text-xs font-bold text-gray-300">Stability</div>
+                                    <div className="text-xs font-bold text-muted-foreground">Stability</div>
                                     <div className="text-[10px] text-blue-400">High</div>
                                 </div>
                             </div>
@@ -355,11 +355,11 @@ const TrendIntelligencePage = () => {
                     </Card>
 
                     {/* Dominant Direction & Model */}
-                    <Card className="lg:col-span-4 bg-[#111] border-[#222] p-6 flex flex-col justify-between">
+                    <Card className="lg:col-span-4 bg-card border-border p-6 flex flex-col justify-between">
                         <div className="space-y-6">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Momentum Direction</div>
+                                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Momentum Direction</div>
                                     <div className={`text-2xl font-bold flex items-center gap-2 ${kpiData.momentum === 'Rising' ? 'text-green-500' : 'text-red-500'}`}>
                                         {kpiData.momentum === 'Rising' ? <TrendingUp className="w-6 h-6" /> : <TrendingDown className="w-6 h-6" />}
                                         {kpiData.momentum} Trend
@@ -368,7 +368,7 @@ const TrendIntelligencePage = () => {
                                 <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">Positive bias</Badge>
                             </div>
 
-                            <Separator className="bg-[#222]" />
+                            <Separator className="bg-border" />
 
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
@@ -394,9 +394,9 @@ const TrendIntelligencePage = () => {
                     </Card>
 
                     {/* Movers & Shakers */}
-                    <Card className="lg:col-span-4 bg-[#111] border-[#222]">
+                    <Card className="lg:col-span-4 bg-card border-border">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-semibold text-gray-400 flex items-center gap-2">
+                            <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
                                 <Activity className="w-4 h-4 text-orange-400" />
                                 Breakout Movers
                             </CardTitle>
@@ -405,19 +405,19 @@ const TrendIntelligencePage = () => {
                             <div className="space-y-1">
                                 <div className="text-[10px] text-green-500 font-bold uppercase tracking-tighter">Rising Momentum</div>
                                 <div className="flex items-center justify-between p-2 bg-green-500/5 rounded-md border border-green-500/10">
-                                    <span className="text-xs text-white">Beverages (Surge)</span>
+                                    <span className="text-xs text-foreground">Beverages (Surge)</span>
                                     <span className="text-xs font-bold text-green-400">+18.5%</span>
                                 </div>
                             </div>
                             <div className="space-y-1">
                                 <div className="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Cooling Down</div>
                                 <div className="flex items-center justify-between p-2 bg-red-500/5 rounded-md border border-red-500/10">
-                                    <span className="text-xs text-white">Packaged Grains</span>
+                                    <span className="text-xs text-foreground">Packaged Grains</span>
                                     <span className="text-xs font-bold text-red-400">-4.2%</span>
                                 </div>
                             </div>
-                            <Separator className="bg-[#222]" />
-                            <div className="text-[10px] text-gray-500 italic text-center">Localized to {selectedCity === 'all' ? 'Global Portfolio' : selectedCity}</div>
+                            <Separator className="bg-border" />
+                            <div className="text-[10px] text-muted-foreground italic text-center">Localized to {selectedCity === 'all' ? 'Global Portfolio' : selectedCity}</div>
                         </CardContent>
                     </Card>
                 </div>
@@ -425,7 +425,7 @@ const TrendIntelligencePage = () => {
                 {/* ── SOCIAL LISTENING & NLP SECTION ────────────────── */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Sentiment Pulse */}
-                    <Card className="lg:col-span-4 bg-gradient-to-b from-[#111] to-[#0a0a0a] border-[#222] relative overflow-hidden">
+                    <Card className="lg:col-span-4 bg-card border-border relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 blur-[80px]" />
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-black text-pink-500 uppercase tracking-[0.2em] flex items-center gap-2">
@@ -435,9 +435,9 @@ const TrendIntelligencePage = () => {
                         </CardHeader>
                         <CardContent className="pt-4">
                             <div className="flex items-end gap-4 mb-4">
-                                <div className="text-4xl font-black text-white">
+                                <div className="text-4xl font-black text-foreground">
                                     {socialData ? (socialData.sentiment * 100).toFixed(0) : '82'}
-                                    <span className="text-lg text-gray-500 ml-1">%</span>
+                                    <span className="text-lg text-muted-foreground ml-1">%</span>
                                 </div>
                                 <div className="mb-1">
                                     <Badge className={`${(socialData?.sentiment || 0.8) > 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'} border-none text-[10px] uppercase font-bold`}>
@@ -445,7 +445,7 @@ const TrendIntelligencePage = () => {
                                     </Badge>
                                 </div>
                             </div>
-                            <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden flex">
+                            <div className="h-1.5 w-full bg-border rounded-full overflow-hidden flex">
                                 <div 
                                     className="h-full bg-green-500 transition-all duration-1000" 
                                     style={{ width: `${socialData ? Math.max(0, socialData.sentiment * 100) : 82}%` }} 
@@ -455,7 +455,7 @@ const TrendIntelligencePage = () => {
                                     style={{ width: `${socialData ? Math.max(0, -socialData.sentiment * 100) : 0}%` }} 
                                 />
                             </div>
-                            <div className="mt-6 p-3 bg-white/5 rounded-lg border border-white/10 italic text-[11px] text-gray-400 leading-relaxed group">
+                            <div className="mt-6 p-3 bg-white/5 rounded-lg border border-border italic text-[11px] text-muted-foreground leading-relaxed group">
                                 <Quote className="w-3 h-3 text-pink-500 mb-1 opacity-50 group-hover:opacity-100 transition-opacity" />
                                 {socialData?.nlp_insight || "Social listening indicates a high correlation between weekend weather spikes and beverage talk with positive mentions."}
                             </div>
@@ -463,7 +463,7 @@ const TrendIntelligencePage = () => {
                     </Card>
 
                     {/* Word Cloud / Theme Tags */}
-                    <Card className="lg:col-span-8 bg-[#111] border-[#222] overflow-hidden">
+                    <Card className="lg:col-span-8 bg-card border-border overflow-hidden">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-black text-blue-400 uppercase tracking-[0.2em] flex items-center gap-2">
                                 <Search className="w-3 h-3" />
@@ -475,7 +475,7 @@ const TrendIntelligencePage = () => {
                                 <Badge 
                                     key={i} 
                                     variant="outline" 
-                                    className="bg-[#1a1a1a] border-[#333] text-gray-300 hover:border-blue-500/50 hover:text-white transition-all cursor-default py-1.5 px-4"
+                                    className="bg-muted border-border text-muted-foreground hover:border-blue-500/50 hover:text-foreground transition-all cursor-default py-1.5 px-4"
                                     style={{ 
                                         fontSize: `${10 + (kw.value / 10)}px`,
                                         opacity: 0.5 + (kw.value / 200)
@@ -489,7 +489,7 @@ const TrendIntelligencePage = () => {
                                         <Badge 
                                             key={i} 
                                             variant="outline" 
-                                            className="bg-[#1a1a1a] border-[#333] text-gray-300 py-1.5 px-4"
+                                            className="bg-muted border-border text-muted-foreground py-1.5 px-4"
                                             style={{ fontSize: `${12 + (i * 2)}px` }}
                                         >
                                             #{tag}
@@ -497,7 +497,7 @@ const TrendIntelligencePage = () => {
                                     ))}
                                 </>
                             )}
-                            <div className="absolute inset-x-0 bottom-0 py-2 bg-gradient-to-t from-[#111] to-transparent text-center">
+                            <div className="absolute inset-x-0 bottom-0 py-2 bg-gradient-to-t from-card to-transparent text-center">
                                 <div className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
                                     Analyzed from {socialData?.mentions || '12,400+'} global signals
                                 </div>
@@ -510,10 +510,10 @@ const TrendIntelligencePage = () => {
                 {/* Main Analysis Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Trend Over Time Chart */}
-                    <Card className="lg:col-span-2 bg-[#111] border-[#333]">
+                    <Card className="lg:col-span-2 bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white">Trend Momentum Over Time</CardTitle>
-                            <CardDescription className="text-gray-400">
+                            <CardTitle className="text-foreground">Trend Momentum Over Time</CardTitle>
+                            <CardDescription className="text-muted-foreground">
                                 30-day velocity verification. Markers indicate external events.
                             </CardDescription>
                         </CardHeader>
@@ -542,10 +542,10 @@ const TrendIntelligencePage = () => {
                     </Card>
 
                     {/* Driver Breakdown */}
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-white">What's Driving This?</CardTitle>
-                            <CardDescription className="text-gray-400">Factor contribution analysis.</CardDescription>
+                            <CardTitle className="text-foreground">What's Driving This?</CardTitle>
+                            <CardDescription className="text-muted-foreground">Factor contribution analysis.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {loading ? (
@@ -555,13 +555,13 @@ const TrendIntelligencePage = () => {
                                 return (
                                     <div key={i} className="space-y-2">
                                         <div className="flex justify-between items-center text-sm">
-                                            <div className="flex items-center text-gray-300">
-                                                <Icon className="w-4 h-4 mr-2 text-gray-400" />
+                                            <div className="flex items-center text-muted-foreground">
+                                                <Icon className="w-4 h-4 mr-2 text-muted-foreground" />
                                                 {driver.name}
                                             </div>
-                                            <span className="font-bold text-white">{driver.value}%</span>
+                                            <span className="font-bold text-foreground">{driver.value}%</span>
                                         </div>
-                                        <div className="h-2 bg-[#222] rounded-full overflow-hidden">
+                                        <div className="h-2 bg-border rounded-full overflow-hidden">
                                             <div
                                                 className={`h-full ${driver.color}`}
                                                 style={{ width: `${driver.value}%` }}
@@ -572,9 +572,9 @@ const TrendIntelligencePage = () => {
                             }) : (
                                 <div className="text-center py-20 text-gray-600 italic">No specific drivers detected.</div>
                             )}
-                            <div className="bg-[#1a1a1a] p-4 rounded-lg border border-[#333] mt-4">
-                                <h4 className="text-sm font-semibold text-white mb-1">AI Explanation</h4>
-                                <p className="text-xs text-gray-300 leading-relaxed">
+                            <div className="bg-muted p-4 rounded-lg border border-border mt-4">
+                                <h4 className="text-sm font-semibold text-foreground mb-1">AI Explanation</h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
                                     {kpiData.momentum === 'Rising' ?
                                         `Momentum is showing an upward trajectory driven by localized velocity shifts and external signals.` :
                                         `Trend is experiencing a normalization phase as initial demand spikes stabilize across most categories.`
@@ -588,21 +588,21 @@ const TrendIntelligencePage = () => {
                 {/* Heatmap & Warnings */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* High-Fidelity Heatmap */}
-                    <Card className="lg:col-span-2 bg-[#111] border-[#222]">
+                    <Card className="lg:col-span-2 bg-card border-border">
                         <CardHeader className="pb-4">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <CardTitle className="text-white text-base">Regional Velocity Heatmap</CardTitle>
-                                    <CardDescription className="text-gray-500">Real-time localized demand sensitivity matrix.</CardDescription>
+                                    <CardTitle className="text-foreground text-base">Regional Velocity Heatmap</CardTitle>
+                                    <CardDescription className="text-muted-foreground">Real-time localized demand sensitivity matrix.</CardDescription>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <div className="flex items-center gap-1">
                                         <div className="w-2 h-2 bg-blue-500/10 rounded" />
-                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none">Low</span>
+                                        <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-none">Low</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <div className="w-2 h-2 bg-blue-500 rounded" />
-                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none">High</span>
+                                        <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest leading-none">High</span>
                                     </div>
                                 </div>
                             </div>
@@ -619,16 +619,16 @@ const TrendIntelligencePage = () => {
 
                                 {/* Data Rows */}
                                 {loading ? (
-                                    <div className="col-span-6 py-20 text-center text-gray-500 text-sm italic">Synthesizing regional matrix...</div>
+                                    <div className="col-span-6 py-20 text-center text-muted-foreground text-sm italic">Synthesizing regional matrix...</div>
                                 ) : heatmapRows.map((row, i) => (
                                     <React.Fragment key={i}>
-                                        <div className="bg-[#111] p-3 text-xs font-bold text-gray-300 border-b border-r border-[#222] flex items-center truncate">
+                                        <div className="bg-card p-3 text-xs font-bold text-muted-foreground border-b border-r border-border flex items-center truncate">
                                             {row.city}
                                         </div>
                                         {row.products.map((prod, j) => (
                                             <div 
                                                 key={j} 
-                                                className={`p-3 text-center transition-all cursor-default border-b border-r border-[#222] last:border-r-0 ${getHeatmapColor(prod.score)}`}
+                                                className={`p-3 text-center transition-all cursor-default border-b border-r border-border last:border-r-0 ${getHeatmapColor(prod.score)}`}
                                             >
                                                 <span className="text-xs font-bold opacity-0 hover:opacity-100 transition-opacity">{prod.score}</span>
                                             </div>
@@ -640,18 +640,18 @@ const TrendIntelligencePage = () => {
                     </Card>
                     {/* Tactical Insights & Temporal Metrics */}
                     <div className="space-y-6">
-                        <Card className="bg-gradient-to-br from-[#151515] to-[#0d0d0d] border-[#222] border-l-4 border-l-blue-500 overflow-hidden relative">
+                        <Card className="bg-card border-border border-l-4 border-l-blue-500 overflow-hidden relative">
                             <div className="absolute top-0 right-0 p-2 opacity-10">
                                 <Zap className="w-16 h-16 text-blue-500" />
                             </div>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-bold text-gray-300 uppercase tracking-widest flex items-center gap-2">
+                                <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                                     <Info className="w-4 h-4 text-blue-400" />
                                     Trend Outlook
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-xs text-gray-400 leading-relaxed italic">
+                                <p className="text-xs text-muted-foreground leading-relaxed italic">
                                     {socialData?.nlp_insight ? 
                                         `"${socialData.nlp_insight} System momentum remains structurally positive across ${selectedCity === 'all' ? 'core regions' : selectedCity}. Maintain current safety buffers."` :
                                         `"System momentum remains structurally positive. High velocity in ${selectedCity === 'all' ? 'core regions' : selectedCity} 
@@ -662,27 +662,27 @@ const TrendIntelligencePage = () => {
                         </Card>
 
                         <div className="grid grid-cols-1 gap-4">
-                            <div className="bg-[#111] p-4 rounded-lg border border-[#222] flex items-center justify-between group hover:border-blue-500/30 transition-all cursor-default relative overflow-hidden">
+                            <div className="bg-card p-4 rounded-lg border border-border flex items-center justify-between group hover:border-blue-500/30 transition-all cursor-default relative overflow-hidden">
                                 <Activity className="absolute bottom-0 right-0 w-12 h-12 text-blue-500/5 -mb-2 -mr-2" />
                                 <div className="z-10">
-                                    <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Daily Momentum</div>
-                                    <div className="text-xl font-bold text-white">{(kpiData.score * 0.9).toFixed(1)} <span className="text-[10px] font-normal text-blue-400">Stable</span></div>
+                                    <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Daily Momentum</div>
+                                    <div className="text-xl font-bold text-foreground">{(kpiData.score * 0.9).toFixed(1)} <span className="text-[10px] font-normal text-blue-400">Stable</span></div>
                                 </div>
                                 <Activity className="w-5 h-5 text-blue-500/20 group-hover:text-blue-500/50 transition-colors" />
                             </div>
-                            <div className="bg-[#111] p-4 rounded-lg border border-[#222] flex items-center justify-between group hover:border-green-500/30 transition-all cursor-default relative overflow-hidden">
+                            <div className="bg-card p-4 rounded-lg border border-border flex items-center justify-between group hover:border-green-500/30 transition-all cursor-default relative overflow-hidden">
                                 <Zap className="absolute bottom-0 right-0 w-12 h-12 text-green-500/5 -mb-2 -mr-2" />
                                 <div className="z-10">
-                                    <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Weekly Velocity</div>
-                                    <div className="text-xl font-bold text-white">{(kpiData.strength * 0.85).toFixed(1)}% <span className="text-[10px] font-normal text-green-400 text-[9px]">Accelerating</span></div>
+                                    <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Weekly Velocity</div>
+                                    <div className="text-xl font-bold text-foreground">{(kpiData.strength * 0.85).toFixed(1)}% <span className="text-[10px] font-normal text-green-400 text-[9px]">Accelerating</span></div>
                                 </div>
                                 <Zap className="w-5 h-5 text-green-500/20 group-hover:text-green-500/50 transition-colors" />
                             </div>
-                            <div className="bg-[#111] p-4 rounded-lg border border-[#222] flex items-center justify-between group hover:border-purple-500/30 transition-all cursor-default relative overflow-hidden">
+                            <div className="bg-card p-4 rounded-lg border border-border flex items-center justify-between group hover:border-purple-500/30 transition-all cursor-default relative overflow-hidden">
                                 <Layers className="absolute bottom-0 right-0 w-12 h-12 text-purple-500/5 -mb-2 -mr-2" />
                                 <div className="z-10">
-                                    <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Monthly Bias</div>
-                                    <div className="text-xl font-bold text-white">{(kpiData.score * 1.1).toFixed(0)} / 100 <span className="text-[10px] font-normal text-purple-400">Expansionary</span></div>
+                                    <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Monthly Bias</div>
+                                    <div className="text-xl font-bold text-foreground">{(kpiData.score * 1.1).toFixed(0)} / 100 <span className="text-[10px] font-normal text-purple-400">Expansionary</span></div>
                                 </div>
                                 <Layers className="w-5 h-5 text-purple-500/20 group-hover:text-purple-500/50 transition-colors" />
                             </div>
@@ -707,3 +707,7 @@ const TrendIntelligencePage = () => {
 };
 
 export default TrendIntelligencePage;
+
+
+
+

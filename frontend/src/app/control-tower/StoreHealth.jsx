@@ -405,13 +405,13 @@ const StoreHealthPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30 pb-20">
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg backdrop-blur-md">
+        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-blue-500/30 pb-20">
+            <header className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg backdrop-blur-md">
                 <div className="px-6 pt-3">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
+                                <BreadcrumbLink onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
                                     <Home className="w-3 h-3" />
                                     {role === 'vendor' ? 'Vendor Portal' : 'Home'}
                                 </BreadcrumbLink>
@@ -420,7 +420,7 @@ const StoreHealthPage = () => {
                             {fromControlTower && (
                                 <>
                                     <BreadcrumbItem>
-                                        <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
+                                        <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors">
                                             Control Tower
                                         </BreadcrumbLink>
                                     </BreadcrumbItem>
@@ -434,24 +434,27 @@ const StoreHealthPage = () => {
                     </Breadcrumb>
                 </div>
 
-                <div className="px-6 py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div className="flex items-center space-x-3">
+                <div className="px-6 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div className="flex items-center space-x-4">
                         <div className="p-2 bg-blue-500/10 rounded-lg">
                             <Store className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-white tracking-tight">Store Health Overview</h1>
-                            <p className="text-xs text-gray-500 font-mono uppercase tracking-wider flex items-center gap-2">
-                                <span className={`w-2 h-2 rounded-full ${loading ? 'bg-blue-500 animate-pulse' : 'bg-green-500'}`} />
-                                {loading ? loadingLabel : `Loaded ${storeRows.length} store${storeRows.length === 1 ? '' : 's'}`}
-                            </p>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-xl font-bold text-foreground tracking-tight">Store Health Overview</h1>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-card border border-border text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                                    <div className={`w-1.5 h-1.5 rounded-full ${loading ? 'bg-blue-500 animate-pulse' : 'bg-green-500'}`}></div>
+                                    {loading ? 'Analyzing' : 'Optimized'}
+                                </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Real-time operational health scores and risk indicators across regions.</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
                         <Popover open={cityPopoverOpen} onOpenChange={setCityPopoverOpen}>
                             <PopoverTrigger asChild>
-                                <Button variant="outline" role="combobox" aria-expanded={cityPopoverOpen} className="w-[240px] justify-between h-9 bg-[#1a1a1a] border-[#333] text-gray-200 text-xs shadow-inner hover:bg-[#222] hover:text-white transition-all">
+                                <Button variant="outline" role="combobox" aria-expanded={cityPopoverOpen} className="w-[240px] justify-between h-9 bg-muted border-border text-foreground text-xs shadow-inner hover:bg-border hover:text-foreground transition-all">
                                     <div className="flex items-center gap-2 overflow-hidden">
                                         <MapPin className="w-3 h-3 text-blue-400 shrink-0" />
                                         <span className="truncate">
@@ -461,14 +464,14 @@ const StoreHealthPage = () => {
                                     <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[240px] p-0 bg-[#1a1a1a] border-[#333]">
-                                <Command className="bg-[#1a1a1a]">
-                                    <CommandInput placeholder="Search cities..." className="h-8 text-xs text-white" />
+                            <PopoverContent className="w-[240px] p-0 bg-muted border-border">
+                                <Command className="bg-muted">
+                                    <CommandInput placeholder="Search cities..." className="h-8 text-xs text-foreground" />
                                     <CommandList>
-                                        <CommandEmpty className="text-xs text-gray-500 py-2 px-4">No city found.</CommandEmpty>
+                                        <CommandEmpty className="text-xs text-muted-foreground py-2 px-4">No city found.</CommandEmpty>
                                         <CommandGroup>
                                             {cities.map((city) => (
-                                                <CommandItem key={city.city_id} value={city.city_name} onSelect={() => toggleCity(city.city_id)} className="text-xs text-gray-200 hover:bg-[#222] cursor-pointer">
+                                                <CommandItem key={city.city_id} value={city.city_name} onSelect={() => toggleCity(city.city_id)} className="text-xs text-foreground hover:bg-border cursor-pointer">
                                                     <Check className={cn('mr-2 h-3 w-3', selectedCityIds.includes(city.city_id) ? 'opacity-100' : 'opacity-0')} />
                                                     {city.city_name}
                                                 </CommandItem>
@@ -480,13 +483,13 @@ const StoreHealthPage = () => {
                         </Popover>
 
                         <Select value={selectedStore} onValueChange={setSelectedStore}>
-                            <SelectTrigger className="w-[240px] h-9 bg-[#1a1a1a] border-[#333] text-gray-200 text-xs shadow-inner">
+                            <SelectTrigger className="w-[240px] h-9 bg-muted border-border text-foreground text-xs shadow-inner">
                                 <div className="flex items-center gap-2">
                                     <Store className="w-3 h-3 text-blue-400 shrink-0" />
                                     <SelectValue placeholder="Select Store" />
                                 </div>
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                            <SelectContent className="bg-muted border-border text-foreground">
                                 <SelectItem value="all" className="text-xs">All Stores</SelectItem>
                                 {stores.map((store) => (
                                     <SelectItem key={store.store_id} value={store.store_id} className="text-xs">
@@ -497,12 +500,12 @@ const StoreHealthPage = () => {
                             </SelectContent>
                         </Select>
 
-                        <ToggleGroup type="single" value={timeContext} onValueChange={(val) => val && setTimeContext(val)} className="bg-[#1a1a1a] border border-[#333] rounded-md p-0.5">
-                            <ToggleGroupItem value="live" className="h-8 px-3 text-xs text-gray-400 data-[state=on]:bg-blue-900/40 data-[state=on]:text-blue-400">Live</ToggleGroupItem>
-                            <ToggleGroupItem value="72h" className="h-8 px-3 text-xs text-gray-400 data-[state=on]:bg-gray-800 data-[state=on]:text-white">Next 72h</ToggleGroupItem>
+                        <ToggleGroup type="single" value={timeContext} onValueChange={(val) => val && setTimeContext(val)} className="bg-muted border border-border rounded-md p-0.5">
+                            <ToggleGroupItem value="live" className="h-8 px-3 text-xs text-muted-foreground data-[state=on]:bg-blue-900/40 data-[state=on]:text-blue-400">Live</ToggleGroupItem>
+                            <ToggleGroupItem value="72h" className="h-8 px-3 text-xs text-muted-foreground data-[state=on]:bg-gray-800 data-[state=on]:text-foreground">Next 72h</ToggleGroupItem>
                         </ToggleGroup>
 
-                        <Button variant="outline" size="sm" className="h-9 border-[#333] bg-[#1a1a1a] text-gray-300 hover:bg-[#222] hover:text-white" onClick={refresh}>
+                        <Button variant="outline" size="sm" className="h-9 border-border bg-muted text-muted-foreground hover:bg-border hover:text-foreground" onClick={refresh}>
                             <RefreshCw className="mr-2 h-4 w-4" />
                             Refresh
                         </Button>
@@ -520,154 +523,156 @@ const StoreHealthPage = () => {
                 {loading && storeRows.length === 0 ? (
                     <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
                         <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-                        <p className="text-gray-500 text-sm animate-pulse font-mono tracking-widest">SYNTHESIZING OPERATIONAL SIGNALS...</p>
+                        <p className="text-muted-foreground text-sm animate-pulse font-mono tracking-widest">SYNTHESIZING OPERATIONAL SIGNALS...</p>
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                            <Card className="bg-[#111] border-[#333]">
-                                <CardContent className="p-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+                            <Card className="bg-card border-border hover:border-blue-500/30 transition-colors shadow-sm">
+                                <CardContent className="p-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Avg Health Score</p>
-                                        <Activity className="w-4 h-4 text-green-500" />
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Avg Health Score</p>
+                                        <Activity className="w-3.5 h-3.5 text-blue-500" />
                                     </div>
-                                    <div className="text-3xl font-bold text-white mb-1">{aggregate.averageScore || '--'}</div>
-                                    <div className="text-xs text-green-500">Clamped to a 0-100 score range</div>
+                                    <div className="text-2xl font-bold text-foreground tabular-nums mb-1">{aggregate.averageScore || '--'}</div>
+                                    <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">System Normalized</div>
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-[#111] border-[#333]">
-                                <CardContent className="p-5">
+                            <Card className="bg-card border-border hover:border-blue-500/30 transition-colors shadow-sm">
+                                <CardContent className="p-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Stores Monitored</p>
-                                        <Store className="w-4 h-4 text-blue-500" />
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stores Monitored</p>
+                                        <Store className="w-3.5 h-3.5 text-blue-500" />
                                     </div>
-                                    <div className="text-3xl font-bold text-white mb-1">{aggregate.storeCount}</div>
-                                    <div className="text-xs text-gray-400">{selectedCityNames.length || 'All'} city filter{selectedCityNames.length === 1 ? '' : 's'}</div>
+                                    <div className="text-2xl font-bold text-foreground tabular-nums mb-1">{aggregate.storeCount}</div>
+                                    <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">{selectedCityNames.length || 'Global'} Analysis</div>
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-[#111] border-[#333]">
-                                <CardContent className="p-5">
+                            <Card className="bg-card border-border hover:border-green-500/30 transition-colors shadow-sm">
+                                <CardContent className="p-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Healthy Stores</p>
-                                        <AlertTriangle className="w-4 h-4 text-green-500" />
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Healthy Zone</p>
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
                                     </div>
-                                    <div className="text-3xl font-bold text-green-400 mb-1">{aggregate.healthyStores}</div>
-                                    <div className="text-xs text-green-400">Healthy after current filters</div>
+                                    <div className="text-2xl font-bold text-green-500 tabular-nums mb-1">{aggregate.healthyStores}</div>
+                                    <div className="text-[10px] text-green-500/70 font-medium uppercase tracking-tighter">Above 85% Threshold</div>
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-[#111] border-[#333]">
-                                <CardContent className="p-5">
+                            <Card className="bg-card border-border hover:border-orange-500/30 transition-colors shadow-sm">
+                                <CardContent className="p-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Watchlist Stores</p>
-                                        <ShieldAlert className="w-4 h-4 text-orange-500" />
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Watchlist</p>
+                                        <ShieldAlert className="w-3.5 h-3.5 text-orange-500" />
                                     </div>
-                                    <div className="text-3xl font-bold text-orange-400 mb-1">{aggregate.watchlistStores}</div>
-                                    <div className="text-xs text-orange-400">Needs attention soon</div>
+                                    <div className="text-2xl font-bold text-orange-500 tabular-nums mb-1">{aggregate.watchlistStores}</div>
+                                    <div className="text-[10px] text-orange-500/70 font-medium uppercase tracking-tighter">Requires Review</div>
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-[#111] border-[#333]">
-                                <CardContent className="p-5">
+                            <Card className="bg-card border-border hover:border-red-500/30 transition-colors shadow-sm">
+                                <CardContent className="p-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Open Alerts</p>
-                                        <ShieldAlert className="w-4 h-4 text-orange-500" />
+                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Priority Alerts</p>
+                                        <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
                                     </div>
-                                    <div className="text-3xl font-bold text-orange-400 mb-1">{aggregate.attentionCount}</div>
-                                    <div className="text-xs text-orange-400">Across selected stores</div>
+                                    <div className="text-2xl font-bold text-red-500 tabular-nums mb-1">{aggregate.attentionCount}</div>
+                                    <div className="text-[10px] text-red-500/70 font-medium uppercase tracking-tighter">Active Escalations</div>
                                 </CardContent>
                             </Card>
                         </div>
 
                         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                            <Card className="xl:col-span-2 bg-[#111] border-[#333] relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <FileText className="w-24 h-24 text-blue-500" />
+                            <Card className="xl:col-span-2 bg-card border-border relative overflow-hidden group shadow-md">
+                                <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                                    <FileText className="w-32 h-32 text-foreground" />
                                 </div>
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                <CardHeader className="pb-3 border-b border-border/50">
+                                    <CardTitle className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
                                         <ShieldAlert className="w-4 h-4 text-blue-500" />
                                         Operational Intelligence Summary
                                     </CardTitle>
-                                    <CardDescription className="text-xs text-gray-500 font-mono">
-                                        {selectedStoreRow?.summary?.lastSync ? `Generated at ${selectedStoreRow.summary.lastSync}` : `Filtered by ${selectedStoreName}`}
+                                    <CardDescription className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                                        {selectedStoreRow?.summary?.lastSync ? `Updated ${selectedStoreRow.summary.lastSync}` : `Context: ${selectedStoreName}`}
                                     </CardDescription>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="text-lg font-medium text-white leading-relaxed border-l-2 border-blue-500 pl-4 bg-blue-500/5 py-3 rounded-r-lg">
-                                        {focusSummary || `Aggregated store health for ${selectedStoreName} using ${timeContext === '72h' ? 'the last 72 hours' : 'live'} signals.`}
+                                <CardContent className="pt-6 pb-4 space-y-6">
+                                    <div className="text-base font-semibold text-foreground leading-relaxed border-l-4 border-blue-500 pl-5 bg-blue-500/5 py-4 rounded-r-xl">
+                                        {focusSummary || `Synthesizing operational health signals for ${selectedStoreName} over the current ${timeContext === '72h' ? '72-hour' : 'real-time'} window.`}
                                     </div>
 
                                     {selectedStoreRow?.summary?.highlights?.length > 0 ? (
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             {selectedStoreRow.summary.highlights.map((highlight, idx) => (
-                                                <div key={idx} className="bg-[#151515] p-3 rounded border border-[#222] group hover:border-blue-500/30 transition-all cursor-default">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Highlight {idx + 1}</span>
+                                                <div key={idx} className="bg-muted/30 p-3 rounded-lg border border-border/50 hover:border-blue-500/20 transition-colors">
+                                                    <div className="flex items-center gap-2 mb-1.5">
+                                                        <div className="w-1 h-1 rounded-full bg-blue-500" />
+                                                        <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">Signal {idx + 1}</span>
                                                     </div>
-                                                    <p className="text-xs text-gray-300 leading-normal">{highlight}</p>
+                                                    <p className="text-[11px] text-foreground font-medium leading-normal">{highlight}</p>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                                            <div className="bg-[#151515] p-3 rounded border border-[#222]">
-                                                <div className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Average Score</div>
-                                                <p className="text-xs text-gray-300 leading-normal">{aggregate.averageScore}</p>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50">
+                                                <div className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">Aggregated Mean</div>
+                                                <p className="text-sm font-bold text-foreground tabular-nums mt-1">{aggregate.averageScore}%</p>
                                             </div>
-                                            <div className="bg-[#151515] p-3 rounded border border-[#222]">
-                                                <div className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Min Score</div>
-                                                <p className="text-xs text-gray-300 leading-normal">{aggregate.minScore}</p>
+                                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50">
+                                                <div className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">Lowest Variance</div>
+                                                <p className="text-sm font-bold text-foreground tabular-nums mt-1">{aggregate.minScore}%</p>
                                             </div>
-                                            <div className="bg-[#151515] p-3 rounded border border-[#222]">
-                                                <div className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Max Score</div>
-                                                <p className="text-xs text-gray-300 leading-normal">{aggregate.maxScore}</p>
+                                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50">
+                                                <div className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">Peak Performance</div>
+                                                <p className="text-sm font-bold text-foreground tabular-nums mt-1">{aggregate.maxScore}%</p>
                                             </div>
                                         </div>
                                     )}
                                 </CardContent>
-                                <div className="p-4 bg-[#151515] border-t border-[#222] flex items-center justify-between flex-wrap gap-3">
-                                    <div className="flex items-center gap-4 flex-wrap">
-                                        <div className="flex items-center gap-2">
-                                            <History className="w-3.5 h-3.5 text-gray-500" />
-                                            <span className="text-[10px] text-gray-400 uppercase font-mono">Time Window: {timeContext === '72h' ? '72 hours' : 'Live'}</span>
+                                <div className="px-6 py-3 bg-muted/20 border-t border-border/50 flex items-center justify-between">
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex items-center gap-1.5">
+                                            <Clock className="w-3 h-3 text-muted-foreground" />
+                                            <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-widest">Window: {timeContext === '72h' ? 'Rolling 72H' : 'Live Snapshot'}</span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <DollarSign className="w-3.5 h-3.5 text-green-500" />
-                                            <span className="text-[10px] text-gray-400 uppercase font-mono">Stores Included: {aggregate.storeCount}</span>
+                                        <div className="flex items-center gap-1.5">
+                                            <Activity className="w-3 h-3 text-muted-foreground" />
+                                            <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-widest">Sample Size: {aggregate.storeCount} Units</span>
                                         </div>
                                     </div>
-                                    <Badge variant="outline" className="text-blue-400 border-blue-900/50 bg-blue-900/10 h-6 px-2 text-[10px] uppercase font-bold">
-                                        Filtered View
+                                    <Badge variant="outline" className="text-blue-500 border-blue-500/20 bg-blue-500/5 text-[9px] uppercase font-bold px-2 h-5">
+                                        Verified AI Narrative
                                     </Badge>
                                 </div>
                             </Card>
 
-                            <Card className="bg-[#111] border-[#333] flex flex-col items-center justify-center p-6 relative overflow-hidden h-full">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
-                                <h2 className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-4">Selected Store Score</h2>
-                                <div className="w-full space-y-4">
-                                    <div className="bg-[#151515] border border-[#222] rounded-2xl p-5 text-center">
-                                        <div className="text-6xl font-black text-white">{selectedStore === 'all' ? aggregate.averageScore : selectedStoreRow ? clampScore(selectedStoreRow.health?.overallScore) : '--'}</div>
-                                        <Badge className={`mt-3 font-black tracking-tighter shadow-xl px-4 py-1 ${focusStatus === 'Healthy' ? 'bg-green-500 text-black hover:bg-green-400' : focusStatus === 'Acceptable' ? 'bg-yellow-400 text-black hover:bg-yellow-300' : 'bg-red-500 text-white hover:bg-red-400'}`}>
+                            <Card className="bg-card border-border flex flex-col items-center justify-center p-6 relative overflow-hidden h-full shadow-md">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-80" />
+                                <h2 className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.25em] mb-6">Unit Performance Index</h2>
+                                <div className="w-full space-y-6">
+                                    <div className="bg-muted/30 border border-border rounded-3xl p-6 text-center shadow-inner">
+                                        <div className="text-7xl font-black text-foreground tabular-nums tracking-tighter">
+                                            {selectedStore === 'all' ? aggregate.averageScore : selectedStoreRow ? clampScore(selectedStoreRow.health?.overallScore) : '--'}
+                                        </div>
+                                        <Badge className={`mt-4 font-black tracking-widest shadow-lg px-6 py-1.5 text-[11px] uppercase border-none ${focusStatus === 'Healthy' ? 'bg-green-500 text-black hover:bg-green-400' : focusStatus === 'Acceptable' ? 'bg-yellow-400 text-black hover:bg-yellow-300' : 'bg-red-500 text-foreground hover:bg-red-400'}`}>
                                             {focusStatus}
                                         </Badge>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="rounded-xl border border-[#222] bg-[#151515] p-3">
-                                            <div className="text-[10px] uppercase tracking-wider text-gray-500">Average</div>
-                                            <div className="text-xl font-bold text-white">{aggregate.averageScore}</div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="rounded-2xl border border-border bg-muted/20 p-4 shadow-sm">
+                                            <div className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold mb-1">Regional Avg</div>
+                                            <div className="text-2xl font-black text-foreground tabular-nums">{aggregate.averageScore}</div>
                                         </div>
-                                        <div className="rounded-xl border border-[#222] bg-[#151515] p-3">
-                                            <div className="text-[10px] uppercase tracking-wider text-gray-500">Attention</div>
-                                            <div className="text-xl font-bold text-orange-400">{aggregate.attentionCount}</div>
+                                        <div className="rounded-2xl border border-border bg-muted/20 p-4 shadow-sm">
+                                            <div className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold mb-1">Flagged</div>
+                                            <div className="text-2xl font-black text-orange-500 tabular-nums">{aggregate.attentionCount}</div>
                                         </div>
                                     </div>
-                                    <p className="text-[10px] text-gray-500 text-center px-3 italic font-mono leading-relaxed opacity-70">
-                                        Scores are derived from persistent store-health metrics and filtered inventory risks.
+                                    <p className="text-[10px] text-muted-foreground text-center px-4 italic font-medium leading-relaxed opacity-60">
+                                        Real-time health coefficient calculated via cross-module inventory and demand analysis.
                                     </p>
                                 </div>
                             </Card>
@@ -676,28 +681,28 @@ const StoreHealthPage = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                             <div className="lg:col-span-2 space-y-3">
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest border-b border-blue-500 py-1">Store Breakdown</h3>
+                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b border-blue-500 py-1">Store Breakdown</h3>
                                 </div>
                                 <div className="grid grid-cols-1 gap-3">
                                     {storeRows.map((row) => (
-                                        <div key={row.store.store_id} className="bg-[#151515] p-4 rounded-xl border border-[#222] flex items-center justify-between hover:border-[#444] hover:bg-[#1a1a1a] transition-all cursor-pointer group" onClick={() => openStoreAlerts(row)}>
+                                        <div key={row.store.store_id} className="bg-muted/50 p-4 rounded-xl border border-border flex items-center justify-between hover:border-border hover:bg-muted transition-all cursor-pointer group" onClick={() => openStoreAlerts(row)}>
                                             <div className="flex items-center space-x-4">
-                                                <div className="p-3 rounded-lg bg-[#111] text-blue-400 group-hover:bg-blue-500 group-hover:text-black transition-all border border-[#333]">
+                                                <div className="p-3 rounded-lg bg-card text-blue-400 group-hover:bg-blue-500 group-hover:text-black transition-all border border-border">
                                                     <Store className="w-5 h-5" />
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-bold text-white tracking-tight">{formatStoreLabel(row.store)}</div>
-                                                    <div className="text-[11px] text-gray-500 font-mono italic">{row.health?.status || 'Unknown'}</div>
+                                                    <div className="text-sm font-bold text-foreground tracking-tight">{formatStoreLabel(row.store)}</div>
+                                                    <div className="text-[11px] text-muted-foreground font-mono italic">{row.health?.status || 'Unknown'}</div>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-6">
                                                 <div className="text-right">
-                                                    <div className="text-lg font-black text-white">{clampScore(row.health?.overallScore)}</div>
+                                                    <div className="text-lg font-black text-foreground">{clampScore(row.health?.overallScore)}</div>
                                                     <div className={`text-[10px] font-bold px-1.5 rounded ${clampScore(row.health?.overallScore) >= 80 ? 'text-green-500 bg-green-500/10' : 'text-red-500 bg-red-500/10'}`}>
                                                         {row.health?.attentionQueue?.length || 0} alerts
                                                     </div>
                                                 </div>
-                                                <ArrowRight className="w-4 h-4 text-gray-700 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                                                <ArrowRight className="w-4 h-4 text-gray-700 group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                                             </div>
                                         </div>
                                     ))}
@@ -706,7 +711,7 @@ const StoreHealthPage = () => {
 
                             <div className="lg:col-span-2 space-y-3">
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-sm font-bold text-gray-300 uppercase tracking-widest border-b border-orange-500 py-1">Critical Risk Snapshot</h3>
+                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b border-orange-500 py-1">Critical Risk Snapshot</h3>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     {[
@@ -715,16 +720,16 @@ const StoreHealthPage = () => {
                                         { title: 'Open Alerts', count: aggregate.attentionCount, severity: 'Critical', desc: 'Current store attention items' },
                                         { title: 'Healthy Stores', count: aggregate.healthyStores, severity: 'Critical', desc: 'Filtered stores in green zone' },
                                     ].map((risk, idx) => (
-                                        <div key={idx} className="bg-[#111] p-5 rounded-2xl border border-[#333] flex flex-col justify-between hover:bg-[#151515] hover:scale-[1.02] transition-all cursor-default">
+                                        <div key={idx} className="bg-card p-5 rounded-2xl border border-border flex flex-col justify-between hover:bg-muted/50 hover:scale-[1.02] transition-all cursor-default">
                                             <div className="flex justify-between items-start mb-3">
-                                                <Badge variant="outline" className={`${risk.severity === 'Critical' ? 'text-red-400 border-red-900 bg-red-900/10' : risk.severity === 'High' ? 'text-orange-400 border-orange-900 bg-orange-900/10' : 'text-gray-400 border-gray-800'} text-[10px] h-6 px-2 uppercase font-black tracking-tighter`}>
+                                                <Badge variant="outline" className={`${risk.severity === 'Critical' ? 'text-red-400 border-red-900 bg-red-900/10' : risk.severity === 'High' ? 'text-orange-400 border-orange-900 bg-orange-900/10' : 'text-muted-foreground border-gray-800'} text-[10px] h-6 px-2 uppercase font-black tracking-tighter`}>
                                                     {risk.severity}
                                                 </Badge>
-                                                <div className="text-3xl font-black text-white tabular-nums">{risk.count}</div>
+                                                <div className="text-3xl font-black text-foreground tabular-nums">{risk.count}</div>
                                             </div>
                                             <div>
-                                                <div className="text-xs font-bold text-gray-200 uppercase tracking-wide">{risk.title}</div>
-                                                <div className="text-[11px] text-gray-500 mt-2 leading-relaxed italic border-t border-[#222] pt-2">{risk.desc}</div>
+                                                <div className="text-xs font-bold text-foreground uppercase tracking-wide">{risk.title}</div>
+                                                <div className="text-[11px] text-muted-foreground mt-2 leading-relaxed italic border-t border-border pt-2">{risk.desc}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -737,7 +742,7 @@ const StoreHealthPage = () => {
             </div>
 
             <Sheet open={alertsDrawerOpen} onOpenChange={setAlertsDrawerOpen}>
-                <SheetContent side="right" className="w-full sm:max-w-md border-l border-[#222] bg-[#0f0f0f] p-0 text-white">
+                <SheetContent side="right" className="w-full sm:max-w-md border-l border-border bg-background p-0 text-foreground">
                     <AlertContent
                         alerts={alertsDrawerItems}
                         title={alertsDrawerTitle}
@@ -751,3 +756,6 @@ const StoreHealthPage = () => {
 };
 
 export default StoreHealthPage;
+
+
+
