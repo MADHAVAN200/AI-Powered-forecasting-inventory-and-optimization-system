@@ -24,10 +24,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
 
-import {
-    Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
-    BreadcrumbPage, BreadcrumbSeparator
-} from '@/components/ui/breadcrumb';
 import Sidebar from '@/components/Sidebar';
 import ThemeToggle from '@/components/ThemeToggle';
 import { backendModuleService } from '@/services/backendModuleService';
@@ -210,250 +206,216 @@ const OperationalAlertsPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground font-sans selection:bg-blue-500/30 pb-20">
-            {/* 1. HEADER & CONTROLS */}
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
-                {/* Breadcrumb Section */}
-                <div className="px-6 pt-3">
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
-                                >
-                                    <Home className="w-3 h-3" />
-                                    {role === 'vendor' ? 'Vendor Portal' : 'Home'}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-gray-600" />
-                            {fromControlTower && (
-                                <>
-                                    <BreadcrumbItem>
-                                        <BreadcrumbLink
-                                            onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
-                                        >
-                                            Control Tower
-                                        </BreadcrumbLink>
-                                    </BreadcrumbItem>
-                                    <BreadcrumbSeparator className="text-gray-600" />
-                                </>
-                            )}
-                            <BreadcrumbItem>
-                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
-                                    Operational Alerts
-                                </BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                </div>
-                <div className="px-6 py-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div className="p-2 bg-red-900/20 rounded-lg">
-                                <Zap className="w-6 h-6 text-red-500" />
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                                    Operational Alerts
-                                </h1>
-                                <div className="text-xs text-gray-500 font-mono flex items-center gap-3 mt-1">
-                                    <span className="flex items-center"><Store className="w-3 h-3 mr-1" /> Region: North East</span>
-                                    <span>•</span>
-                                    <span className="flex items-center text-green-500"><Activity className="w-3 h-3 mr-1" /> Live Monitoring</span>
-                                </div>
-                            </div>
-                        </div>
+        <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30 pb-20">
+            {/* Header & Filters */}
+            <div className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 h-16 flex items-center shadow-sm">
 
-                        <div className="flex items-center space-x-3">
-                            <Button variant="outline" className="h-9 border-[#333] text-gray-400 hover:text-white bg-[#1a1a1a]">
-                                <Clock className="w-4 h-4 mr-2" /> Past 24h
-                            </Button>
-                            <Button className="h-9 bg-blue-600 hover:bg-blue-700 text-white">
-                                <CheckCircle2 className="w-4 h-4 mr-2" /> Acknowledge All
-                            </Button>
-                            <Button
-                                className="h-9 bg-purple-600 hover:bg-purple-700 text-white"
-                                onClick={() => {
-                                    resetCreateForm();
-                                    setCreateSheetOpen(true);
-                                }}
-                            >
-                                <AlertTriangle className="w-4 h-4 mr-2" /> Add Alert
-                            </Button>
+                <div className="flex items-center justify-between gap-6 w-full">
+                    <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-red-500/10 rounded-lg border border-red-500/20">
+                            <Zap className="w-5 h-5 text-red-500" />
+                        </div>
+                        <div>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-lg font-bold text-foreground tracking-tight">Operational Alerts</h1>
+                                <Badge variant="outline" className="text-red-500 border-red-500/30 bg-red-500/10 text-[10px] h-5">
+                                    Live
+                                </Badge>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Filters */}
-                    <div className="flex flex-wrap items-center gap-3">
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+                    <div className="flex items-center gap-3">
+                        <div className="relative group hidden md:block">
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                             <Input
                                 type="search"
                                 placeholder="Search alerts..."
-                                className="w-64 pl-9 h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-300 placeholder:text-gray-500"
+                                className="w-64 pl-9 h-9 bg-background border-border text-xs text-foreground focus-visible:ring-blue-500/50 shadow-inner"
                             />
                         </div>
-                        <Select defaultValue="all" onValueChange={setFilterPriority}>
-                            <SelectTrigger className="w-[140px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-300">
-                                <SelectValue placeholder="Priority" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Any Priority</SelectItem>
-                                <SelectItem value="critical">Critical</SelectItem>
-                                <SelectItem value="high">High</SelectItem>
-                                <SelectItem value="medium">Medium</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Select defaultValue="all">
-                            <SelectTrigger className="w-[140px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-300">
-                                <SelectValue placeholder="Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Categories</SelectItem>
-                                <SelectItem value="inventory">Inventory</SelectItem>
-                                <SelectItem value="forecast">Forecast</SelectItem>
-                                <SelectItem value="checkout">Checkout</SelectItem>
-                                <SelectItem value="model">Model/System</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <Select defaultValue="new">
-                            <SelectTrigger className="w-[140px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-300">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Statuses</SelectItem>
-                                <SelectItem value="new">New</SelectItem>
-                                <SelectItem value="acknowledged">Acknowledged</SelectItem>
-                                <SelectItem value="resolved">Resolved</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="h-9 border-border text-muted-foreground hover:text-foreground bg-background text-xs"
+                            onClick={() => {
+                                resetCreateForm();
+                                setCreateSheetOpen(true);
+                            }}
+                        >
+                            <AlertTriangle className="w-3.5 h-3.5 mr-2 text-purple-500" /> Add Alert
+                        </Button>
+                        <Button size="sm" className="h-9 bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 shadow-lg shadow-blue-500/20">
+                            <CheckCircle2 className="w-3.5 h-3.5 mr-2" /> Acknowledge All
+                        </Button>
+                        <div className="ml-1 pl-1 border-l border-border h-6 flex items-center">
+                            <ThemeToggle />
+                        </div>
                     </div>
                 </div>
-            </header>
+
+            </div>
 
             <div className="p-6 w-full space-y-6">
+                {/* Filters Strip */}
+                <div className="flex flex-wrap items-center gap-3 bg-muted/30 p-4 rounded-xl border border-border">
+                    <Select defaultValue="all" onValueChange={setFilterPriority}>
+                        <SelectTrigger className="w-[130px] h-9 bg-background border-border text-[11px] text-foreground hover:border-blue-500/50 transition-colors">
+                            <SelectValue placeholder="Priority" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border text-foreground">
+                            <SelectItem value="all">Any Priority</SelectItem>
+                            <SelectItem value="critical">Critical</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select defaultValue="all">
+                        <SelectTrigger className="w-[130px] h-9 bg-background border-border text-[11px] text-foreground hover:border-blue-500/50 transition-colors">
+                            <SelectValue placeholder="Category" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border text-foreground">
+                            <SelectItem value="all">All Categories</SelectItem>
+                            <SelectItem value="inventory">Inventory</SelectItem>
+                            <SelectItem value="forecast">Forecast</SelectItem>
+                            <SelectItem value="checkout">Checkout</SelectItem>
+                            <SelectItem value="model">Model/System</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select defaultValue="new">
+                        <SelectTrigger className="w-[130px] h-9 bg-background border-border text-[11px] text-foreground hover:border-blue-500/50 transition-colors">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border text-foreground">
+                            <SelectItem value="all">All Statuses</SelectItem>
+                            <SelectItem value="new">New</SelectItem>
+                            <SelectItem value="acknowledged">Acknowledged</SelectItem>
+                            <SelectItem value="resolved">Resolved</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Badge variant="outline" className="border-border text-muted-foreground ml-auto uppercase text-[9px] font-bold tracking-widest">{filteredAlerts.length} Active Alerts</Badge>
+                </div>
 
                 {/* 2. KPI SNAPSHOT */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-red-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Critical Active</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Critical Active</CardTitle>
                         </CardHeader>
                         <CardContent className="flex items-center justify-between">
                             <div>
-                                <div className="text-4xl font-bold text-red-500">{derivedKpis.critical}</div>
-                                <p className="text-xs text-red-400 mt-1 font-medium flex items-center">
-                                    <AlertOctagon className="w-3 h-3 mr-1" /> Needs immediate triage
+                                <div className="text-4xl font-bold text-red-500 tabular-nums">{derivedKpis.critical}</div>
+                                <p className="text-[10px] text-red-400 mt-1 font-medium flex items-center uppercase tracking-wider">
+                                    <AlertOctagon className="w-3 h-3 mr-1" /> Triage Required
                                 </p>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-yellow-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">High Priority</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">High Priority</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-4xl font-bold text-yellow-500">{derivedKpis.high}</div>
-                            <p className="text-xs text-gray-400 mt-1 flex items-center">
+                            <div className="text-4xl font-bold text-yellow-500 tabular-nums">{derivedKpis.high}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center uppercase tracking-wider">
                                 +4 since last hour
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-blue-500/30 transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Avg Response Time</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Avg Response Time</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-4xl font-bold text-white">{avgResponseTime}</div>
-                            <p className="text-xs text-green-500 mt-1 flex items-center">
-                                Within 15m SLA target
+                            <div className="text-4xl font-bold text-foreground tabular-nums">{avgResponseTime}</div>
+                            <p className="text-[10px] text-green-500 mt-1 flex items-center uppercase tracking-wider font-semibold">
+                                <CheckCircle2 className="w-3 h-3 mr-1" /> Within SLA Target
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1 hover:border-border transition-colors">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Overdue</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Overdue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-4xl font-bold text-gray-400">{derivedKpis.overdue}</div>
-                            <p className="text-xs text-gray-500 mt-1 flex items-center">
-                                Escalated to Region Mgr
+                            <div className="text-4xl font-bold text-muted-foreground tabular-nums">{derivedKpis.overdue}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center uppercase tracking-wider">
+                                Escalated Signals
                             </p>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* 3. ALERTS QUEUE */}
-                <Card className="bg-[#111] border-[#333]">
-                    <CardHeader className="border-b border-[#222] py-4">
-                        <CardTitle className="text-lg font-bold text-white">Active Alerts Queue</CardTitle>
+                <Card className="bg-card border-border overflow-hidden">
+                    <CardHeader className="border-b border-border bg-muted/30 py-4">
+                        <CardTitle className="text-lg font-bold text-foreground">Active Alerts Queue</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
-                            <TableHeader className="bg-[#1a1a1a]">
-                                <TableRow className="border-none hover:bg-transparent">
-                                    <TableHead className="text-gray-400 w-[100px]">Priority</TableHead>
-                                    <TableHead className="text-gray-400 w-[120px]">Type</TableHead>
-                                    <TableHead className="text-gray-400">Description</TableHead>
-                                    <TableHead className="text-gray-400 w-[120px]">Store</TableHead>
-                                    <TableHead className="text-gray-400 w-[120px]">Time</TableHead>
-                                    <TableHead className="text-gray-400 w-[150px]">SLA</TableHead>
-                                    <TableHead className="text-gray-400 w-[120px]">Status</TableHead>
-                                    <TableHead className="text-gray-400 w-[150px]">Owner</TableHead>
-                                    <TableHead className="w-[50px]"></TableHead>
+                            <TableHeader className="bg-muted/50">
+                                <TableRow className="border-border hover:bg-transparent">
+                                    <TableHead className="text-muted-foreground w-[100px] text-[10px] uppercase font-bold tracking-widest h-10">Priority</TableHead>
+                                    <TableHead className="text-muted-foreground w-[120px] text-[10px] uppercase font-bold tracking-widest h-10">Type</TableHead>
+                                    <TableHead className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest h-10">Description</TableHead>
+                                    <TableHead className="text-muted-foreground w-[120px] text-[10px] uppercase font-bold tracking-widest h-10">Store</TableHead>
+                                    <TableHead className="text-muted-foreground w-[120px] text-[10px] uppercase font-bold tracking-widest h-10">Time</TableHead>
+                                    <TableHead className="text-muted-foreground w-[150px] text-[10px] uppercase font-bold tracking-widest h-10">SLA</TableHead>
+                                    <TableHead className="text-muted-foreground w-[120px] text-[10px] uppercase font-bold tracking-widest h-10">Status</TableHead>
+                                    <TableHead className="text-muted-foreground w-[150px] text-[10px] uppercase font-bold tracking-widest h-10">Owner</TableHead>
+                                    <TableHead className="w-[50px] h-10"></TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredAlerts.map((alert) => (
-                                    <TableRow
-                                        key={alert.id}
-                                        className={`border-b border-[#222] hover:bg-[#1a1a1a] transition-colors cursor-pointer group ${alert.id === selectedAlert?.id ? 'bg-[#1a1a1a]' : ''}`}
-                                        onClick={() => setSelectedAlert(alert)}
-                                    >
-                                        <TableCell>
-                                            <Badge variant="outline" className={`
-                                                ${alert.priority === 'Critical' ? 'text-red-400 border-red-900 bg-red-900/10' :
-                                                    alert.priority === 'High' ? 'text-yellow-400 border-yellow-900 bg-yellow-900/10' :
-                                                        'text-blue-400 border-blue-900 bg-blue-900/10'}
-                                            `}>
-                                                {alert.priority}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="font-semibold text-gray-300 text-xs">{alert.type}</TableCell>
-                                        <TableCell className="text-gray-200 font-medium">
-                                            {alert.description}
-                                            <div className="text-gray-500 text-xs mt-0.5">{alert.source} • {alert.id}</div>
-                                        </TableCell>
-                                        <TableCell className="text-gray-400 text-sm">{alert.store}</TableCell>
-                                        <TableCell className="text-gray-400 text-sm">{alert.time}</TableCell>
-                                        <TableCell className={`text-sm ${alert.sla === 'Overdue' ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
-                                            {alert.sla}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${alert.status === 'New' ? 'bg-blue-500 animate-pulse' :
-                                                    alert.status === 'In Progress' ? 'bg-yellow-500' :
-                                                        'bg-green-500'
-                                                    }`} />
-                                                <span className="text-gray-300 text-xs">{alert.status}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-gray-400 text-xs">
-                                            {alert.owner === 'Unassigned' ? (
-                                                <span className="text-gray-600 italic">Unassigned</span>
-                                            ) : (
-                                                <div className="flex items-center gap-1">
-                                                    <User className="w-3 h-3" /> {alert.owner}
+                                    {filteredAlerts.map((alert) => (
+                                        <TableRow
+                                            key={alert.id}
+                                            className={`border-b border-border hover:bg-muted transition-colors cursor-pointer group ${alert.id === selectedAlert?.id ? 'bg-muted' : ''}`}
+                                            onClick={() => setSelectedAlert(alert)}
+                                        >
+                                            <TableCell>
+                                                <Badge variant="outline" className={`
+                                                    ${alert.priority === 'Critical' ? 'text-red-600 border-red-500/30 bg-red-100 dark:bg-red-900/10' :
+                                                        alert.priority === 'High' ? 'text-yellow-600 border-yellow-500/30 bg-yellow-100 dark:bg-yellow-900/10' :
+                                                            'text-blue-600 border-blue-500/30 bg-blue-100 dark:bg-blue-900/10'}
+                                                    text-[10px] h-5
+                                                `}>
+                                                    {alert.priority}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="font-semibold text-foreground text-xs">{alert.type}</TableCell>
+                                            <TableCell>
+                                                <div className="font-medium text-foreground text-sm tracking-tight">{alert.description}</div>
+                                                <div className="text-muted-foreground text-[10px] mt-0.5 uppercase tracking-widest font-mono">{alert.source} • {alert.id}</div>
+                                            </TableCell>
+                                            <TableCell className="text-muted-foreground text-xs">{alert.store}</TableCell>
+                                            <TableCell className="text-muted-foreground text-xs tabular-nums">{alert.time}</TableCell>
+                                            <TableCell className={`text-xs tabular-nums ${alert.sla === 'Overdue' ? 'text-red-500 font-bold' : 'text-muted-foreground'}`}>
+                                                {alert.sla}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${alert.status === 'New' ? 'bg-blue-500 animate-pulse' :
+                                                        alert.status === 'In Progress' ? 'bg-yellow-500' :
+                                                            'bg-green-500'
+                                                        }`} />
+                                                    <span className="text-foreground text-xs">{alert.status}</span>
                                                 </div>
-                                            )}
-                                        </TableCell>
-                                        <TableCell>
-                                            <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-white" />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                            </TableCell>
+                                            <TableCell className="text-muted-foreground text-xs">
+                                                {alert.owner === 'Unassigned' ? (
+                                                    <span className="text-muted-foreground/60 italic">Unassigned</span>
+                                                ) : (
+                                                    <div className="flex items-center gap-1">
+                                                        <User className="w-3 h-3" /> {alert.owner}
+                                                    </div>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <ChevronRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-blue-500 transition-colors" />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                             </TableBody>
                         </Table>
                     </CardContent>
@@ -463,37 +425,37 @@ const OperationalAlertsPage = () => {
 
             {/* 4. DETAIL PANEL (SHEET) */}
             <Sheet open={!!selectedAlert} onOpenChange={(open) => !open && setSelectedAlert(null)}>
-                <SheetContent className="bg-[#111] border-l border-[#222] text-white w-[500px] sm:max-w-[600px] overflow-y-auto">
+                <SheetContent className="bg-background border-l border-border text-foreground w-[500px] sm:max-w-[600px] overflow-y-auto">
                     {selectedAlert && (
                         <div className="space-y-6 pt-4">
-                            {/* Header */}
+                             {/* Header */}
                             <div>
                                 <div className="flex items-center justify-between mb-4">
                                     <Badge variant="outline" className={`
-                                        ${selectedAlert.priority === 'Critical' ? 'text-red-400 border-red-900 bg-red-900/10' :
-                                            selectedAlert.priority === 'High' ? 'text-yellow-400 border-yellow-900 bg-yellow-900/10' :
-                                                'text-blue-400 border-blue-900 bg-blue-900/10'}
+                                        ${selectedAlert.priority === 'Critical' ? 'text-red-600 border-red-500/30 bg-red-500/10' :
+                                            selectedAlert.priority === 'High' ? 'text-yellow-600 border-yellow-500/30 bg-yellow-500/10' :
+                                                'text-blue-600 border-blue-500/30 bg-blue-500/10'}
                                     `}>
                                         {selectedAlert.priority} Priority
                                     </Badge>
-                                    <span className="text-gray-500 font-mono text-xs">{selectedAlert.id}</span>
+                                    <span className="text-muted-foreground font-mono text-xs">{selectedAlert.id}</span>
                                 </div>
-                                <h2 className="text-xl font-bold text-white mb-2">{selectedAlert.description}</h2>
-                                <p className="text-sm text-gray-400 flex items-center gap-2">
+                                <h2 className="text-xl font-bold text-foreground mb-2">{selectedAlert.description}</h2>
+                                <p className="text-sm text-muted-foreground flex items-center gap-2">
                                     <Clock className="w-4 h-4" /> Detected {selectedAlert.time}
-                                    <span className="text-gray-600">|</span>
+                                    <span className="text-border">|</span>
                                     <Store className="w-4 h-4" /> {selectedAlert.store}
                                 </p>
                             </div>
 
-                            <Separator className="bg-[#222]" />
+                            <Separator className="bg-border" />
 
                             {/* Root Cause Stats */}
-                            <div className="bg-[#1a1a1a] rounded-lg p-4 border border-[#222]">
-                                <h3 className="text-sm font-semibold text-gray-300 mb-3 uppercase tracking-wider">Analysis Signals</h3>
+                            <div className="bg-muted/40 rounded-lg p-4 border border-border">
+                                <h3 className="text-[10px] font-bold text-muted-foreground mb-3 uppercase tracking-wider">Analysis Signals</h3>
                                 <div className="space-y-2">
                                     {selectedAlert.rootCause.map((cause, idx) => (
-                                        <div key={idx} className="flex items-center gap-2 text-sm text-red-300">
+                                        <div key={idx} className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
                                             <AlertTriangle className="w-4 h-4" /> {cause}
                                         </div>
                                     ))}
@@ -517,21 +479,21 @@ const OperationalAlertsPage = () => {
                                 </Button>
                             </div>
 
-                            {/* Human Controls */}
+                             {/* Human Controls */}
                             <div className="space-y-4">
-                                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Workflow Actions</h3>
+                                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Workflow Actions</h3>
                                 <div className="grid grid-cols-2 gap-3">
-                                    <Button variant="outline" className="border-[#333] hover:border-gray-500 text-gray-300 hover:text-white bg-transparent">
+                                    <Button variant="outline" className="border-border hover:border-muted-foreground text-foreground bg-background">
                                         <CheckCircle2 className="w-4 h-4 mr-2" /> Acknowledge
                                     </Button>
-                                    <Button variant="outline" className="border-[#333] hover:border-gray-500 text-gray-300 hover:text-white bg-transparent">
+                                    <Button variant="outline" className="border-border hover:border-muted-foreground text-foreground bg-background">
                                         <User className="w-4 h-4 mr-2" /> Assign Owner
                                     </Button>
                                 </div>
                                 <div className="pt-2">
-                                    <label className="text-xs text-gray-500 mb-1 block">Add Note</label>
+                                    <label className="text-[10px] font-bold text-muted-foreground mb-1 block uppercase">Add Note</label>
                                     <textarea
-                                        className="w-full bg-[#1a1a1a] border border-[#333] rounded-md p-2 text-sm text-white focus:outline-none focus:border-blue-500/50 min-h-[80px]"
+                                        className="w-full bg-muted/40 border border-border rounded-md p-2 text-sm text-foreground focus:outline-none focus:border-blue-500/50 min-h-[80px]"
                                         placeholder="Enter triage notes..."
                                     />
                                 </div>
@@ -543,34 +505,34 @@ const OperationalAlertsPage = () => {
             </Sheet>
 
             <Sheet open={createSheetOpen} onOpenChange={setCreateSheetOpen}>
-                <SheetContent className="bg-[#111] border-l border-[#222] text-white w-[520px] sm:max-w-[560px] overflow-y-auto">
+                <SheetContent className="bg-background border-l border-border text-foreground w-[520px] sm:max-w-[560px] overflow-y-auto">
                     <div className="space-y-6 pt-4">
                         <SheetHeader className="text-left">
-                            <SheetTitle className="text-white text-xl">Create Alert</SheetTitle>
-                            <SheetDescription className="text-gray-400">
+                            <SheetTitle className="text-foreground text-xl">Create Alert</SheetTitle>
+                            <SheetDescription className="text-muted-foreground">
                                 Add a new operational alert and save it to the shared backend/Supabase flow.
                             </SheetDescription>
                         </SheetHeader>
 
                         <div className="space-y-5">
-                            <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Description</label>
+                             <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Description</label>
                                 <Textarea
                                     value={newAlert.description}
                                     onChange={(e) => handleAlertFieldChange('description', e.target.value)}
                                     placeholder="Describe the issue, impact, and urgency..."
-                                    className="min-h-[110px] bg-[#1a1a1a] border-[#333] text-white"
+                                    className="min-h-[110px] bg-muted/40 border-border text-foreground"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Priority</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Priority</label>
                                     <Select value={newAlert.priority} onValueChange={(value) => handleAlertFieldChange('priority', value)}>
-                                        <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white">
+                                        <SelectTrigger className="bg-muted/40 border-border text-foreground">
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="bg-card border-border">
                                             <SelectItem value="Critical">Critical</SelectItem>
                                             <SelectItem value="High">High</SelectItem>
                                             <SelectItem value="Medium">Medium</SelectItem>
@@ -579,12 +541,12 @@ const OperationalAlertsPage = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Type</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Type</label>
                                     <Select value={newAlert.type} onValueChange={(value) => handleAlertFieldChange('type', value)}>
-                                        <SelectTrigger className="bg-[#1a1a1a] border-[#333] text-white">
+                                        <SelectTrigger className="bg-muted/40 border-border text-foreground">
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="bg-card border-border">
                                             <SelectItem value="Inventory">Inventory</SelectItem>
                                             <SelectItem value="Forecast">Forecast</SelectItem>
                                             <SelectItem value="Checkout">Checkout</SelectItem>
@@ -595,32 +557,32 @@ const OperationalAlertsPage = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Store</label>
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Store</label>
                                 <Input
                                     value={newAlert.store}
                                     onChange={(e) => handleAlertFieldChange('store', e.target.value)}
                                     placeholder="Store 402"
-                                    className="bg-[#1a1a1a] border-[#333] text-white"
+                                    className="bg-muted/40 border-border text-foreground"
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Root Causes</label>
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Root Causes</label>
                                 <Input
                                     value={newAlert.rootCauseText}
                                     onChange={(e) => handleAlertFieldChange('rootCauseText', e.target.value)}
                                     placeholder="Comma separated, e.g. Delay, demand spike"
-                                    className="bg-[#1a1a1a] border-[#333] text-white"
+                                    className="bg-muted/40 border-border text-foreground"
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">Recommendation</label>
+                                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Recommendation</label>
                                 <Textarea
                                     value={newAlert.recommendation}
                                     onChange={(e) => handleAlertFieldChange('recommendation', e.target.value)}
                                     placeholder="What should operations do next?"
-                                    className="min-h-[96px] bg-[#1a1a1a] border-[#333] text-white"
+                                    className="min-h-[96px] bg-muted/40 border-border text-foreground"
                                 />
                             </div>
 
@@ -631,10 +593,10 @@ const OperationalAlertsPage = () => {
                             )}
                         </div>
 
-                        <SheetFooter className="gap-2 sm:justify-end">
+                         <SheetFooter className="gap-2 sm:justify-end">
                             <Button
                                 variant="outline"
-                                className="border-[#333] text-gray-300 bg-transparent"
+                                className="border-border text-muted-foreground bg-transparent"
                                 onClick={() => {
                                     setCreateSheetOpen(false);
                                     resetCreateForm();

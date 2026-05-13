@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
     ArrowLeft, Home, ShoppingCart, Clock, Package, ShieldCheck, 
     Search, Filter, ChartBar, Download, Eye, ArrowRightLeft,
     CheckCircle2, CreditCard, Banknote, MapPin, Store, MoreHorizontal,
-    TrendingUp, TrendingDown, Users, DollarSign
+    TrendingUp, TrendingDown, Users, DollarSign, FileText, Database,
+    ArrowUpRight, ArrowDownRight, Globe, History
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +26,10 @@ import { useToast } from '@/components/ui/use-toast';
 
 const AdminTransactionsPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const fromControlTower = queryParams.get('from') === 'control-tower';
+
     const { toast } = useToast();
     const [transactions, setTransactions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -88,191 +93,208 @@ const AdminTransactionsPage = () => {
 
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
-            <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border px-6 py-6 shadow-md transition-all">
+            <header className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg">
                 <div className="px-6 pt-3">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-600 cursor-pointer text-[11px] transition-colors">
-                                    <Home className="w-3 h-3" /> Home
+                                <BreadcrumbLink
+                                    onClick={() => navigate('/')}
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                >
+                                    <Home className="w-3 h-3" />
+                                    Home
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-border" />
+                            <BreadcrumbSeparator className="text-gray-600" />
+                            {fromControlTower && (
+                                <>
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink
+                                            onClick={() => navigate('/control-tower')}
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                        >
+                                            Control Tower
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="text-gray-600" />
+                                </>
+                            )}
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/control-tower')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-600 cursor-pointer text-[11px] transition-colors">
-                                    Control Tower
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-border" />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage className="text-blue-600 text-[11px] font-medium">Audit Transactions</BreadcrumbPage>
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
+                                    Store Transactions
+                                </BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
-                <div className="px-6 py-4 flex items-center justify-between">
-                    <div>
-                        <div className="flex items-center space-x-3">
-                            <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                            <h1 className="text-2xl font-bold text-foreground tracking-tight">Store Transaction Audit</h1>
-                            <Badge variant="outline" className="text-blue-600 border-blue-500/30 bg-blue-100 dark:bg-blue-900/10 text-[10px] h-5">
-                                Ledger v2.1
-                            </Badge>
+
+                <div className="px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-blue-500/10 rounded-lg">
+                            <ArrowRightLeft className="w-6 h-6 text-blue-500" />
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">Immutable record of high-velocity inventory movements & SKU reconciliations.</p>
+                        <div>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">Transaction Ledger</h1>
+                                <Badge variant="outline" className="text-[10px] font-bold bg-green-500/10 text-green-500 border-green-500/20 uppercase tracking-widest h-5">
+                                    Audit Ready
+                                </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Comprehensive real-time transaction logs across all active checkout lanes.</p>
+                        </div>
                     </div>
-                    <div className="flex gap-3">
-                        <Button variant="outline" className="text-xs h-9">
-                            <Download className="w-4 h-4 mr-2" /> Export CSV
-                        </Button>
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold h-9">
-                            Generate Report
-                        </Button>
-                    </div>
-                </div>
-            </div>
 
-            <main className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <Card className="bg-card border-border relative overflow-hidden group hover:border-blue-500/30 transition-colors">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Volume</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-black text-foreground tabular-nums tracking-tighter">{stats.total}</div>
-                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
-                                <Database className="w-3 h-3 mr-1" /> Ledger Entries
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-card border-border relative overflow-hidden group hover:border-green-500/30 transition-colors">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stock Inflow</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-black text-green-600 dark:text-green-500 tabular-nums tracking-tighter">{stats.inflow}</div>
-                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
-                                <ArrowUpRight className="w-3 h-3 mr-1" /> Re-stocking events
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-card border-border relative overflow-hidden group hover:border-red-500/30 transition-colors">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stock Outflow</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-black text-red-500 tabular-nums tracking-tighter">{stats.outflow}</div>
-                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
-                                <ArrowDownRight className="w-3 h-3 mr-1" /> Sales fulfillments
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-card border-border relative overflow-hidden group hover:border-purple-500/30 transition-colors">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Store Sync Purity</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-black text-blue-600 dark:text-blue-400 tabular-nums tracking-tighter">99.8%</div>
-                            <div className="text-[10px] text-muted-foreground mt-1 flex items-center">
-                                <Globe className="w-3 h-3 mr-1" /> Node consistency
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card border border-border p-4 rounded-xl">
-                    <div className="flex flex-1 gap-4 w-full md:w-auto">
-                        <div className="relative flex-1 max-w-sm">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input 
-                                placeholder="Search Transaction ID or Customer..." 
+                    <div className="flex items-center gap-3">
+                        <div className="relative w-64 group">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                            <Input
+                                placeholder="Search Txn ID or Customer..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10 bg-background border-border text-foreground h-10 w-full"
+                                className="pl-9 h-9 bg-muted border-border text-xs shadow-inner focus-visible:ring-blue-500"
                             />
                         </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Target Lane</label>
-                            <Select value={selectedLane} onValueChange={setSelectedLane}>
-                                <SelectTrigger className="h-10 w-[180px] bg-card border-border text-xs text-foreground font-medium hover:border-blue-500/50 transition-all">
-                                    <SelectValue placeholder="All Lanes" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-card border-border text-foreground">
-                                    <SelectItem value="all">Global Network</SelectItem>
-                                    <SelectItem value="Lane 01">Lane 01 (Express)</SelectItem>
-                                    <SelectItem value="Lane 02">Lane 02 (Express)</SelectItem>
-                                    <SelectItem value="Lane 03">Lane 03 (Express)</SelectItem>
-                                    <SelectItem value="Lane 04">Lane 04 (Regular)</SelectItem>
-                                    <SelectItem value="Lane 05">Lane 05 (Regular)</SelectItem>
-                                    <SelectItem value="Lane 06">Lane 06 (Regular)</SelectItem>
-                                    <SelectItem value="Lane 07">Lane 07 (Bulk)</SelectItem>
-                                    <SelectItem value="Lane 08">Lane 08 (Bulk)</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+
+                        <Select value={selectedLane} onValueChange={setSelectedLane}>
+                            <SelectTrigger className="w-[140px] h-9 bg-muted border-border text-xs shadow-inner">
+                                <SelectValue placeholder="All Lanes" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-card border-border">
+                                <SelectItem value="all">All Lanes</SelectItem>
+                                <SelectItem value="Lane 1">Lane 1</SelectItem>
+                                <SelectItem value="Lane 4">Lane 4</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Button variant="outline" size="sm" className="h-9 border-border text-muted-foreground hover:text-foreground bg-muted shadow-sm px-4">
+                            <Download className="w-3.5 h-3.5 mr-2 text-blue-500" /> <span className="text-[10px] font-bold uppercase tracking-widest">Audit Export</span>
+                        </Button>
                     </div>
                 </div>
+            </header>
 
-                <Card className="bg-card border-border overflow-hidden">
-                    <CardHeader className="pb-0 border-b border-border bg-muted/30 px-6 py-4">
+            <div className="p-6 w-full max-w-[1800px] mx-auto space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-all shadow-sm">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Revenue</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black text-foreground tabular-nums tracking-tighter">{formatPrice(stats.totalRevenue)}</div>
+                            <p className="text-[10px] text-green-500 font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                <TrendingUp className="w-3 h-3 mr-1" /> +12% VS YESTERDAY
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-all shadow-sm">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Avg Basket Size</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black text-foreground tabular-nums tracking-tighter">{formatPrice(stats.avgBasketSize)}</div>
+                            <p className="text-[10px] text-muted-foreground font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                PER UNIQUE TRANSACTION
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-all shadow-sm">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Active Velocity</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black text-blue-500 tabular-nums tracking-tighter">{stats.count} Txns</div>
+                            <p className="text-[10px] text-blue-400 font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                PROCESSED IN LAST 1HR
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-card border-border hover:border-blue-500/30 transition-all shadow-sm">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Busiest Lane</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black text-foreground uppercase tracking-tighter">{stats.busiestLane}</div>
+                            <p className="text-[10px] text-muted-foreground font-bold flex items-center mt-1 uppercase tracking-tighter">
+                                HIGHEST CONVERSION RATE
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <Card className="bg-card border-border shadow-md overflow-hidden">
+                    <CardHeader className="border-b border-border/50 bg-muted/10">
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-                                <History className="w-4 h-4 text-muted-foreground" /> Audit Log
-                            </CardTitle>
-                            <div className="text-[10px] text-muted-foreground">Showing {filteredTransactions.length} transactions</div>
+                            <div>
+                                <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em]">Transaction Ledger Feed</CardTitle>
+                                <CardDescription className="text-xs text-muted-foreground mt-1">Granular log of POS and Vision-Verified transactions.</CardDescription>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-blue-500/10 text-blue-500 border-blue-500/20 font-bold text-[9px] uppercase tracking-tighter">
+                                    {filteredTransactions.length} ENTRIES FOUND
+                                </Badge>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
-                            <TableHeader>
-                                <TableRow className="border-border bg-muted/20 hover:bg-transparent">
-                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4 pl-6">Timestamp</TableHead>
-                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4">Node (Store)</TableHead>
-                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4">Customer / ID</TableHead>
-                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4">Net Vol</TableHead>
-                                    <TableHead className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest py-4 text-right pr-6">Signature</TableHead>
+                            <TableHeader className="bg-muted/50">
+                                <TableRow className="border-border/50 hover:bg-transparent uppercase">
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest">Txn ID</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest">Customer</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest">Lane</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest">Timestamp</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest">Method</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest text-right">Amount</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold text-[9px] tracking-widest text-right">Status</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    <TableRow className="border-border">
-                                        <TableCell colSpan={5} className="h-64 text-center text-muted-foreground">
-                                            Decrypting and loading transaction logs...
+                                    <TableRow>
+                                        <TableCell colSpan={7} className="h-48 text-center">
+                                            <div className="flex flex-col items-center justify-center space-y-4">
+                                                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Querying Transaction DB...</p>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : filteredTransactions.length === 0 ? (
-                                    <TableRow className="border-border">
-                                        <TableCell colSpan={5} className="h-64 text-center text-muted-foreground">
-                                            No transactions matching the audit filters.
+                                    <TableRow>
+                                        <TableCell colSpan={7} className="h-48 text-center text-muted-foreground font-medium italic">
+                                            No transactions match the current filter criteria.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    filteredTransactions.map((tx, idx) => (
-                                        <TableRow key={tx.id || idx} className="border-border hover:bg-accent/40 group transition-all">
-                                            <TableCell className="py-5 pl-6">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[11px] font-bold text-foreground tabular-nums">{tx.timestamp}</span>
-                                                    <span className="text-[9px] text-muted-foreground font-mono mt-0.5">TX-{tx.id?.substring(0, 8)}</span>
+                                    filteredTransactions.map((txn) => (
+                                        <TableRow key={txn.id} className="border-border/50 hover:bg-muted/30 transition-colors group cursor-default">
+                                            <TableCell className="font-mono text-[11px] text-blue-500 font-bold">{txn.id}</TableCell>
+                                            <TableCell className="text-sm font-semibold tracking-tight text-foreground">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-7 h-7 rounded-full bg-muted border border-border flex items-center justify-center text-[10px] font-bold text-muted-foreground">
+                                                        {txn.customer?.[0]}
+                                                    </div>
+                                                    {txn.customer}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex items-center space-x-2">
-                                                    <MapPin className="w-3.5 h-3.5 text-blue-500" />
-                                                    <span className="text-xs font-bold text-foreground">{tx.lane}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-xs font-medium text-foreground">{tx.customer || 'Guest User'}</span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                                                    {formatPrice(tx.total || 0)}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-right pr-6">
-                                                <Badge variant="outline" className="text-[9px] font-bold border-none bg-muted/50 text-muted-foreground uppercase">
-                                                    Verified
+                                                <Badge variant="outline" className="bg-card text-muted-foreground border-border text-[9px] font-bold uppercase tracking-tighter">
+                                                    {txn.lane}
                                                 </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-[10px] text-muted-foreground font-medium uppercase">{txn.timestamp}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2 text-muted-foreground">
+                                                    {txn.paymentMethod === 'Credit Card' ? <CreditCard className="w-3.5 h-3.5 text-blue-400" /> : <Banknote className="w-3.5 h-3.5 text-green-400" />}
+                                                    <span className="text-[10px] font-bold uppercase tracking-tighter">{txn.paymentMethod}</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right text-sm font-black text-foreground tabular-nums tracking-tighter">{formatPrice(txn.total)}</TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex items-center justify-end gap-1.5">
+                                                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                                                    <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">Completed</span>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -281,9 +303,9 @@ const AdminTransactionsPage = () => {
                         </Table>
                     </CardContent>
                 </Card>
-            </main>
+            </div>
         </div>
     );
 };
 
-export default AdminTransactionsPage;
+
