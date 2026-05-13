@@ -132,10 +132,10 @@ const ModelHealthPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20 font-sans w-full flex flex-col">
+        <div className="min-h-screen bg-background text-foreground pb-20 font-sans w-full flex flex-col">
 
             {/* 1. HEADER & SUMMARY */}
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
+            <header className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg">
                 {/* Breadcrumb Section */}
                 <div className="px-6 pt-3">
                     <Breadcrumb>
@@ -143,7 +143,7 @@ const ModelHealthPage = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     onClick={() => navigate('/')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     Home
@@ -155,7 +155,7 @@ const ModelHealthPage = () => {
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
@@ -178,10 +178,10 @@ const ModelHealthPage = () => {
                             <ShieldCheck className="w-6 h-6 text-purple-500" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                            <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
                                 Model Health & Drift
                             </h1>
-                            <div className="text-xs text-gray-500 font-mono flex items-center gap-3 mt-1">
+                            <div className="text-xs text-muted-foreground font-mono flex items-center gap-3 mt-1">
                                 <span className="flex items-center"><Brain className="w-3 h-3 mr-1" /> AI Reliability Layer</span>
                                 <span>•</span>
                                 <span className="flex items-center"><Activity className="w-3 h-3 mr-1" /> Monitoring Active</span>
@@ -191,7 +191,7 @@ const ModelHealthPage = () => {
 
                     <div className="flex items-center gap-3">
                         <Select defaultValue="all" onValueChange={setModelType}>
-                            <SelectTrigger className="w-[180px] h-9 bg-[#1a1a1a] border-[#333] text-sm">
+                            <SelectTrigger className="w-[180px] h-9 bg-muted border-border text-sm">
                                 <SelectValue placeholder="Model Scope" />
                             </SelectTrigger>
                             <SelectContent>
@@ -201,7 +201,7 @@ const ModelHealthPage = () => {
                             </SelectContent>
                         </Select>
 
-                        <Button variant="outline" size="sm" className="h-9 border-[#333] text-gray-400 hover:text-white bg-[#1a1a1a]">
+                        <Button variant="outline" size="sm" className="h-9 border-border text-muted-foreground hover:text-foreground bg-muted">
                             <Download className="w-4 h-4 mr-2" /> Report
                         </Button>
                     </div>
@@ -212,9 +212,9 @@ const ModelHealthPage = () => {
 
                 {/* 2. HEALTH SCORECARDS */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Overall Reliability Score</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Overall Reliability Score</CardTitle>
                         </CardHeader>
                         <CardContent className="flex items-center justify-between">
                             <div>
@@ -231,38 +231,38 @@ const ModelHealthPage = () => {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Drift Alerts</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Drift Alerts</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className={`text-2xl font-bold ${driftData.length > 0 ? 'text-red-500' : 'text-green-500'} flex items-center gap-2`}>
                                 {driftData.length > 0 ? <AlertOctagon className="w-5 h-5" /> : <ShieldCheck className="w-5 h-5" />}
                                 {driftData.length > 0 ? 'Critical' : 'Stable'}
                             </div>
-                            <p className="text-xs text-gray-400 mt-1">{driftData.length} features showing drift</p>
+                            <p className="text-xs text-muted-foreground mt-1">{driftData.length} features showing drift</p>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Accuracy Status</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Accuracy Status</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-blue-500 flex items-center gap-2">
                                 <Activity className="w-5 h-5" /> Federated
                             </div>
-                            <p className="text-xs text-gray-400 mt-1">Global aggregation active</p>
+                            <p className="text-xs text-muted-foreground mt-1">Global aggregation active</p>
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-medium text-gray-500 uppercase">Model Version</CardTitle>
+                            <CardTitle className="text-xs font-medium text-muted-foreground uppercase">Model Version</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-white font-mono">{currentModel?.model_version || 'v2.0'}</div>
-                            <p className="text-xs text-gray-400 mt-1">Depl: {currentModel?.deployment_date}</p>
+                            <div className="text-2xl font-bold text-foreground font-mono">{currentModel?.model_version || 'v2.0'}</div>
+                            <p className="text-xs text-muted-foreground mt-1">Depl: {currentModel?.deployment_date}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -270,14 +270,14 @@ const ModelHealthPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* 3. PERFORMANCE TRENDS (2/3 Width) */}
-                    <Card className="lg:col-span-2 bg-[#111] border-[#333]">
+                    <Card className="lg:col-span-2 bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white">Accuracy Stability (Federated Consensus)</CardTitle>
-                            <CardDescription className="text-gray-500">Tracking global model accuracy targets (Phase 4 Goal: WMAPE &lt; 12%).</CardDescription>
+                            <CardTitle className="text-lg font-bold text-foreground">Accuracy Stability (Federated Consensus)</CardTitle>
+                            <CardDescription className="text-muted-foreground">Tracking global model accuracy targets (Phase 4 Goal: WMAPE &lt; 12%).</CardDescription>
                         </CardHeader>
                         <CardContent className="h-[350px]">
                             {loading ? (
-                                <div className="h-full flex items-center justify-center text-gray-500">Loading metrics...</div>
+                                <div className="h-full flex items-center justify-center text-muted-foreground">Loading metrics...</div>
                             ) : (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={accuracyData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -296,35 +296,35 @@ const ModelHealthPage = () => {
                     </Card>
 
                     {/* 4. ALERTS & ACTIONS (1/3 Width) */}
-                    <Card className="bg-[#111] border-[#333] flex flex-col">
+                    <Card className="bg-card border-border flex flex-col">
                         <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white flex items-center">
+                            <CardTitle className="text-lg font-bold text-foreground flex items-center">
                                 <AlertTriangle className="w-5 h-5 mr-2 text-yellow-500" /> Drift Notifications
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="flex-1 space-y-4">
                             {driftData.slice(0, 3).map((alert, i) => (
-                                <div key={i} className="p-3 rounded-lg bg-[#1a1a1a] border border-[#222] hover:border-gray-700 transition-colors">
+                                <div key={i} className="p-3 rounded-lg bg-muted border border-border hover:border-gray-700 transition-colors">
                                     <div className="flex justify-between items-start mb-1">
                                         <Badge variant="outline" className="text-red-400 border-red-900 bg-red-900/10">
                                             Drift Detected
                                         </Badge>
-                                        <span className="text-xs text-gray-500">{new Date(alert.detected_at).toLocaleTimeString()}</span>
+                                        <span className="text-xs text-muted-foreground">{new Date(alert.detected_at).toLocaleTimeString()}</span>
                                     </div>
-                                    <p className="text-sm text-gray-300 leading-snug">
+                                    <p className="text-sm text-muted-foreground leading-snug">
                                         Feature <strong>{alert.feature_name}</strong> at <strong>{alert.stores?.store_name}</strong> showing severity {alert.severity_score}.
                                     </p>
                                 </div>
                             ))}
-                            {driftData.length === 0 && <p className="text-xs text-gray-500 italic">No active drift detections.</p>}
+                            {driftData.length === 0 && <p className="text-xs text-muted-foreground italic">No active drift detections.</p>}
 
-                            <Separator className="bg-[#222] my-4" />
+                            <Separator className="bg-border my-4" />
                             <div className="space-y-2">
-                                <h4 className="text-xs font-bold text-gray-500 uppercase">Governance Actions</h4>
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white justify-start">
+                                <h4 className="text-xs font-bold text-muted-foreground uppercase">Governance Actions</h4>
+                                <Button className="w-full bg-purple-600 hover:bg-purple-700 text-foreground justify-start">
                                     <RefreshCcw className="w-4 h-4 mr-2" /> Global Synchronization
                                 </Button>
-                                <Button variant="outline" className="w-full border-[#333] text-gray-300 hover:text-white justify-start bg-[#1a1a1a]">
+                                <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground justify-start bg-muted">
                                     <Microscope className="w-4 h-4 mr-2" /> Inspect Edge Nodes
                                 </Button>
                             </div>
@@ -332,19 +332,19 @@ const ModelHealthPage = () => {
                     </Card>
 
                     {/* 5. DRIFT METRICS & FEATURE IMPORTANCE */}
-                    <Card className="lg:col-span-2 bg-[#111] border-[#333]">
+                    <Card className="lg:col-span-2 bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white">Edge Node Drift Monitoring</CardTitle>
-                            <CardDescription className="text-gray-500">Visualizing input feature stability across synchronized edge nodes.</CardDescription>
+                            <CardTitle className="text-lg font-bold text-foreground">Edge Node Drift Monitoring</CardTitle>
+                            <CardDescription className="text-muted-foreground">Visualizing input feature stability across synchronized edge nodes.</CardDescription>
                         </CardHeader>
                         <CardContent className="h-[300px] flex items-center justify-center p-0">
                             <Table>
-                                <TableHeader className="bg-[#1a1a1a]">
+                                <TableHeader className="bg-muted">
                                     <TableRow className="border-none">
-                                        <TableHead className="text-gray-400">Node/Store</TableHead>
-                                        <TableHead className="text-gray-400">Feature</TableHead>
-                                        <TableHead className="text-gray-400 text-right">Severity</TableHead>
-                                        <TableHead className="text-gray-400 text-right">Detection Time</TableHead>
+                                        <TableHead className="text-muted-foreground">Node/Store</TableHead>
+                                        <TableHead className="text-muted-foreground">Feature</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Severity</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Detection Time</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -353,15 +353,15 @@ const ModelHealthPage = () => {
                                             <TableCell colSpan={4} className="text-center py-20 text-gray-600 italic">No active data drift detected in edge nodes.</TableCell>
                                         </TableRow>
                                     ) : driftData.map((d, i) => (
-                                        <TableRow key={i} className="border-b border-[#222] hover:bg-[#151515]">
-                                            <TableCell className="text-white text-xs">{d.stores?.store_name}</TableCell>
-                                            <TableCell className="text-gray-400 text-xs">{d.feature_name}</TableCell>
+                                        <TableRow key={i} className="border-b border-border hover:bg-muted/50">
+                                            <TableCell className="text-foreground text-xs">{d.stores?.store_name}</TableCell>
+                                            <TableCell className="text-muted-foreground text-xs">{d.feature_name}</TableCell>
                                             <TableCell className="text-right">
                                                 <Badge variant="outline" className={`text-xs ${parseFloat(d.severity_score) > 0.5 ? 'border-red-900 text-red-400' : 'border-green-900 text-green-400'}`}>
                                                     {d.severity_score}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-right text-gray-500 text-xs">
+                                            <TableCell className="text-right text-muted-foreground text-xs">
                                                 {new Date(d.detected_at).toLocaleString()}
                                             </TableCell>
                                         </TableRow>
@@ -371,24 +371,24 @@ const ModelHealthPage = () => {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-[#111] border-[#333]">
+                    <Card className="bg-card border-border">
                         <CardHeader>
-                            <CardTitle className="text-lg font-bold text-white">Global Feature Importance</CardTitle>
-                            <CardDescription className="text-gray-500">Consensus signal weights.</CardDescription>
+                            <CardTitle className="text-lg font-bold text-foreground">Global Feature Importance</CardTitle>
+                            <CardDescription className="text-muted-foreground">Consensus signal weights.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
-                                <TableHeader className="bg-[#1a1a1a]">
+                                <TableHeader className="bg-muted">
                                     <TableRow className="border-none hover:bg-transparent">
-                                        <TableHead className="text-gray-400">Feature</TableHead>
-                                        <TableHead className="text-gray-400 text-right">Weight</TableHead>
-                                        <TableHead className="text-gray-400 text-right">Delta</TableHead>
+                                        <TableHead className="text-muted-foreground">Feature</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Weight</TableHead>
+                                        <TableHead className="text-muted-foreground text-right">Delta</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {importanceData.map((feat, i) => (
-                                        <TableRow key={i} className="border-b border-[#222] hover:bg-[#1a1a1a] transition-colors">
-                                            <TableCell className="font-medium text-gray-300 text-xs">{feat.feature_name}</TableCell>
+                                        <TableRow key={i} className="border-b border-border hover:bg-muted transition-colors">
+                                            <TableCell className="font-medium text-muted-foreground text-xs">{feat.feature_name}</TableCell>
                                             <TableCell className="text-right text-blue-400 font-mono text-xs">{(parseFloat(feat.current_importance) * 100).toFixed(1)}%</TableCell>
                                             <TableCell className={`text-right font-mono text-xs ${feat.delta_value > 0 ? 'text-green-400' : 'text-red-400'}`}>
                                                 {feat.delta_value > 0 ? '+' : ''}{(feat.delta_value * 100).toFixed(1)}%
@@ -407,3 +407,6 @@ const ModelHealthPage = () => {
 };
 
 export default ModelHealthPage;
+
+
+

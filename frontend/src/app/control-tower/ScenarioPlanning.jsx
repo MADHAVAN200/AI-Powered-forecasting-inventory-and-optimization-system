@@ -237,19 +237,19 @@ const ScenarioPlanningPage = () => {
     return (
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header */}
-            <div className="bg-card border-b border-border px-6 py-4 sticky top-0 z-40 backdrop-blur-md bg-card/90">
+            <div className="bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-4 sticky top-0 z-40">
                 <div className="mb-2">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate('/')} className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px]">
+                                <BreadcrumbLink onClick={() => navigate('/')} className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px]">
                                     <Home className="w-3 h-3" /> Home
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="text-gray-600" />
                             {fromControlTower && (
                                 <><BreadcrumbItem>
-                                    <BreadcrumbLink onClick={() => navigate('/control-tower')} className="text-gray-500 hover:text-blue-400 cursor-pointer text-[11px]">
+                                    <BreadcrumbLink onClick={() => navigate('/control-tower')} className="text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px]">
                                         Control Tower
                                     </BreadcrumbLink>
                                 </BreadcrumbItem><BreadcrumbSeparator className="text-gray-600" /></>
@@ -275,7 +275,7 @@ const ScenarioPlanningPage = () => {
                         <Button variant="outline" className="h-9 border-border text-muted-foreground hover:text-foreground" onClick={resetToBaseline}>
                             <RefreshCw className="w-4 h-4 mr-2" /> Reset
                         </Button>
-                        <Button className="h-9 bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20" onClick={handleSaveScenario}>
+                        <Button className="h-9 bg-blue-600 hover:bg-blue-500 text-foreground shadow-lg shadow-blue-500/20" onClick={handleSaveScenario}>
                             <Save className="w-4 h-4 mr-2" /> Commit Plan
                         </Button>
                     </div>
@@ -349,7 +349,7 @@ const ScenarioPlanningPage = () => {
                         </div>
                         <div className="pt-6">
                             <Button 
-                                className="bg-blue-600 hover:bg-blue-500 text-white font-bold h-10 px-6 shadow-lg shadow-blue-900/40" 
+                                className="bg-blue-600 hover:bg-blue-500 text-foreground font-bold h-10 px-6 shadow-lg shadow-blue-900/40" 
                                 onClick={runNewSimulation}
                                 disabled={simulating}
                             >
@@ -365,7 +365,7 @@ const ScenarioPlanningPage = () => {
                     <div className="flex items-center gap-3 pr-6 border-r border-blue-500/20">
                         <Activity className="w-5 h-5 text-blue-500" />
                         <div>
-                            <p className="text-[10px] text-gray-500 uppercase font-bold">Summary Insights</p>
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold">Summary Insights</p>
                             <p className="text-xs text-blue-400 font-medium">Scenario Impact Breakdown</p>
                         </div>
                     </div>
@@ -388,14 +388,14 @@ const ScenarioPlanningPage = () => {
                     {selectedEvent && (
                         <div className="ml-auto flex items-center gap-3 bg-purple-500/10 px-4 py-2 rounded-lg border border-purple-500/20">
                             <Info className="w-4 h-4 text-purple-400" />
-                            <span className="text-xs text-purple-400 font-bold">{selectedEvent.event_name} <span className="text-[10px] text-gray-500 ml-2 font-normal">Active Scenario</span></span>
+                            <span className="text-xs text-purple-400 font-bold">{selectedEvent.event_name} <span className="text-[10px] text-muted-foreground ml-2 font-normal">Active Scenario</span></span>
                         </div>
                     )}
                 </div>
             </div>
 
             {/* Results Output Area (Full Width) */}
-            <main className="p-6 space-y-6 min-w-0 bg-[#070707]">
+            <main className="p-6 space-y-6 min-w-0 bg-background">
                 
                 {/* TOP ROW: Large Comparison Chart */}
                 <Card className="bg-card border-border overflow-hidden">
@@ -597,3 +597,5 @@ const ScenarioPlanningPage = () => {
 };
 
 export default ScenarioPlanningPage;
+
+

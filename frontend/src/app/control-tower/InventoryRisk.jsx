@@ -233,37 +233,37 @@ const InventoryRiskPage = () => {
 
     return (
         <div className="min-h-screen bg-background text-foreground pb-20 font-sans">
-            {/* 1. HEADER & GLOBAL FILTERS */}
-            <div className="sticky top-0 z-30 bg-card border-b border-border shadow-md">
-                {/* Breadcrumb Section */}
-                <div className="px-6 pt-3">
+            {/* Header & Filters */}
+            <div className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border px-6 py-3 shadow-md">
+                {/* Breadcrumb */}
+                <div className="mb-2">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
                                 <BreadcrumbLink
-                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/dashboard')}
-                                    className="flex items-center gap-1 text-muted-foreground hover:text-primary cursor-pointer text-[11px] transition-colors"
+                                    onClick={() => navigate(role === 'vendor' ? '/vendor' : '/')}
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     {role === 'vendor' ? 'Vendor Portal' : 'Home'}
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="text-border" />
+                            <BreadcrumbSeparator className="text-gray-600" />
                             {fromControlTower && role !== 'vendor' && (
                                 <>
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-muted-foreground hover:text-primary cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
                                     </BreadcrumbItem>
-                                    <BreadcrumbSeparator className="text-border" />
+                                    <BreadcrumbSeparator className="text-gray-600" />
                                 </>
                             )}
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="text-blue-600 dark:text-blue-400 text-[11px] font-medium">
+                                <BreadcrumbPage className="text-blue-400 text-[11px] font-medium">
                                     Inventory Risk
                                 </BreadcrumbPage>
                             </BreadcrumbItem>
@@ -271,52 +271,66 @@ const InventoryRiskPage = () => {
                     </Breadcrumb>
                 </div>
 
-                <div className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center space-x-3">
-                        <ShieldAlert className="w-6 h-6 text-red-500" />
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div className="flex items-center space-x-4">
+                        <div className="p-2 bg-red-500/10 rounded-lg">
+                            <ShieldAlert className="w-6 h-6 text-red-500" />
+                        </div>
                         <div>
-                            <h1 className="text-xl font-bold text-foreground tracking-tight">Inventory Risk Dashboard</h1>
-                            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">Execution Mode • AI Verified</p>
+                            <div className="flex items-center space-x-3">
+                                <h1 className="text-xl font-bold text-foreground">Inventory Risk Dashboard</h1>
+                                <Badge variant="outline" className="text-red-500 border-red-500/30 bg-red-100 dark:bg-red-900/10 text-[10px] h-5">
+                                    AI Verified
+                                </Badge>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-card border border-border text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                                    Live Analysis
+                                </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Real-time predictive analysis of stockout and spoilage risk vectors.</p>
                         </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className={`w-[150px] h-9 justify-start text-left font-normal bg-card border-border text-foreground text-xs hover:bg-accent ${!selectedDate ? "text-muted-foreground" : ""}`}
-                                >
-                                    <CalendarIcon className="mr-2 h-3.5 w-3.5" />
-                                    {selectedDate ? format(new Date(selectedDate), "PPP") : <span>All Dates</span>}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={selectedDate ? new Date(selectedDate + "T12:00:00") : undefined}
-                                    onSelect={(date) => {
-                                        setSelectedDate(date ? format(date, "yyyy-MM-dd") : "");
-                                    }}
-                                    initialFocus
-                                    className="bg-card text-foreground"
-                                />
-                            </PopoverContent>
-                        </Popover>
 
-                        <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                            <SelectTrigger className="w-[140px] h-9 bg-card border-border text-foreground text-xs text-left">
-                                <SelectValue placeholder="Region" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-card border-border text-foreground max-h-[300px]">
-                                {locations.map(loc => (
-                                    <SelectItem key={loc.city_id} value={loc.city_id}>{loc.city_name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex flex-col space-y-1">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Region Focus</label>
+                            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                                <SelectTrigger className="h-9 w-[160px] bg-card border-border text-sm text-foreground hover:border-red-500/50 transition-colors">
+                                    <SelectValue placeholder="Region" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-card border-border text-foreground">
+                                    {locations.map(loc => (
+                                        <SelectItem key={loc.city_id} value={loc.city_id}>{loc.city_name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                        <ToggleGroup type="single" value={riskFilter} onValueChange={(val) => val && setRiskFilter(val)} className="bg-card border border-border rounded-md p-0.5 ml-2">
-                            <ToggleGroupItem value="all" className="h-8 px-3 text-xs text-muted-foreground data-[state=on]:bg-accent data-[state=on]:text-foreground uppercase font-bold tracking-tighter">Live</ToggleGroupItem>
-                        </ToggleGroup>
+                        <div className="flex flex-col space-y-1">
+                            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Target Date</label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className={`w-[160px] h-9 justify-start text-left font-normal bg-card border-border text-foreground text-xs hover:border-red-500/50 transition-colors ${!selectedDate ? "text-muted-foreground" : ""}`}
+                                    >
+                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                                        {selectedDate ? format(new Date(selectedDate), "PPP") : <span>All Historical</span>}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0 bg-card border-border text-foreground" align="end">
+                                    <Calendar
+                                        mode="single"
+                                        selected={selectedDate ? new Date(selectedDate + "T12:00:00") : undefined}
+                                        onSelect={(date) => {
+                                            setSelectedDate(date ? format(date, "yyyy-MM-dd") : "");
+                                        }}
+                                        initialFocus
+                                        className="bg-card text-foreground"
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -490,7 +504,7 @@ const InventoryRiskPage = () => {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Badge variant="outline" className={`border-${getRiskColor(row.risk).replace('#', '')}/30 text-white text-[10px] h-5 bg-${getRiskColor(row.risk).replace('#', '')}/5`}>
+                                                        <Badge variant="outline" className={`border-${getRiskColor(row.risk).replace('#', '')}/30 text-foreground text-[10px] h-5 bg-${getRiskColor(row.risk).replace('#', '')}/5`}>
                                                             {row.risk}
                                                         </Badge>
                                                     </TableCell>
@@ -535,3 +549,5 @@ const InventoryRiskPage = () => {
 };
 
 export default InventoryRiskPage;
+
+

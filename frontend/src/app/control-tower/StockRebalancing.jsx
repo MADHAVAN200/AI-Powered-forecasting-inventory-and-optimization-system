@@ -135,10 +135,10 @@ const StockRebalancingPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-foreground pb-20 font-sans w-full flex flex-col">
+        <div className="min-h-screen bg-background text-foreground pb-20 font-sans w-full flex flex-col">
 
             {/* 1. HEADER & CONTROLS */}
-            <header className="sticky top-0 z-30 bg-[#111] border-b border-[#222] shadow-lg">
+            <header className="sticky top-0 z-30 bg-sidebar/95 backdrop-blur-md border-b border-sidebar-border shadow-lg">
                 {/* Breadcrumb Section */}
                 <div className="px-6 pt-3">
                     <Breadcrumb>
@@ -146,7 +146,7 @@ const StockRebalancingPage = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     onClick={() => navigate('/')}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                    className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                 >
                                     <Home className="w-3 h-3" />
                                     Home
@@ -158,7 +158,7 @@ const StockRebalancingPage = () => {
                                     <BreadcrumbItem>
                                         <BreadcrumbLink
                                             onClick={() => navigate('/control-tower')}
-                                            className="flex items-center gap-1 text-gray-500 hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
+                                            className="flex items-center gap-1 text-muted-foreground hover:text-blue-400 cursor-pointer text-[11px] transition-colors"
                                         >
                                             Control Tower
                                         </BreadcrumbLink>
@@ -182,10 +182,10 @@ const StockRebalancingPage = () => {
                                 <ArrowRightLeft className="w-6 h-6 text-blue-500" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                                <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
                                     Inter-Store Stock Rebalancing
                                 </h1>
-                                <div className="text-sm text-gray-300 font-mono flex items-center gap-3 mt-1">
+                                <div className="text-sm text-muted-foreground font-mono flex items-center gap-3 mt-1">
                                     <span className="flex items-center"><MapPin className="w-3 h-3 mr-1" /> Region: North East</span>
                                     <span>•</span>
                                     <span className="flex items-center text-blue-300"><Clock className="w-3 h-3 mr-1" /> Horizon: Next 7 Days</span>
@@ -194,9 +194,9 @@ const StockRebalancingPage = () => {
                         </div>
 
                         <div className="flex items-center space-x-3">
-                            <div className="bg-[#1a1a1a] rounded-md px-3 py-1.5 flex items-center border border-[#333]">
+                            <div className="bg-muted rounded-md px-3 py-1.5 flex items-center border border-border">
                                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span>
-                                <span className="text-xs text-gray-300 font-medium">Inventory Data: Live</span>
+                                <span className="text-xs text-muted-foreground font-medium">Inventory Data: Live</span>
                             </div>
                         </div>
                     </div>
@@ -204,7 +204,7 @@ const StockRebalancingPage = () => {
                     {/* Filters */}
                     <div className="flex flex-wrap items-center gap-3">
                         <Select defaultValue="store402">
-                            <SelectTrigger className="w-[180px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
+                            <SelectTrigger className="w-[180px] h-9 bg-muted border-border text-sm text-foreground">
                                 <SelectValue placeholder="Source Store" />
                             </SelectTrigger>
                             <SelectContent>
@@ -214,7 +214,7 @@ const StockRebalancingPage = () => {
                             </SelectContent>
                         </Select>
                         <Select defaultValue="all">
-                            <SelectTrigger className="w-[140px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
+                            <SelectTrigger className="w-[140px] h-9 bg-muted border-border text-sm text-foreground">
                                 <SelectValue placeholder="Category" />
                             </SelectTrigger>
                             <SelectContent>
@@ -225,7 +225,7 @@ const StockRebalancingPage = () => {
                             </SelectContent>
                         </Select>
                         <Select defaultValue="demand">
-                            <SelectTrigger className="w-[160px] h-9 bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
+                            <SelectTrigger className="w-[160px] h-9 bg-muted border-border text-sm text-foreground">
                                 <SelectValue placeholder="Optimization Goal" />
                             </SelectTrigger>
                             <SelectContent>
@@ -242,42 +242,42 @@ const StockRebalancingPage = () => {
 
                 {/* 2. SOURCE STORE RISK SUMMARY */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Excess Stock Units</CardTitle>
+                            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Excess Stock Units</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-white">2,450</div>
+                            <div className="text-3xl font-bold text-foreground">2,450</div>
                             <p className="text-xs text-red-400 mt-1 font-medium flex items-center">
                                 across 15 SKUs
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Spoilage Risk</CardTitle>
+                            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Spoilage Risk</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-3xl font-bold text-orange-500">High</div>
-                            <p className="text-xs text-gray-300 mt-1 flex items-center font-medium">
+                            <p className="text-xs text-muted-foreground mt-1 flex items-center font-medium">
                                 $1.2k potential loss (48h)
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Low Demand Confidence</CardTitle>
+                            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Low Demand Confidence</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-white">42%</div>
-                            <p className="text-xs text-gray-300 mt-1 flex items-center font-medium">
+                            <div className="text-3xl font-bold text-foreground">42%</div>
+                            <p className="text-xs text-muted-foreground mt-1 flex items-center font-medium">
                                 of items have declining forecast
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-[#111] border-[#333] md:col-span-1">
+                    <Card className="bg-card border-border md:col-span-1">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-bold text-gray-300 uppercase tracking-wider">Insight</CardTitle>
+                            <CardTitle className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Insight</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-blue-300 leading-relaxed">
@@ -288,26 +288,26 @@ const StockRebalancingPage = () => {
                 </div>
 
                 {/* 3. RECOMMENDATIONS TABLE */}
-                <Card className="bg-[#111] border-[#333]">
-                    <CardHeader className="border-b border-[#222] py-4 bg-[#141414]">
-                        <CardTitle className="text-lg font-bold text-white flex items-center">
+                <Card className="bg-card border-border">
+                    <CardHeader className="border-b border-border py-4 bg-muted">
+                        <CardTitle className="text-lg font-bold text-foreground flex items-center">
                             <ShieldCheck className="w-5 h-5 mr-2 text-green-500" />
                             AI Transfer Recommendations
                         </CardTitle>
-                        <CardDescription className="text-gray-400">Ranked by highest net inventory risk reduction</CardDescription>
+                        <CardDescription className="text-muted-foreground">Ranked by highest net inventory risk reduction</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
                         <Table>
-                            <TableHeader className="bg-[#1a1a1a]">
+                            <TableHeader className="bg-muted">
                                 <TableRow className="border-none hover:bg-transparent">
-                                    <TableHead className="text-gray-400 font-bold">Product / SKU</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Source</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Destination</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Transfer Qty</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Demand Gap (Dest)</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Risk Reduction</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Confidence</TableHead>
-                                    <TableHead className="text-gray-400 font-bold">Logistics</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Product / SKU</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Source</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Destination</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Transfer Qty</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Demand Gap (Dest)</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Risk Reduction</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Confidence</TableHead>
+                                    <TableHead className="text-muted-foreground font-bold">Logistics</TableHead>
                                     <TableHead className="w-[50px]"></TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -315,19 +315,19 @@ const StockRebalancingPage = () => {
                                 {TRANSFER_RECOMMENDATIONS.map((rec) => (
                                     <React.Fragment key={rec.id}>
                                         <TableRow
-                                            className={`border-b border-[#222] hover:bg-[#1a1a1a] transition-colors cursor-pointer group ${rec.id === selectedTransfer?.id ? 'bg-[#1a1a1a] border-blue-900/50' : ''}`}
+                                            className={`border-b border-border hover:bg-muted transition-colors cursor-pointer group ${rec.id === selectedTransfer?.id ? 'bg-muted border-blue-900/50' : ''}`}
                                             onClick={() => setSelectedTransfer(selectedTransfer?.id === rec.id ? null : rec)}
                                         >
                                             <TableCell>
-                                                <div className="font-medium text-white">{rec.marketingName}</div>
-                                                <div className="text-xs text-gray-400">{rec.skuId}</div>
+                                                <div className="font-medium text-foreground">{rec.marketingName}</div>
+                                                <div className="text-xs text-muted-foreground">{rec.skuId}</div>
                                             </TableCell>
-                                            <TableCell className="text-gray-300 text-sm">{rec.sourceStore}</TableCell>
+                                            <TableCell className="text-muted-foreground text-sm">{rec.sourceStore}</TableCell>
                                             <TableCell className="text-blue-300 font-medium text-sm flex items-center">
                                                 {rec.destStore} <ArrowRight className="w-3 h-3 ml-1" />
                                             </TableCell>
                                             <TableCell>
-                                                <Badge variant="outline" className="bg-[#222] text-white border-[#444]">
+                                                <Badge variant="outline" className="bg-border text-foreground border-border">
                                                     {rec.qty} {rec.unit}
                                                 </Badge>
                                             </TableCell>
@@ -342,13 +342,13 @@ const StockRebalancingPage = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
-                                                    <Progress value={rec.confidence} className="w-16 h-1.5 bg-[#222]" />
-                                                    <span className="text-xs text-gray-300">{rec.confidence}%</span>
+                                                    <Progress value={rec.confidence} className="w-16 h-1.5 bg-border" />
+                                                    <span className="text-xs text-muted-foreground">{rec.confidence}%</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center text-xs text-gray-300">
+                                                    <div className="flex items-center text-xs text-muted-foreground">
                                                         <Truck className="w-3 h-3 mr-1" /> {rec.time}
                                                     </div>
                                                     {rec.feasibility === 'Risky' && (
@@ -357,51 +357,51 @@ const StockRebalancingPage = () => {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${selectedTransfer?.id === rec.id ? 'rotate-180' : ''}`} />
+                                                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${selectedTransfer?.id === rec.id ? 'rotate-180' : ''}`} />
                                             </TableCell>
                                         </TableRow>
 
                                         {/* EXPANDED SIMULATION VIEW */}
                                         {selectedTransfer?.id === rec.id && (
-                                            <TableRow className="bg-[#141414] hover:bg-[#141414] border-b border-[#222]">
+                                            <TableRow className="bg-muted hover:bg-muted border-b border-border">
                                                 <TableCell colSpan={9} className="p-6">
                                                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                                                         {/* Simulation: Before/After */}
                                                         <div className="col-span-2 space-y-4">
-                                                            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center">
+                                                            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center">
                                                                 <BarChart3 className="w-4 h-4 mr-2 text-blue-500" /> Transfer Impact Simulation
                                                             </h3>
 
                                                             <div className="grid grid-cols-2 gap-4">
-                                                                <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
+                                                                <div className="bg-background border border-border rounded-lg p-4 relative overflow-hidden">
                                                                     <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-                                                                    <h4 className="text-gray-300 text-xs uppercase mb-2">Source: {rec.sourceStore}</h4>
+                                                                    <h4 className="text-muted-foreground text-xs uppercase mb-2">Source: {rec.sourceStore}</h4>
                                                                     <div className="flex justify-between items-end">
-                                                                        <div className="text-gray-400 line-through text-sm">Overstocked</div>
-                                                                        <ArrowRight className="w-4 h-4 text-gray-500" />
+                                                                        <div className="text-muted-foreground line-through text-sm">Overstocked</div>
+                                                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
                                                                         <div className="text-green-400 font-bold">Optimal</div>
                                                                     </div>
-                                                                    <div className="mt-2 text-xs text-gray-400">
+                                                                    <div className="mt-2 text-xs text-muted-foreground">
                                                                         Current: <span className="text-red-400 font-medium">Excess (+{rec.sourceMetrics.overstock})</span>
                                                                     </div>
-                                                                    <div className="mt-1 text-xs text-gray-400">
+                                                                    <div className="mt-1 text-xs text-muted-foreground">
                                                                         Post-Transfer: <span className="text-green-500 font-medium">Balanced</span>
                                                                     </div>
                                                                 </div>
 
-                                                                <div className="bg-[#0f0f0f] border border-[#222] rounded-lg p-4 relative overflow-hidden">
+                                                                <div className="bg-background border border-border rounded-lg p-4 relative overflow-hidden">
                                                                     <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
-                                                                    <h4 className="text-gray-300 text-xs uppercase mb-2">Destination: {rec.destStore}</h4>
+                                                                    <h4 className="text-muted-foreground text-xs uppercase mb-2">Destination: {rec.destStore}</h4>
                                                                     <div className="flex justify-between items-end">
                                                                         <div className="text-red-500 text-sm">Stockout Risk</div>
-                                                                        <ArrowRight className="w-4 h-4 text-gray-500" />
+                                                                        <ArrowRight className="w-4 h-4 text-muted-foreground" />
                                                                         <div className="text-green-400 font-bold">Covered</div>
                                                                     </div>
-                                                                    <div className="mt-2 text-xs text-gray-400">
+                                                                    <div className="mt-2 text-xs text-muted-foreground">
                                                                         Demand Forecast: <span className="text-blue-400 font-medium">{rec.destMetrics.forecast}</span>
                                                                     </div>
-                                                                    <div className="mt-1 text-xs text-gray-400">
+                                                                    <div className="mt-1 text-xs text-muted-foreground">
                                                                         Impact: <span className="text-green-500 font-medium">Prevents {rec.destMetrics.stockoutRisk} Stockout</span>
                                                                     </div>
                                                                 </div>
@@ -418,21 +418,21 @@ const StockRebalancingPage = () => {
                                                         </div>
 
                                                         {/* Execution Panel */}
-                                                        <div className="bg-[#1a1a1a] border border-[#333] rounded-lg p-5 flex flex-col justify-between">
+                                                        <div className="bg-muted border border-border rounded-lg p-5 flex flex-col justify-between">
                                                             <div>
-                                                                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Approval & Execution</h3>
+                                                                <h3 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">Approval & Execution</h3>
                                                                 <div className="space-y-3">
                                                                     <div className="flex justify-between text-sm">
-                                                                        <span className="text-gray-300">Logistics Cost:</span>
-                                                                        <span className="text-white">$12.50</span>
+                                                                        <span className="text-muted-foreground">Logistics Cost:</span>
+                                                                        <span className="text-foreground">$12.50</span>
                                                                     </div>
                                                                     <div className="flex justify-between text-sm">
-                                                                        <span className="text-gray-300">Est. Arrival:</span>
-                                                                        <span className="text-white">Today, 2:30 PM</span>
+                                                                        <span className="text-muted-foreground">Est. Arrival:</span>
+                                                                        <span className="text-foreground">Today, 2:30 PM</span>
                                                                     </div>
                                                                     <div className="flex justify-between text-sm">
-                                                                        <span className="text-gray-300">Cold Chain:</span>
-                                                                        <span className={rec.coldChain ? "text-blue-400" : "text-gray-400"}>
+                                                                        <span className="text-muted-foreground">Cold Chain:</span>
+                                                                        <span className={rec.coldChain ? "text-blue-400" : "text-muted-foreground"}>
                                                                             {rec.coldChain ? "Required (Active)" : "Not Required"}
                                                                         </span>
                                                                     </div>
@@ -441,12 +441,12 @@ const StockRebalancingPage = () => {
 
                                                             <div className="flex flex-col gap-3 mt-6">
                                                                 <Button
-                                                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                                                                    className="w-full bg-blue-600 hover:bg-blue-700 text-foreground font-semibold"
                                                                     onClick={() => setApprovalDialogOpen(true)}
                                                                 >
                                                                     <CheckCircle2 className="w-4 h-4 mr-2" /> Approve Transfer
                                                                 </Button>
-                                                                <Button variant="outline" className="w-full border-[#333] text-gray-300 hover:text-white bg-transparent">
+                                                                <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground bg-transparent">
                                                                     Modify Quantity
                                                                 </Button>
                                                             </div>
@@ -466,10 +466,10 @@ const StockRebalancingPage = () => {
 
             {/* APPROVAL DIALOG */}
             <Dialog open={approvalDialogOpen} onOpenChange={setApprovalDialogOpen}>
-                <DialogContent className="bg-[#111] border-[#222] text-white sm:max-w-[425px]">
+                <DialogContent className="bg-card border-border text-foreground sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Confirm Stock Transfer</DialogTitle>
-                        <DialogDescription className="text-gray-300">
+                        <DialogDescription className="text-muted-foreground">
                             You are approving the transfer of <b>{selectedTransfer?.qty} {selectedTransfer?.unit}</b> of <b>{selectedTransfer?.marketingName}</b> from <b>{selectedTransfer?.sourceStore}</b> to <b>{selectedTransfer?.destStore}</b>.
                         </DialogDescription>
                     </DialogHeader>
@@ -479,12 +479,12 @@ const StockRebalancingPage = () => {
                             <p className="text-sm text-blue-100">Reduces overstock at source (-40%) and prevents imminent stockout at destination.</p>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-200">Approval Reason</label>
+                            <label className="text-sm font-medium text-foreground">Approval Reason</label>
                             <Select defaultValue="demand">
-                                <SelectTrigger className="w-full bg-[#1a1a1a] border-[#333] text-sm text-gray-200">
+                                <SelectTrigger className="w-full bg-muted border-border text-sm text-foreground">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                                <SelectContent className="bg-muted border-border text-foreground">
                                     <SelectItem value="demand">Address Demand Mismatch</SelectItem>
                                     <SelectItem value="spoilage">Prevent Spoilage</SelectItem>
                                     <SelectItem value="space">Space Constraints</SelectItem>
@@ -492,13 +492,13 @@ const StockRebalancingPage = () => {
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-200">Notes (Optional)</label>
-                            <Textarea placeholder="Add logistics notes..." className="bg-[#1a1a1a] border-[#333] text-white" />
+                            <label className="text-sm font-medium text-foreground">Notes (Optional)</label>
+                            <Textarea placeholder="Add logistics notes..." className="bg-muted border-border text-foreground" />
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setApprovalDialogOpen(false)} className="border-[#333] text-gray-300">Cancel</Button>
-                        <Button onClick={handleApprove} className="bg-green-600 hover:bg-green-700 text-white">Confirm & Execute</Button>
+                        <Button variant="outline" onClick={() => setApprovalDialogOpen(false)} className="border-border text-muted-foreground">Cancel</Button>
+                        <Button onClick={handleApprove} className="bg-green-600 hover:bg-green-700 text-foreground">Confirm & Execute</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -508,3 +508,6 @@ const StockRebalancingPage = () => {
 };
 
 export default StockRebalancingPage;
+
+
+
